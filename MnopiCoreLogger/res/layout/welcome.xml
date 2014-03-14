@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.33"
-            android:text="Data delivery"
+            android:text="@string/data_delivery"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.40"
-            android:text="Data collecter"
+            android:text="@string/data_collecter"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
@@ -60,13 +60,13 @@
             android:id="@+id/btnSendImmediately"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send immediately" />
+            android:text="@string/send_immediately" />
 
         <Button
             android:id="@+id/btnPermissionConsole"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Permission console" />
+            android:text="@string/permission_console" />
     </LinearLayout>
 
 </LinearLayout>

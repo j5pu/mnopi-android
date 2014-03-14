@@ -5,18 +5,18 @@
     android:orientation="vertical" >
     
      <EditText android:id="@+id/txtUserName" android:layout_height="wrap_content" android:layout_width="fill_parent" 
-             android:hint="UserName" android:inputType="text" />
+             android:hint="@string/username" android:inputType="text" />
          
          <EditText android:id="@+id/txtEmail" android:layout_marginTop="15dip" android:layout_height="wrap_content"
-              android:layout_width="fill_parent" android:hint="Email" android:inputType="textEmailAddress" />
+              android:layout_width="fill_parent" android:hint="@string/email" android:inputType="textEmailAddress" />
          
          <EditText android:id="@+id/txtPass" android:layout_height="wrap_content" 
-             android:layout_width="fill_parent" android:hint="Password" android:inputType="textPassword"
+             android:layout_width="fill_parent" android:hint="@string/password" android:inputType="textPassword"
              android:layout_marginTop="15dip" android:layout_marginBottom="30dip" />
          
          
          <Button android:id="@+id/btnRegister" android:layout_height="wrap_content" 
-             android:layout_width="wrap_content" android:text="enviar"
+             android:layout_width="wrap_content" android:text="@string/send"
               android:layout_gravity="center_horizontal" android:paddingLeft="15dip" android:paddingRight="15dip" />
          
          <TextView android:id="@+id/link_to_login"
@@ -24,7 +24,7 @@
                   android:layout_height="wrap_content"
                   android:layout_marginTop="40dip"
                   android:layout_marginBottom="40dip"
-                  android:text="Login"
+                  android:text="@string/login"
                   android:gravity="center"
                   android:textSize="20dip"
                   android:textColor="#0b84aa"/>

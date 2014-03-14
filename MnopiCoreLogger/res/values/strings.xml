@@ -2,4 +2,22 @@
 
     <string name="app_name">MnopiSucker</string>
 
+    <string name="login">Login</string>
+
+    <string name="signup_">signup!</string>
+
+    <string name="pages_visited">Pages visited</string>
+
+    <string name="html_visited">HTML visited</string>
+
+    <string name="search_queries">Search queries</string>
+
+    <string name="email">Email</string>
+
+    <string name="password">Password</string>
+
+    <string name="enviar">enviar</string>
+
+    <string name="username">UserName</string>
+
 </resources>

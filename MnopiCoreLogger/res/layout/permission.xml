@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.46"
-            android:text="Pages visited"
+            android:text="@string/pages_visited"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.41"
-            android:text="HTML visited"
+            android:text="@string/html_visited"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.42"
-            android:text="Search queries"
+            android:text="@string/search_queries"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
