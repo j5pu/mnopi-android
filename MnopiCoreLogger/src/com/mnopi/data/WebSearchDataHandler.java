@@ -4,8 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 
+/**
+ * Data handler for web searches
+ * @author alainez
+ *
+ */
 public class WebSearchDataHandler extends DataHandler {
 
+	// Constant key for the handler in the registry
 	private static String HANDLER_KEY = "web_search"; 
 	
 	public WebSearchDataHandler(Context context){
@@ -17,7 +23,7 @@ public class WebSearchDataHandler extends DataHandler {
 		
 		String url = bundle.getString("url");
 		String query = bundle.getString("query");
-		String date = bundle.getString("date"); //TODO: ver cómo se recibe esta mierda
+		String date = bundle.getString("date"); //TODO: Treat date as date instead of string
 		
 		ContentValues row = new ContentValues();
 		row.put("url", url);
@@ -33,6 +39,10 @@ public class WebSearchDataHandler extends DataHandler {
 		
 	}
 	
+	/**
+	 * Returns the handler key for looking up in the registry
+	 * @return handler key
+	 */
 	public String getKey() {
 		return HANDLER_KEY;
 	}
