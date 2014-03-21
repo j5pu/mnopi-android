@@ -9,7 +9,7 @@ public class DataHandlerRegistry {
 	public void bind(String key, DataHandler handler) {
 		registry.put(key, handler);
 	}
-	
+
 	public void unbind(String key) {
 		registry.remove(key);
 	}

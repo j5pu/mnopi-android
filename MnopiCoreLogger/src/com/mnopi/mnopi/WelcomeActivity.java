@@ -56,7 +56,7 @@ public class WelcomeActivity extends Activity{
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
@@ -65,11 +65,9 @@ public class WelcomeActivity extends Activity{
 	    	SharedPreferences settings = getSharedPreferences(
 					"MisPreferencias", Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putString("name", "");
-			editor.putString("pass", "");
+			editor.putString("session_token", null);
 			editor.commit();
-			Intent intent = new Intent(WelcomeActivity.this,
-					MainActivity.class);
+			Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
 			startActivity(intent);
 			finish();
 	        return true;
@@ -78,6 +76,7 @@ public class WelcomeActivity extends Activity{
 	    }
 	}
 	
+
 	@Override
 	public void onStart(){
 	    super.onStart();

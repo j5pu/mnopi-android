@@ -2,15 +2,18 @@
     package="com.mnopi.mnopi"
     android:versionCode="1"
     android:versionName="1.0" >
-
+	<uses-permission android:name="android.permission.INTERNET" /> 
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+	</uses-permission>
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="9"
         android:targetSdkVersion="18" />
     <application
+        android:name="MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" >      
         <activity
             android:name="com.mnopi.mnopi.MainActivity" >
             <intent-filter>
@@ -24,10 +27,10 @@
         </activity>
         <activity android:name="com.mnopi.mnopi.PermissionActivity" >
         </activity>
-        <service android:name="services.DataCollectorService"
+        <service android:name="com.mnopi.services.DataCollectorService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.example.NombreServicio" />
+                <action android:name="com.mnopi.services.DataCollectorService" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
