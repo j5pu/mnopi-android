@@ -4,9 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Mnopi database open helper
+ * @author Alfredo Lainez
+ *
+ */
 public class DataLogOpenHelper extends SQLiteOpenHelper{
 	
-	private static final String DATABASE_NAME = "mnopi";
+	private static final String DATABASE_NAME = "mnopi.db";
 	private static final int DATABASE_VERSION = 5;
 	
 	public static final String WEB_SEARCHES_TABLE_NAME = "web_searches";
