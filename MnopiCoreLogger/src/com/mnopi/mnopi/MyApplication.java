@@ -13,7 +13,14 @@ public class MyApplication extends Application {
 	private Boolean butSearchQueries = false;
 	private Boolean butHtmlVisited = false;
 	private Boolean butPagesVisited = false;
+	private String user_resource = "";
 	
+	public String getUser_resource() {
+		return user_resource;
+	}
+	public void setUser_resource(String user_resource) {
+		this.user_resource = user_resource;
+	}
 	public String getSERVER_ADRESS() {
 		return SERVER_ADRESS;
 	}

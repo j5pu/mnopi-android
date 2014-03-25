@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataLogOpenHelper extends SQLiteOpenHelper{
 	
-	private static final String DATABASE_NAME = "mnopi";
+	private static final String DATABASE_NAME = "mnopi.db";
 	private static final int DATABASE_VERSION = 5;
 	
 	public static final String WEB_SEARCHES_TABLE_NAME = "web_searches";

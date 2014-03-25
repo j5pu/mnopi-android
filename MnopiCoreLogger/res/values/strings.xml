@@ -44,4 +44,9 @@
     
     <string name="no_connection">No connection available</string>
     
+    <string name="sent_succesful">Data successfully sent</string>
+    
+    <string name="error_sending_data">Error occurred sending some data </string>
+    
+    
 </resources>

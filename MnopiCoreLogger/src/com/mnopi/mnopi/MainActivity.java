@@ -93,6 +93,7 @@ public class MainActivity extends Activity {
 		Boolean butPagesVisited = myApplication.getButPagesVisited();
 		String user_name = prefs.getString("user_name", null);
 		String session_token = prefs.getString("session_token", null);
+		String user_resource = prefs.getString("user_resource", null);
 
 		Log.i("varw",session_token + "   " + myApplication.getSession_token() + prefs.getString("session_token", null));
 		// Check if user is logged
@@ -145,6 +146,7 @@ public class MainActivity extends Activity {
 		 
 		private String username;
 		private String session_token;
+		private String user_resource;
 		
 		@Override
 		protected void onPreExecute(){
@@ -199,6 +201,7 @@ public class MainActivity extends Activity {
 	                 if (result.equals("OK")){
 	                	// user_uri = respJSON.getString("user_uri");
 	                	 session_token = respJSON.getString("session_token");
+	                	 user_resource = respJSON.getString("user_resource");
 	                 }
 	                 // if is ERROR get reason
 	                 else if (result.equals("ERR")){
@@ -246,9 +249,11 @@ public class MainActivity extends Activity {
 						SharedPreferences prefs = getSharedPreferences("MisPreferencias",
 								Context.MODE_PRIVATE);
 						SharedPreferences.Editor editor = prefs.edit();
-						// save session_token
+						// save session_token and user_resource
 			        	editor.putString("session_token", session_token);
 			        	myApplication.setSession_token(session_token);
+			        	editor.putString("user_resource", user_resource);
+			        	myApplication.setUser_resource(user_resource);
 			        	// save username
 			        	editor.putString("user_name", username);
 			        	myApplication.setLogged_user(true);

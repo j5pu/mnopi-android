@@ -7,8 +7,9 @@ import android.os.Bundle;
 public abstract class DataHandler {
 	
 	protected SQLiteDatabase db = null;
-	
-	public DataHandler(Context context){
+	Context context;
+	public DataHandler(Context c){
+		context = c;
 		DataLogOpenHelper dbHelper = new DataLogOpenHelper(context);
 		db = dbHelper.getWritableDatabase();
 	}
@@ -16,6 +17,11 @@ public abstract class DataHandler {
 	abstract public void saveData(Bundle bundle);
 	
 	abstract public void sendData();
+
+	public void sendData(Context c) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	// Save data
 	// Send data
