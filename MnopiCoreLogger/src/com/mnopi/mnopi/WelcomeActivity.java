@@ -1,15 +1,25 @@
 package com.mnopi.mnopi;
 
+import com.mnopi.data.DataHandler;
+import com.mnopi.data.DataHandlerRegistry;
+import com.mnopi.data.DataLogOpenHelper;
+import com.mnopi.data.WebSearchDataHandler;
+import com.mnopi.utils.Connectivity;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class WelcomeActivity extends Activity{
@@ -19,17 +29,25 @@ public class WelcomeActivity extends Activity{
 	private Button action_settings;
 	private ToggleButton butDataDelivery;
 	private ToggleButton butDataCollector;
+	private Context mContext;
+	DataHandlerRegistry dataHandlers = null;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);  
         
+        mContext = this;
         btnSendImmediately = (Button) findViewById(R.id.btnSendImmediately);
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
         action_settings = (Button) findViewById(R.id.action_settings);
         butDataCollector = (ToggleButton) findViewById(R.id.butDataCollector);
         butDataDelivery = (ToggleButton) findViewById(R.id.butDataDelivery);
+
+        dataHandlers = new DataHandlerRegistry();
+		
+		WebSearchDataHandler webHandler = new WebSearchDataHandler(getApplicationContext());
+		dataHandlers.bind(webHandler.getKey(), webHandler);
         
         btnPermissionConsole.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
@@ -44,8 +62,15 @@ public class WelcomeActivity extends Activity{
         	public void onClick(View view) {
         		SharedPreferences prefs = getSharedPreferences("MisPreferencias",
         				Context.MODE_PRIVATE);
-        		String data = prefs.getString("data", "");
-        		Log.d("WE","Estoy enviando: " + data);
+        		if (Connectivity.isOnline(mContext)){
+        			DataHandler handler = dataHandlers.lookup("web_search");
+        			handler.sendData(mContext);
+
+        		}
+        		else{
+					Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
+					toast.show();
+			    }
         	}
         });
         
@@ -56,7 +81,7 @@ public class WelcomeActivity extends Activity{
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
@@ -65,11 +90,9 @@ public class WelcomeActivity extends Activity{
 	    	SharedPreferences settings = getSharedPreferences(
 					"MisPreferencias", Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor = settings.edit();
-			editor.putString("name", "");
-			editor.putString("pass", "");
+			editor.putString("session_token", null);
 			editor.commit();
-			Intent intent = new Intent(WelcomeActivity.this,
-					MainActivity.class);
+			Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
 			startActivity(intent);
 			finish();
 	        return true;
@@ -78,6 +101,7 @@ public class WelcomeActivity extends Activity{
 	    }
 	}
 	
+
 	@Override
 	public void onStart(){
 	    super.onStart();
@@ -99,6 +123,5 @@ public class WelcomeActivity extends Activity{
 		editor.putBoolean("butDataDelivery", butDataDelivery.isChecked());
 		editor.commit();	
 	}
-	
 	
 }

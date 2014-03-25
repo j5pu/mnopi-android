@@ -13,12 +13,9 @@ import android.os.Bundle;
 public abstract class DataHandler {
 	
 	protected SQLiteDatabase db = null;
-	
-	/**
-	 * 
-	 * @param context application context
-	 */
-	public DataHandler(Context context){
+	Context context;
+	public DataHandler(Context c){
+		context = c;
 		DataLogOpenHelper dbHelper = new DataLogOpenHelper(context);
 		db = dbHelper.getWritableDatabase(); //TODO: Check if getting the database every time is too time-consuming
 	}
@@ -34,4 +31,9 @@ public abstract class DataHandler {
 	 */
 	abstract public void sendData();
 
+	public void sendData(Context c) {
+		// TODO Auto-generated method stub
+		
+	}
 }
+

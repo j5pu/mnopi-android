@@ -13,7 +13,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		// Ejecutamos el servicio que est� en RecibeDato
-		Intent myIntent = new Intent("com.example.NombreServicio"); //TODO: REVISAR SI ES IMPLICITO O NO. SI ES IMPLICITO CAMBIARLO A EXPLICIT
+		Intent myIntent = new Intent("com.mnopi.services.DataCollectorService"); 
 		myIntent.putExtra("Prueba", "soy un string");
 		startService(myIntent);
 	}

@@ -18,7 +18,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
-            android:id="@+id/toggleButton1"
+            android:id="@+id/butPagesVisited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ToggleButton" 
@@ -40,7 +40,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
-            android:id="@+id/toggleButton2"
+            android:id="@+id/butHtmlVisited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ToggleButton" 
@@ -62,7 +62,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
-            android:id="@+id/toggleButton3"
+            android:id="@+id/butSearchQueries"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ToggleButton" 
