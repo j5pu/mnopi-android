@@ -48,5 +48,23 @@
     
     <string name="error_sending_data">Error occurred sending some data </string>
     
+    <string name="repeat_password">Repeat password</string>
     
+    <string name="signing_up">Signing up</string>
+    
+    <string name="sign_up_succesful">Susccesfully signed up</string>
+    
+    <string name="error_signing_up">Sorry, an error occurred while signing up</string>
+    
+    <string name="username_lengh">Username must have between 1 and 20 characters</string>
+    
+    <string name="username_alphanumeric">Username can consist only of letters and numbers</string>
+    
+    <string name="pass_length">Password must have between 6 and 40 characters</string>
+    
+    <string name="invalid_email">Email must be a valid email address</string>
+    
+    <string name="email_length">This field is required</string>
+    
+    <string name="different_pass">Passwords must match</string>    
 </resources>

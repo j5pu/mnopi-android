@@ -95,7 +95,6 @@ public class MainActivity extends Activity {
 		String session_token = prefs.getString("session_token", null);
 		String user_resource = prefs.getString("user_resource", null);
 
-		Log.i("varw",session_token + "   " + myApplication.getSession_token() + prefs.getString("session_token", null));
 		// Check if user is logged
 		if(session_token != null) {
 			 myApplication.setLogged_user(true);
@@ -129,7 +128,6 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-
 				// register
 				Intent intent = new Intent(MainActivity.this,
 						RegisterActivity.class);
