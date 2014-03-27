@@ -21,62 +21,62 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import com.mnopi.mnopi.MyApplication;
-import com.mnopi.mnopi.MySSLSocketFactory;
-import com.mnopi.mnopi.R;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mnopi.mnopi.MySSLSocketFactory;
+import com.mnopi.mnopi.R;
+
 /**
- * Data handler for web searches
+ * Data handler for visited pages
  * @author alainez
  *
  */
-public class WebSearchDataHandler extends DataHandler {
-	
-	private static String HANDLER_KEY = "web_search";
+public class PageVisitedDataHandler extends DataHandler {
 
-	public WebSearchDataHandler(Context c){
-		super(c);
+	private static String HANDLER_KEY = "page_visited";
+	
+	
+	
+	public PageVisitedDataHandler(Context context){
+		super(context);
 	}
 	
 	@Override
 	public void saveData(Bundle bundle) {
 		
-		String url = bundle.getString("search_results");
-		String query = bundle.getString("search_query");
-		String date = bundle.getString("date"); 
-		
+		String url = bundle.getString("url");
+		String htmlCode = bundle.getString("html_code");
+		String date = bundle.getString("date");
+
 		ContentValues row = new ContentValues();
 		row.put("url", url);
-		row.put("query", query);
+		row.put("html_code", htmlCode);
 		row.put("date", date);
 		
-		db.insert(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null ,row);
+		db.insert(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null ,row);
 	}
 
 	@Override
 	public void sendData() {
-		new SendWebSearch().execute();
+		new SendPageVisited().execute();
 	}
 	
 	/**
 	 * Returns the handler key for looking up in the registry
-	 * @return handler key
+	 * @return
 	 */
 	public String getKey() {
 		return HANDLER_KEY;
 	}
 	
-	private class SendWebSearch extends AsyncTask<Void, Void, Void>{
+	private class SendPageVisited extends AsyncTask<Void, Void, Void>{
 		
 		private String result = null;
 		private String reason;
@@ -93,8 +93,8 @@ public class WebSearchDataHandler extends DataHandler {
 		@Override
 		protected Void doInBackground(Void... params){
 			
-	        String urlString = "https://ec2-54-197-231-98.compute-1.amazonaws.com/api/v1/search_query/";
-			Cursor cursor = db.query(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null, null, null, null, null);
+	        String urlString = "https://ec2-54-197-231-98.compute-1.amazonaws.com/api/v1/page_visited/";
+			Cursor cursor = db.query(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null, null, null, null, null);
 			SharedPreferences prefs = context.getSharedPreferences("MisPreferencias",
 					context.MODE_PRIVATE);
 			
@@ -110,43 +110,43 @@ public class WebSearchDataHandler extends DataHandler {
 				            post.setHeader("Content-Type", "application/json");
 				            post.setHeader("Session-Token", session_token);
 				             
-				            JSONObject dato = new JSONObject();	
+				            JSONObject jsonObject = new JSONObject();	
 				            
 				            String user = prefs.getString("user_resource", null);
-				            String query = cursor.getString(0);
-							String url = cursor.getString(1);		
-							String date = cursor.getString(2);
+				            String url = cursor.getString(0);
+							String date = cursor.getString(1);		
+							String html_code = cursor.getString(2);
 							
-							dato.put("user", user);
-							dato.put("search_query", query);
-							dato.put("search_results", url);
-							dato.put("date", date);
+							jsonObject.put("user", user);
+							jsonObject.put("url", url);
+							jsonObject.put("html_code", html_code);
+							jsonObject.put("date", date);
 							
-							StringEntity entity = new StringEntity(dato.toString(), HTTP.UTF_8);
-				             post.setEntity(entity);
+							StringEntity entity = new StringEntity(jsonObject.toString(), HTTP.UTF_8);
+							post.setEntity(entity);
 
-				             HttpResponse response = httpclient.execute(post);
-				             resEntity = response.getEntity();
-				             final String response_str = EntityUtils.toString(resEntity);
-				             int status = response.getStatusLine().getStatusCode();
-				             if (resEntity != null) {
-				                 if (status != 201){				   
-				                	 JSONObject respJSON = new JSONObject(response_str);
-					                 // check the result field
-					                 result = respJSON.getString("result"); 
-					                 if (result.equals("ERR")){
-					                	 if (respJSON.has("reason")){
-						                	 	reason = respJSON.getString("reason");
-						                	 	resultError = respJSON.getString("erroneous_parameters");
-						                	    hasResultError = true;
-								                Log.i("Send data","Error " + reason + ": " + resultError);
-					                	 }
-					                 }
-				                 }else{
-				                	 Log.i("Send data", "OK");
-				                 }
-				                 			                 
-				             }
+							HttpResponse response = httpclient.execute(post);
+							resEntity = response.getEntity();
+							final String response_str = EntityUtils.toString(resEntity);
+							int status = response.getStatusLine().getStatusCode();
+							if (resEntity != null) {
+								if (status != 201){				   
+									JSONObject respJSON = new JSONObject(response_str);
+									// check the result field
+									result = respJSON.getString("result"); 
+									if (result.equals("ERR")){
+										if (respJSON.has("reason")){
+											reason = respJSON.getString("reason");
+											resultError = respJSON.getString("erroneous_parameters");
+											hasResultError = true;
+											Log.i("Send data","Error " + reason + ": " + resultError);
+										}
+									}
+								}else{
+									Log.i("Send data", "OK");
+								}
+
+							}
 				        }
 				        catch (Exception ex){
 				             Log.e("Debug", "error: " + ex.getMessage(), ex);
@@ -162,7 +162,8 @@ public class WebSearchDataHandler extends DataHandler {
 		
 		@Override
 	    protected void onPostExecute(Void result) {
-			db.delete(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null);
+			
+			db.delete(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null);
 			// show information about the data sent
 				if (anyError){
 					Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_SHORT).show();
@@ -170,7 +171,8 @@ public class WebSearchDataHandler extends DataHandler {
 					Toast.makeText(context, R.string.sent_succesful, Toast.LENGTH_SHORT).show();
 					
 					//TODO: when POST lists is ready, think about what to delete and how
-					db.delete(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null);
+					db.delete(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null);
+					
 				}else{
 					Toast.makeText(context, R.string.error_sending_data, Toast.LENGTH_SHORT).show();
 				}
@@ -205,5 +207,5 @@ public class WebSearchDataHandler extends DataHandler {
 	            return new DefaultHttpClient();
 	        }
 	    }
-
+	
 }

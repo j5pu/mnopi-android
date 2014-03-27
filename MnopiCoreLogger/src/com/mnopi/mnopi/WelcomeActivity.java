@@ -1,26 +1,22 @@
 package com.mnopi.mnopi;
 
-import com.mnopi.data.DataHandler;
-import com.mnopi.data.DataHandlerRegistry;
-import com.mnopi.data.DataLogOpenHelper;
-import com.mnopi.data.WebSearchDataHandler;
-import com.mnopi.utils.Connectivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.mnopi.data.DataHandler;
+import com.mnopi.data.DataHandlerRegistry;
+import com.mnopi.data.PageVisitedDataHandler;
+import com.mnopi.data.WebSearchDataHandler;
+import com.mnopi.utils.Connectivity;
 
 public class WelcomeActivity extends Activity{
 	
@@ -47,7 +43,9 @@ public class WelcomeActivity extends Activity{
         dataHandlers = new DataHandlerRegistry();
 		
 		WebSearchDataHandler webHandler = new WebSearchDataHandler(getApplicationContext());
+		PageVisitedDataHandler pageHandler = new PageVisitedDataHandler(getApplicationContext());
 		dataHandlers.bind(webHandler.getKey(), webHandler);
+		dataHandlers.bind(pageHandler.getKey(), pageHandler);
         
         btnPermissionConsole.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
@@ -63,9 +61,11 @@ public class WelcomeActivity extends Activity{
         		SharedPreferences prefs = getSharedPreferences("MisPreferencias",
         				Context.MODE_PRIVATE);
         		if (Connectivity.isOnline(mContext)){
-        			DataHandler handler = dataHandlers.lookup("web_search");
-        			handler.sendData(mContext);
-
+        			DataHandler handler;
+        			for (String handlerKey : dataHandlers.getHandlersKeys()){
+        				handler = dataHandlers.lookup(handlerKey);
+        				handler.sendData();
+        			}
         		}
         		else{
 					Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);

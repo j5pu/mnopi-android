@@ -1,17 +1,15 @@
 package com.mnopi.services;
 
-import java.util.ArrayList;
-
-import com.mnopi.data.DataHandler;
-import com.mnopi.data.DataHandlerRegistry;
-import com.mnopi.data.WebSearchDataHandler;
-
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+
+import com.mnopi.data.DataHandler;
+import com.mnopi.data.DataHandlerRegistry;
+import com.mnopi.data.PageVisitedDataHandler;
+import com.mnopi.data.WebSearchDataHandler;
 
 
 public class DataCollectorService extends IntentService {
@@ -28,7 +26,9 @@ public class DataCollectorService extends IntentService {
 		dataHandlers = new DataHandlerRegistry();
 		
 		WebSearchDataHandler webHandler = new WebSearchDataHandler(getApplicationContext());
+		PageVisitedDataHandler pageHandler = new PageVisitedDataHandler(getApplicationContext());
 		dataHandlers.bind(webHandler.getKey(), webHandler);
+		dataHandlers.bind(pageHandler.getKey(), pageHandler);
 	}
 
 	@Override
