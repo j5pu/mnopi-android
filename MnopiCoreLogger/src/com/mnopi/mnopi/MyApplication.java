@@ -4,7 +4,9 @@ import android.app.Application;
 
 public class MyApplication extends Application {
 	
-	private String SERVER_ADRESS = "https://ec2-54-197-231-98.compute-1.amazonaws.com";
+	//TODO: Prepare a list of api endpoints with constants
+	private final static String SERVER_ADRESS = "https://ec2-54-197-231-98.compute-1.amazonaws.com";
+	
 	private Boolean logged_user = false;
 	private String user_name = "";
 	private String session_token = "";

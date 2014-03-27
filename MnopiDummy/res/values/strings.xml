@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="app_name">Mnopi Dummy Application</string>
+
+    <string name="url">Url</string>
+
+    <string name="html_text_default">Html code</string>
+
+    <string name="send_search">Send search</string>
+
+    <string name="send_page_visited">Send page visited</string>
+
+</resources>

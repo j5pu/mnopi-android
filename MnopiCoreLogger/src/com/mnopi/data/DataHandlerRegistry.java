@@ -1,6 +1,7 @@
 package com.mnopi.data;
 
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Registry for data handlers admitted by the application logger service
@@ -31,6 +32,14 @@ public class DataHandlerRegistry {
 	
 	public DataHandler lookup(String key) {
 		return registry.get(key);
+	}
+	
+	/**
+	 * Returns the keys for the registered handlers
+	 * @return Set of Strings
+	 */
+	public Set<String> getHandlersKeys() {
+		return registry.keySet();
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.example.dummy_search;
+package com.mnopi.dummy;
 
 import java.util.ArrayList;
 
