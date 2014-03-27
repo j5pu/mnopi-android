@@ -3,8 +3,6 @@ package com.mnopi.dummy;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import com.mnopi.dummy.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +15,7 @@ import android.widget.EditText;
 public class SendData extends Activity{
 	private Button btnSendSearch;
 	private Button btnSendPage;
+	private Button btnOpenBrowser;
 	
 	private EditText inputQuerySearch;
 	private EditText inputSearchResult;
@@ -27,7 +26,7 @@ public class SendData extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.send_searches);
+		setContentView(R.layout.send_data);
 				
 		inputQuerySearch = (EditText) findViewById(R.id.search);
 		inputSearchResult = (EditText) findViewById(R.id.result);
@@ -36,6 +35,7 @@ public class SendData extends Activity{
 		inputUrlVisited= (EditText) findViewById(R.id.url_page_visited);
 		inputHtmlVisited = (EditText) findViewById(R.id.html_page_visited);
 		btnSendPage = (Button) findViewById(R.id.btn_send_page_visited);
+		btnOpenBrowser = (Button) findViewById(R.id.btn_open_browser);
 		
         btnSendSearch.setOnClickListener(new View.OnClickListener() {          
                        
@@ -78,5 +78,16 @@ public class SendData extends Activity{
         		startService(pageIntent);
         	}
         });
+        
+        btnOpenBrowser.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				Intent i = new Intent(SendData.this, WebActivity.class);
+				startActivity(i);
+			}
+
+        });
+        
 	}
 }

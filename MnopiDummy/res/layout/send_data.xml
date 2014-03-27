@@ -45,7 +45,7 @@
         <EditText
             android:id="@+id/html_page_visited"
             android:layout_width="match_parent"
-            android:layout_height="228dp"
+            android:layout_height="119dp"
             android:ems="10"
             android:hint="@string/html_text_default"
             android:inputType="textMultiLine" />
@@ -55,6 +55,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/send_page_visited" />
+
+        <Button
+            android:id="@+id/btn_open_browser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_mnopi_browser" />
 
     </LinearLayout>
 
