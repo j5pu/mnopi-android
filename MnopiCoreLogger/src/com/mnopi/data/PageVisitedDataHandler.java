@@ -50,17 +50,22 @@ public class PageVisitedDataHandler extends DataHandler {
 	
 	@Override
 	public void saveData(Bundle bundle) {
+		SharedPreferences prefs = context.getSharedPreferences("MisPreferencias",
+				context.MODE_PRIVATE);
 		
-		String url = bundle.getString("url");
-		String htmlCode = bundle.getString("html_code");
-		String date = bundle.getString("date");
-
-		ContentValues row = new ContentValues();
-		row.put("url", url);
-		row.put("html_code", htmlCode);
-		row.put("date", date);
-		
-		db.insert(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null ,row);
+		if (prefs.getBoolean("butPagesVisited", false)){
+			ContentValues row = new ContentValues();
+			String url = bundle.getString("url");
+			String date = bundle.getString("date");
+			if (prefs.getBoolean("butHtmlVisited", false)){
+				String htmlCode = bundle.getString("html_code");
+				row.put("html_code", htmlCode);
+			}
+			row.put("url", url);
+			row.put("date", date);
+			
+			db.insert(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null ,row);
+		}	
 	}
 
 	@Override

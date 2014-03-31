@@ -49,18 +49,22 @@ public class WebSearchDataHandler extends DataHandler {
 	}
 	
 	@Override
-	public void saveData(Bundle bundle) {
+	public void saveData(Bundle bundle) {		
+		SharedPreferences prefs = context.getSharedPreferences("MisPreferencias",
+				context.MODE_PRIVATE);
 		
-		String url = bundle.getString("search_results");
-		String query = bundle.getString("search_query");
-		String date = bundle.getString("date"); 
-		
-		ContentValues row = new ContentValues();
-		row.put("url", url);
-		row.put("query", query);
-		row.put("date", date);
-		
-		db.insert(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null ,row);
+		if (prefs.getBoolean("butSearchQueries", false)){
+			String url = bundle.getString("search_results");
+			String query = bundle.getString("search_query");
+			String date = bundle.getString("date"); 
+			
+			ContentValues row = new ContentValues();
+			row.put("url", url);
+			row.put("query", query);
+			row.put("date", date);
+			
+			db.insert(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null ,row);
+		}
 	}
 
 	@Override
