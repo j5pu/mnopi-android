@@ -83,11 +83,13 @@ public class PageVisitedDataHandler extends DataHandler {
 		private boolean hasResultError;
 		private String resultError;
 		private boolean anyError;
+		private boolean dataExists;
 
 		@Override
 		protected void onPreExecute(){		
 			hasResultError = false;
 			anyError = false;
+			dataExists = false;
 		}
 		
 		@Override
@@ -144,6 +146,7 @@ public class PageVisitedDataHandler extends DataHandler {
 									}
 								}else{
 									Log.i("Send data", "OK");
+									dataExists = true;
 								}
 
 							}
@@ -168,10 +171,15 @@ public class PageVisitedDataHandler extends DataHandler {
 				if (anyError){
 					Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_SHORT).show();
 				}else if (!hasResultError){
-					Toast.makeText(context, R.string.sent_succesful, Toast.LENGTH_SHORT).show();
-					
-					//TODO: when POST lists is ready, think about what to delete and how
-					db.delete(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null);
+					if (!dataExists){
+						Toast.makeText(context, R.string.no_data_to_send, Toast.LENGTH_SHORT).show();
+					}
+					else{
+						Toast.makeText(context, R.string.sent_succesful, Toast.LENGTH_SHORT).show();
+						
+						//TODO: when POST lists is ready, think about what to delete and how
+						db.delete(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null);
+					}					
 					
 				}else{
 					Toast.makeText(context, R.string.error_sending_data, Toast.LENGTH_SHORT).show();

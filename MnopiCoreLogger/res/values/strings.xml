@@ -48,6 +48,8 @@
     
     <string name="error_sending_data">Error occurred sending some data </string>
     
+    <string name="no_data_to_send">There is no data to send </string>
+    
     <string name="repeat_password">Repeat password</string>
     
     <string name="signing_up">Signing up</string>
