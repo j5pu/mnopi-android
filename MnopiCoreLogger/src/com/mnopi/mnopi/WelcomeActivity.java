@@ -22,6 +22,7 @@ public class WelcomeActivity extends Activity{
 	
 	private Button btnSendImmediately;
 	private Button btnPermissionConsole;
+	private Button btnViewData;
 	private Button action_settings;
 	private ToggleButton butDataDelivery;
 	private ToggleButton butDataCollector;
@@ -36,6 +37,7 @@ public class WelcomeActivity extends Activity{
         mContext = this;
         btnSendImmediately = (Button) findViewById(R.id.btnSendImmediately);
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
+        btnViewData = (Button) findViewById(R.id.btnViewData);
         action_settings = (Button) findViewById(R.id.action_settings);
         butDataCollector = (ToggleButton) findViewById(R.id.butDataCollector);
         butDataDelivery = (ToggleButton) findViewById(R.id.butDataDelivery);
@@ -52,8 +54,15 @@ public class WelcomeActivity extends Activity{
         		Intent intent = new Intent(WelcomeActivity.this,
 						PermissionActivity.class);
 				startActivity(intent);
-        	}
-        	
+        	}        	
+        });
+        
+        btnViewData.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View view) {
+        		Intent intent = new Intent(WelcomeActivity.this,
+						ViewDataActivity.class);
+				startActivity(intent);
+        	}        	
         });
         
         btnSendImmediately.setOnClickListener(new View.OnClickListener() {

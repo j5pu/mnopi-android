@@ -28,6 +28,10 @@
         </activity>
         <activity android:name="com.mnopi.mnopi.PermissionActivity" >
         </activity>
+        <activity android:name="com.mnopi.mnopi.ViewDataActivity" >
+        </activity>
+        <activity android:name="com.mnopi.mnopi.ViewQueriesActivity" >
+        </activity>
         <service android:name="com.mnopi.services.DataCollectorService"
             android:exported="true">
             <intent-filter>
