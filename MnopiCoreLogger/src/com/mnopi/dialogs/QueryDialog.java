@@ -18,9 +18,10 @@ public class QueryDialog extends Dialog {
 	
 	public QueryDialog(Context context, Query query) {
 		super(context);
+		
 		this.query = query;
-		// TODO Auto-generated constructor stub
 	}
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -9,6 +9,7 @@ import android.widget.Button;
 public class ViewDataActivity extends Activity{
 	
 	private Button btnViewQueries;
+	private Button btnViewPagesVisited;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -16,6 +17,7 @@ public class ViewDataActivity extends Activity{
         setContentView(R.layout.viewdata);  
         
         btnViewQueries = (Button) findViewById(R.id.btnViewQueries);
+        btnViewPagesVisited = (Button) findViewById(R.id.btnPagesVisited);
         
         btnViewQueries.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
@@ -25,5 +27,13 @@ public class ViewDataActivity extends Activity{
         	}        	
         });
         
+        btnViewPagesVisited.setOnClickListener(new View.OnClickListener() {
+        	public void onClick(View view) {
+        		Intent intent = new Intent(ViewDataActivity.this,
+        				ViewPagesVisitedActivity.class);
+				startActivity(intent);
+        	}        	
+        });
+       
 	}
 }

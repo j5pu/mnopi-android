@@ -83,4 +83,12 @@
     <string name="date">Date</string>    
     
     <string name="hour">Hour</string>    
+    
+    <string name="view_pages">View pages</string>    
+    
+    <string name="domain">Domain</string>    
+    
+    <string name="categories">Categories</string>    
+    
+    <string name="no_category">No category</string>    
 </resources>
