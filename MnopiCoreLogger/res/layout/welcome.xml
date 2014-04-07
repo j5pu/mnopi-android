@@ -67,6 +67,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/permission_console" />
+
+        <Button
+            android:id="@+id/btnViewData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/view_data" />
+
     </LinearLayout>
 
 </LinearLayout>

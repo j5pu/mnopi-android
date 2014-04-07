@@ -157,6 +157,7 @@ public class WebSearchDataHandler extends DataHandler {
 				        }
 				        
 				    } while (cursor.moveToNext());
+					cursor.close();
 				}
 			}
 	        

@@ -27,6 +27,8 @@
     <string name="send_immediately">Send immediately</string>
 
     <string name="permission_console">Permission console</string>
+    
+    <string name="view_data">View data</string>
 
     <string name="user">User</string>
     
@@ -68,5 +70,25 @@
     
     <string name="email_length">This field is required</string>
     
-    <string name="different_pass">Passwords must match</string>    
+    <string name="different_pass">Passwords must match</string>
+    
+    <string name="view_queries">View queries</string>    
+    
+    <string name="getData">Getting data</string>    
+    
+    <string name="query">Query</string>    
+    
+    <string name="url">URL</string>    
+    
+    <string name="date">Date</string>    
+    
+    <string name="hour">Hour</string>    
+    
+    <string name="view_pages">View pages</string>    
+    
+    <string name="domain">Domain</string>    
+    
+    <string name="categories">Categories</string>    
+    
+    <string name="no_category">No category</string>    
 </resources>
