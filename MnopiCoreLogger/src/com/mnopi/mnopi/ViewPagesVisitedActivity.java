@@ -101,9 +101,21 @@ public class ViewPagesVisitedActivity extends Activity{
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				PageVisited page = pages.get(position);
-				PageDialog pDialog = new PageDialog(mContext, page);
-				pDialog.setTitle(page.getDomain());
-				pDialog.show();
+				if (page.getCategories().size() != 0){
+					PageDialog pDialog = new PageDialog(mContext, page);
+					pDialog.setTitle(page.getDomain());
+					pDialog.show();
+				}
+				else{
+					if (Connectivity.isOnline(mContext)){
+	        			new GetCategories().execute(page); 
+	        		}
+	        		else{
+						Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
+						toast.show();
+				    }
+				}	
+				
 			}
 			
 		});
@@ -174,22 +186,7 @@ public class ViewPagesVisitedActivity extends Activity{
 					 final String dateFormated = date.substring(0, 10);
 					 final String hour = date.substring(11, 19);
 					              
-		             HttpGet getCategories = new HttpGet(myApplication.getSERVER_ADRESS()
-		            		 + resource_uri + "categories");
-		             getCategories.setHeader("Content-Type", "application/json");
-		             getCategories.setHeader("Session-Token", session_token);
-		             
-		             response = httpclient.execute(getCategories);
-		             String respStrCategories = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
-		             JSONArray respJsonCat = new JSONArray(respStrCategories);
 	            	 ArrayList<String> categoriesAux = new ArrayList<String>();
-		             if (respJsonCat.length() != 0){
-		            	 for (int j=0; j<respJsonCat.length(); j++) {
-		            		    String category = respJsonCat.getString(j); 
-		            		    categoriesAux.add(category);
-		            	 }	    
-		            		    
-		             }
 		             final ArrayList<String> categories = categoriesAux;
 					 runOnUiThread(new Runnable() {
 							@Override
@@ -220,6 +217,62 @@ public class ViewPagesVisitedActivity extends Activity{
 			
 			// if an error occurred show the error
 			
+	    }		
+	}
+	
+	private class GetCategories extends AsyncTask<PageVisited,Integer,Void> {
+		 
+		private String session_token;
+		
+		@Override
+		protected void onPreExecute(){	
+		}
+		
+		@Override
+	    protected Void doInBackground(PageVisited... params) {
+			final PageVisited page = params[0];
+			String urlString = myApplication.getSERVER_ADRESS() + page.getResource_uri()
+					+ "categories";
+	    	HttpResponse response = null;
+	        SharedPreferences prefs = getBaseContext().getSharedPreferences("MisPreferencias",
+	        		getBaseContext().MODE_PRIVATE);
+	        session_token = prefs.getString("session_token", null);
+	        
+	        try{
+	             HttpClient httpclient = getNewHttpClient();	             
+	             HttpGet getCategories = new HttpGet(urlString);
+	             getCategories.setHeader("Content-Type", "application/json");
+	             getCategories.setHeader("Session-Token", session_token);
+	             
+	             response = httpclient.execute(getCategories);
+	             String respStrCategories = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
+	             JSONArray respJsonCat = new JSONArray(respStrCategories);
+            	 ArrayList<String> categoriesAux = new ArrayList<String>();
+	             if (respJsonCat.length() != 0){
+	            	 for (int j=0; j<respJsonCat.length(); j++) {
+	            		    String category = respJsonCat.getString(j); 
+	            		    categoriesAux.add(category);
+	            	 }	    	            		    
+	             }				 
+	             page.setCategories(categoriesAux);
+	             runOnUiThread(new Runnable() {
+						@Override
+						public void run() {	
+				 			 PageDialog pDialog = new PageDialog(mContext, page);
+							 pDialog.setTitle(page.getDomain());
+							 pDialog.show();
+						}
+	             });		
+	        }
+	        catch (Exception ex){
+	             Log.e("Debug", "error: " + ex.getMessage(), ex);
+	        }
+			return null;
+	      
+	    }
+						
+		@Override
+	    protected void onPostExecute(Void result) {	
 	    }		
 	}
 	
