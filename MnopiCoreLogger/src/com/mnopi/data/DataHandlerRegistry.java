@@ -1,6 +1,5 @@
 package com.mnopi.data;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import java.util.HashMap;

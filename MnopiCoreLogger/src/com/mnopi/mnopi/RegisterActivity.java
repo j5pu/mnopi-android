@@ -1,24 +1,13 @@
 package com.mnopi.mnopi;
 
-import java.security.KeyStore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
@@ -29,7 +18,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,7 +37,6 @@ public class RegisterActivity extends Activity {
     private EditText inputPassword2;
     private TextView registerErrorMsg; 
 	private Context mContext;
-	private MyApplication myApplication;
 	private ProgressDialog progress;
 	private String result = null;
 	private boolean has_result_error;
@@ -71,8 +58,6 @@ public class RegisterActivity extends Activity {
         lblGotoLogin = (TextView) findViewById(R.id.link_to_login);
         registerErrorMsg = (TextView) findViewById(R.id.register_error);
         
-        myApplication = ((MyApplication) this.getApplication());
-
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if (Connectivity.isOnline(mContext)){
@@ -115,10 +100,10 @@ public class RegisterActivity extends Activity {
 	    protected Void doInBackground(Void... params) {
 			
 			HttpEntity resEntity;
-	        String urlString = myApplication.getSERVER_ADRESS() + "/api/v1/user/";
+	        String urlString = MnopiApplication.SERVER_ADDRESS + "/api/v1/user/";
 	        
 	        try{
-	             HttpClient httpclient = getNewHttpClient();	             
+	             HttpClient httpclient = Connectivity.getNewHttpClient();
 	             HttpPost post = new HttpPost(urlString);
 	             post.setHeader("Content-Type", "application/json");
 	             
@@ -183,37 +168,6 @@ public class RegisterActivity extends Activity {
 		}
     }
  
-    public HttpClient getNewHttpClient() {
-	     try {
-	            KeyStore trustStore = KeyStore.getInstance(KeyStore
-	                    .getDefaultType());
-	            trustStore.load(null, null);
-
-	            MySSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-	            sf.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-	            HttpParams params = new BasicHttpParams();
-	            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-	            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-	            SchemeRegistry registry = new SchemeRegistry();
-	            registry.register(new Scheme("http", PlainSocketFactory
-	                    .getSocketFactory(), 80));
-	            registry.register(new Scheme("https", sf, 443));
-
-
-
-	            ClientConnectionManager ccm = new ThreadSafeClientConnManager(
-	                    params, registry);
-
-	            return new DefaultHttpClient(ccm, params);
-	        } catch (Exception e) {
-	            return new DefaultHttpClient();
-	        }
-	    }
-	
-	
-
 	// ---------------------------------------------------------------------------------------------------------
 	// ----------------------             M�TODOS PRIVADOS             -----------------------------------------
 	// ---------------------------------------------------------------------------------------------------------

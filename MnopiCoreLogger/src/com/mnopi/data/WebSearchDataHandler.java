@@ -1,29 +1,17 @@
 package com.mnopi.data;
 
-import java.security.KeyStore;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import com.mnopi.mnopi.MyApplication;
-import com.mnopi.mnopi.MySSLSocketFactory;
+import com.mnopi.mnopi.MnopiApplication;
 import com.mnopi.mnopi.R;
+import com.mnopi.utils.Connectivity;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -93,10 +81,11 @@ public class WebSearchDataHandler extends DataHandler {
 		
 		@Override
 		protected Void doInBackground(Void... params){
-			
+
+            //TODO: utilizar las variables globales de mnopi y concatenar con alguna estructura de API para que sean todo constantes las urls
 	        String urlString = "https://ec2-54-197-231-98.compute-1.amazonaws.com/api/v1/search_query/";
 			Cursor cursor = db.query(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null, null, null, null, null);
-			SharedPreferences prefs = context.getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
+			SharedPreferences prefs = context.getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
 					context.MODE_PRIVATE);
 			
 			if(cursor != null){
@@ -105,15 +94,15 @@ public class WebSearchDataHandler extends DataHandler {
 						HttpEntity resEntity;
 
 				        try{
-							String session_token = prefs.getString("session_token", null);
-				            HttpClient httpclient = getNewHttpClient();	             
+							String session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
+				            HttpClient httpclient = Connectivity.getNewHttpClient();
 				            HttpPost post = new HttpPost(urlString);
 				            post.setHeader("Content-Type", "application/json");
 				            post.setHeader("Session-Token", session_token);
 				             
 				            JSONObject dato = new JSONObject();	
 				            
-				            String user = prefs.getString("user_resource", null);
+				            String user = prefs.getString(MnopiApplication.USER_RESOURCE, null);
 				            String query = cursor.getString(0);
 							String url = cursor.getString(1);		
 							String date = cursor.getString(2);
@@ -172,34 +161,5 @@ public class WebSearchDataHandler extends DataHandler {
             }
 		}
 	}
-	
-	public HttpClient getNewHttpClient() {
-	     try {
-	            KeyStore trustStore = KeyStore.getInstance(KeyStore
-	                    .getDefaultType());
-	            trustStore.load(null, null);
-
-	            MySSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-	            sf.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-	            HttpParams params = new BasicHttpParams();
-	            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-	            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-	            SchemeRegistry registry = new SchemeRegistry();
-	            registry.register(new Scheme("http", PlainSocketFactory
-	                    .getSocketFactory(), 80));
-	            registry.register(new Scheme("https", sf, 443));
-
-
-
-	            ClientConnectionManager ccm = new ThreadSafeClientConnManager(
-	                    params, registry);
-
-	            return new DefaultHttpClient(ccm, params);
-	        } catch (Exception e) {
-	            return new DefaultHttpClient();
-	        }
-	    }
 
 }

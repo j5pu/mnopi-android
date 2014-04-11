@@ -44,7 +44,6 @@ import com.mnopi.utils.Connectivity;
 
 public class ViewPagesVisitedActivity extends Activity{
 	
-	private MyApplication myApplication;
 	private ProgressDialog progress;
 	private ArrayList<PageVisited> pages;
 	private ListView listPages;
@@ -59,7 +58,6 @@ public class ViewPagesVisitedActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewpages);  
         
-        myApplication = ((MyApplication) this.getApplication());
         pages = new ArrayList<PageVisited>();
         listPages = (ListView) findViewById(R.id.listPages);
         pAdapter = new PageAdapter(this, R.layout.page_item, pages);
@@ -137,21 +135,21 @@ public class ViewPagesVisitedActivity extends Activity{
 			
 			String urlString = null;
 	    	if (pages.size() == 0){
-	    		urlString = myApplication.getSERVER_ADRESS() + "/api/v1/page_visited/";
+	    		urlString = MnopiApplication.SERVER_ADDRESS + "/api/v1/page_visited/";
 	    	}    
 	    	else{
 	    		if (meta_next.equals("null")){
 	    			there_are_more_pages = false;
 	    		}
-    			urlString = myApplication.getSERVER_ADRESS() + meta_next;
+    			urlString = MnopiApplication.SERVER_ADDRESS + meta_next;
 	    	}
 	    	HttpResponse response = null;
-	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
+	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
 	        		getBaseContext().MODE_PRIVATE);
-	        session_token = prefs.getString("session_token", null);
+	        session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
 	        
 	        try{
-	             HttpClient httpclient = getNewHttpClient();	             
+	             HttpClient httpclient = Connectivity.getNewHttpClient();
 	             HttpGet getPages = new HttpGet(urlString);
 	             getPages.setHeader("Content-Type", "application/json");
 	             getPages.setHeader("Session-Token", session_token);
@@ -231,15 +229,15 @@ public class ViewPagesVisitedActivity extends Activity{
 		@Override
 	    protected Void doInBackground(PageVisited... params) {
 			final PageVisited page = params[0];
-			String urlString = myApplication.getSERVER_ADRESS() + page.getResource_uri()
+			String urlString = MnopiApplication.SERVER_ADDRESS + page.getResource_uri()
 					+ "categories";
 	    	HttpResponse response = null;
-	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
+	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
 	        		getBaseContext().MODE_PRIVATE);
-	        session_token = prefs.getString("session_token", null);
+	        session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
 	        
 	        try{
-	             HttpClient httpclient = getNewHttpClient();	             
+	             HttpClient httpclient = Connectivity.getNewHttpClient();
 	             HttpGet getCategories = new HttpGet(urlString);
 	             getCategories.setHeader("Content-Type", "application/json");
 	             getCategories.setHeader("Session-Token", session_token);
@@ -275,37 +273,5 @@ public class ViewPagesVisitedActivity extends Activity{
 	    protected void onPostExecute(Void result) {	
 	    }		
 	}
-	
-	
-	public HttpClient getNewHttpClient() {
-	     try {
-	            KeyStore trustStore = KeyStore.getInstance(KeyStore
-	                    .getDefaultType());
-	            trustStore.load(null, null);
-
-	            MySSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-	            sf.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-	            HttpParams params = new BasicHttpParams();
-	            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-	            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-	            SchemeRegistry registry = new SchemeRegistry();
-	            registry.register(new Scheme("http", PlainSocketFactory
-	                    .getSocketFactory(), 80));
-	            registry.register(new Scheme("https", sf, 443));
-
-
-
-	            ClientConnectionManager ccm = new ThreadSafeClientConnManager(
-	                    params, registry);
-
-	            return new DefaultHttpClient(ccm, params);
-	        } catch (Exception e) {
-	            return new DefaultHttpClient();
-	        }
-	    }
-	
-	
 
 }

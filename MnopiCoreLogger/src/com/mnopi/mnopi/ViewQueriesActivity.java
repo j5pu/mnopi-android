@@ -1,27 +1,10 @@
 package com.mnopi.mnopi;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.KeyStore;
 import java.util.ArrayList;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -37,7 +20,6 @@ import com.mnopi.utils.Connectivity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,14 +29,11 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class ViewQueriesActivity extends Activity{
 	
-	private MyApplication myApplication;
 	private ProgressDialog progress;
 	private ArrayList<Query> queries;
 	private ListView listQueries;
@@ -69,7 +48,6 @@ public class ViewQueriesActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewqueries);  
 	
-		myApplication = ((MyApplication) this.getApplication());
 		queries = new ArrayList<Query>();
 		listQueries = (ListView) findViewById(R.id.listQueries);
 		qAdapter = new QueryAdapter(this, R.layout.query_item, queries );
@@ -138,22 +116,22 @@ public class ViewQueriesActivity extends Activity{
 			
 			String urlString = null;
 	    	if (queries.size() == 0){
-	    		urlString = myApplication.getSERVER_ADRESS() + "/api/v1/search_query/";
+	    		urlString = MnopiApplication.SERVER_ADDRESS + "/api/v1/search_query/";
 	    	}    
 	    	else{
 	    		if (meta_next.equals("null")){
 	    			there_are_more_queries = false;
 	    		}
-    			urlString = myApplication.getSERVER_ADRESS() + meta_next;
+    			urlString = MnopiApplication.SERVER_ADDRESS + meta_next;
 	    	}
 	    	HttpResponse response = null;
-	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
+	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
 	        		getBaseContext().MODE_PRIVATE);
-	        session_token = prefs.getString("session_token", null);
+	        session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
 	        
 	        try{
 	             //HttpClient client = new DefaultHttpClient();
-	             HttpClient httpclient = getNewHttpClient();	             
+	             HttpClient httpclient = Connectivity.getNewHttpClient();
 	             HttpGet getQueries = new HttpGet(urlString);
 	             getQueries.setHeader("Content-Type", "application/json");
 	             getQueries.setHeader("Session-Token", session_token);
@@ -207,35 +185,5 @@ public class ViewQueriesActivity extends Activity{
 			
 	    }		
 	}
-	
-	
-	public HttpClient getNewHttpClient() {
-	     try {
-	            KeyStore trustStore = KeyStore.getInstance(KeyStore
-	                    .getDefaultType());
-	            trustStore.load(null, null);
-
-	            MySSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-	            sf.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-	            HttpParams params = new BasicHttpParams();
-	            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-	            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-	            SchemeRegistry registry = new SchemeRegistry();
-	            registry.register(new Scheme("http", PlainSocketFactory
-	                    .getSocketFactory(), 80));
-	            registry.register(new Scheme("https", sf, 443));
-
-
-
-	            ClientConnectionManager ccm = new ThreadSafeClientConnManager(
-	                    params, registry);
-
-	            return new DefaultHttpClient(ccm, params);
-	        } catch (Exception e) {
-	            return new DefaultHttpClient();
-	        }
-	    }
 }
 

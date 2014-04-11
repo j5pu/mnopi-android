@@ -9,7 +9,7 @@
         android:minSdkVersion="9"
         android:targetSdkVersion="18" />
     <application
-        android:name="MyApplication"
+        android:name=".MnopiApplication"
         android:debuggable="true"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"

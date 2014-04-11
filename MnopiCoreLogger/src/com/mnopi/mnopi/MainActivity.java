@@ -1,33 +1,17 @@
 package com.mnopi.mnopi;
 
-
-
-import java.security.KeyStore;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.SSLSocketFactory;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import com.mnopi.mnopi.R;
 import com.mnopi.utils.Connectivity;
 
 import android.app.Activity;
@@ -38,7 +22,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,7 +35,6 @@ public class MainActivity extends Activity {
 	private EditText inputUser;
 	private EditText inputPassword;
 	private TextView loginErrorMsg;
-	private MyApplication myApplication;
 	private boolean has_name_error;
 	private boolean has_result_error;
 	private boolean login_error = false;
@@ -80,29 +62,17 @@ public class MainActivity extends Activity {
 
 		
 		//Global vars and sharedpreferences
-		myApplication = ((MyApplication) this.getApplication());
-		SharedPreferences prefs = getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
+		SharedPreferences prefs = getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
 				Context.MODE_PRIVATE);
-		myApplication.setLogged_user(prefs.getBoolean("logged_user",false));
-		
-		Boolean logged_user = myApplication.getLogged_user();
-		String user_name = prefs.getString("user_name", null);
-		String session_token = prefs.getString("session_token", null);
-		String user_resource = prefs.getString("user_resource", null);
+
+		String session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
 
 		// Check if user is logged
 		if(session_token != null) {
-			 myApplication.setLogged_user(true);
-			 myApplication.setSession_token(session_token);
-			 myApplication.setUser_name(user_name);
 			 Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
 			 startActivity(intent);
 			 finish();
 		 }
-		 else{
-			 myApplication.setLogged_user(false);
-		 }			 
-				
 
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 
@@ -156,11 +126,10 @@ public class MainActivity extends Activity {
 	    protected Void doInBackground(Void... params) {
 	 
 	    	HttpEntity resEntity;
-	        String urlString = myApplication.getSERVER_ADRESS() + "/api/v1/user/login/";        
+	        String urlString = MnopiApplication.SERVER_ADDRESS + "/api/v1/user/login/";
 	        
 	        try{
-	             //HttpClient client = new DefaultHttpClient();
-	             HttpClient httpclient = getNewHttpClient();	             
+	             HttpClient httpclient = Connectivity.getNewHttpClient();
 	             HttpPost post = new HttpPost(urlString);
 	             post.setHeader("Content-Type", "application/json");
 	             
@@ -238,20 +207,17 @@ public class MainActivity extends Activity {
 					if (has_result_error){
 						loginErrorMsg.setText(result_error);
 					}else{
-					// login is ok
-						SharedPreferences prefs = getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
+                        // login is ok
+						SharedPreferences prefs = getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
 								Context.MODE_PRIVATE);
 						SharedPreferences.Editor editor = prefs.edit();
 						// save session_token and user_resource
-			        	editor.putString("session_token", session_token);
-			        	myApplication.setSession_token(session_token);
-			        	editor.putString("user_resource", user_resource);
-			        	myApplication.setUser_resource(user_resource);
+			        	editor.putString(MnopiApplication.SESSION_TOKEN, session_token);
+			        	editor.putString(MnopiApplication.USER_RESOURCE, user_resource);
 			        	// save username
-			        	editor.putString("user_name", username);
-			        	myApplication.setLogged_user(true);
+			        	editor.putString(MnopiApplication.USERNAME, username);
 			        	editor.commit();
-			        	Toast.makeText(getBaseContext(), R.string.login_succesful, Toast.LENGTH_SHORT).show();			        	
+			        	Toast.makeText(getBaseContext(), R.string.login_succesful, Toast.LENGTH_SHORT).show();
 						Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
 						startActivity(intent);	
 			        	finish();
@@ -266,49 +232,13 @@ public class MainActivity extends Activity {
 			}
 	    }		
 	}
-	
-	
-	public HttpClient getNewHttpClient() {
-	     try {
-	            KeyStore trustStore = KeyStore.getInstance(KeyStore
-	                    .getDefaultType());
-	            trustStore.load(null, null);
 
-	            MySSLSocketFactory sf = new MySSLSocketFactory(trustStore);
-	            sf.setHostnameVerifier(MySSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-	            HttpParams params = new BasicHttpParams();
-	            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-	            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-	            SchemeRegistry registry = new SchemeRegistry();
-	            registry.register(new Scheme("http", PlainSocketFactory
-	                    .getSocketFactory(), 80));
-	            registry.register(new Scheme("https", sf, 443));
-
-
-
-	            ClientConnectionManager ccm = new ThreadSafeClientConnManager(
-	                    params, registry);
-
-	            return new DefaultHttpClient(ccm, params);
-	        } catch (Exception e) {
-	            return new DefaultHttpClient();
-	        }
-	    }
-	
-	
-
-	// ---------------------------------------------------------------------------------------------------------
-	// ----------------------             M�TODOS PRIVADOS             -----------------------------------------
-	// ---------------------------------------------------------------------------------------------------------
-		
 	/**  TODO
 	 * check all fields
 	 * @return True if all fields are right. False if one of them aren't.
 	 */
 	private boolean checkFields(){
-		boolean all_correct = true ;
+		boolean allCorrect = true ;
 		
 		inputUser.setError(null);
 		inputPassword.setError(null);
@@ -316,7 +246,7 @@ public class MainActivity extends Activity {
 		// username minimum 4 char
 		if (inputUser.getText().toString().length() < 4){
 			inputUser.setError(getResources().getString(R.string.minimum4));
-			all_correct = false;
+			allCorrect = false;
 		}
 		
 		// username without spaces
@@ -324,28 +254,28 @@ public class MainActivity extends Activity {
 		Matcher m = pattern.matcher(inputUser.getText().toString());
 		if (m.find()){
 			inputUser.setError(getResources().getString(R.string.username_not_accepted));
-			all_correct = false;
+			allCorrect = false;
 		}
 		
 		// username blank
 		if (inputUser.getText().toString().length() == 0){
 			inputUser.setError(getResources().getString(R.string.field_required));
-			all_correct = false;
+			allCorrect = false;
 		}
 
 		// Password minimum 4 char
 		if (inputPassword.getText().toString().length() < 4){
 			inputPassword.setError(getResources().getString(R.string.minimum4));
-			all_correct = false;
+			allCorrect = false;
 		}
 		
 		// Password blank
 		if (inputPassword.getText().toString().length() == 0){
 			inputPassword.setError(getResources().getString(R.string.field_required));
-			all_correct = false;
+			allCorrect = false;
 		}
 
-		return all_correct;
+		return allCorrect;
 	}
 	
 }

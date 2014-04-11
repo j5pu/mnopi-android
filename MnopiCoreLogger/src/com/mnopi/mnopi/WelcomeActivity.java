@@ -16,15 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.mnopi.data.DataHandler;
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
-import com.mnopi.data.PageVisitedDataHandler;
-import com.mnopi.data.WebSearchDataHandler;
 import com.mnopi.utils.Connectivity;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class WelcomeActivity extends Activity{
 	
@@ -34,9 +28,6 @@ public class WelcomeActivity extends Activity{
 	private Button action_settings;
     private TextView txtQueriesNumber;
     private TextView txtPagesNumber;
-    private TextView txtIgnoredQueries;
-    private TextView txtIgnoredPages;
-    private TextView getTxtPagesNumber;
 	private ToggleButton butDataCollector;
 	private Context mContext;
 
@@ -46,7 +37,7 @@ public class WelcomeActivity extends Activity{
         setContentView(R.layout.welcome);
 
         if (!DataHandlerRegistry.isUsed()) {
-            MyApplication.initHandlerRegistries(this);
+            MnopiApplication.initHandlerRegistries(this);
         }
         
         mContext = this;
@@ -76,7 +67,7 @@ public class WelcomeActivity extends Activity{
         	public void onClick(View view) {
         		if (Connectivity.isOnline(mContext)){
                     DataHandlerRegistry sendRegistry =
-                            DataHandlerRegistry.getInstance(MyApplication.SEND_TO_SERVER_REGISTRY);
+                            DataHandlerRegistry.getInstance(MnopiApplication.SEND_TO_SERVER_REGISTRY);
         			sendRegistry.sendAll();
         		}
         		else{
@@ -91,13 +82,13 @@ public class WelcomeActivity extends Activity{
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 DataHandlerRegistry receiveHandlerRegistry = DataHandlerRegistry.getInstance(
-                        MyApplication.RECEIVE_FROM_SERVICE_REGISTRY);
+                        MnopiApplication.RECEIVE_FROM_SERVICE_REGISTRY);
                 receiveHandlerRegistry.setEnabled(isChecked);
 
-                SharedPreferences permissions = getSharedPreferences(MyApplication.PERMISSIONS_PREFERENCES,
+                SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = permissions.edit();
-                editor.putBoolean(MyApplication.RECEIVE_IS_ALLOWED, isChecked);
+                editor.putBoolean(MnopiApplication.RECEIVE_IS_ALLOWED, isChecked);
                 editor.commit();
             }
         });
@@ -151,25 +142,31 @@ public class WelcomeActivity extends Activity{
 		return true;
 	}
 
+    public void clearSessionToken() {
+        SharedPreferences settings = getSharedPreferences(
+                MnopiApplication.APPLICATION_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(MnopiApplication.SESSION_TOKEN, null);
+        editor.commit();
+    }
+
+    public void resetHandlers() {
+        SharedPreferences permissions = getSharedPreferences(
+                MnopiApplication.PERMISSIONS_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = permissions.edit();
+        editor.clear();
+        editor.commit();
+
+        DataHandlerRegistry.clearRegistries();
+    }
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	    case R.id.action_logout:
-	    	SharedPreferences settings = getSharedPreferences(
-                    MyApplication.APPLICATION_PREFERENCES, Context.MODE_PRIVATE);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putString("session_token", null);
-            editor.commit();
-
-			/* Reset handlers */
-            SharedPreferences permissions = getSharedPreferences(
-                    MyApplication.PERMISSIONS_PREFERENCES, Context.MODE_PRIVATE);
-            editor = permissions.edit();
-            editor.clear();
-            editor.commit();
-
-            DataHandlerRegistry.clearRegistries();
+            clearSessionToken();
+            resetHandlers();
 
 			Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
 			startActivity(intent);
@@ -183,8 +180,8 @@ public class WelcomeActivity extends Activity{
 	@Override
 	public void onStart(){
 	    super.onStart();
-	    SharedPreferences prefs = getSharedPreferences(MyApplication.PERMISSIONS_PREFERENCES,
+	    SharedPreferences prefs = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
 				Context.MODE_PRIVATE);
-	    butDataCollector.setChecked(prefs.getBoolean(MyApplication.RECEIVE_IS_ALLOWED, true));
+	    butDataCollector.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_IS_ALLOWED, true));
 	}
 }
