@@ -9,6 +9,10 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.mnopi.data.DataHandlerRegistry;
+import com.mnopi.data.PageVisitedDataHandler;
+import com.mnopi.data.WebSearchDataHandler;
+
 public class PermissionActivity extends Activity{
 	private ToggleButton butPagesVisited;
 	private ToggleButton butSearchQueries;
@@ -28,54 +32,100 @@ public class PermissionActivity extends Activity{
         butPagesVisited.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked){
-                	butHtmlVisited.setChecked(false);
+
+                /* Html permission depends on page permission, so disable it */
+                if (!isChecked) {
+                    butHtmlVisited.setChecked(false);
                 }
+
+                SharedPreferences permissions = getSharedPreferences(MyApplication.PERMISSIONS_PREFERENCES,
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = permissions.edit();
+
+                DataHandlerRegistry receiveHandlerRegistry = DataHandlerRegistry.getInstance(
+                        MyApplication.RECEIVE_FROM_SERVICE_REGISTRY);
+
+                if (!isChecked) {
+                    editor.putBoolean(MyApplication.RECEIVE_PAGE_IS_ALLOWED, false);
+                    receiveHandlerRegistry.unbind(PageVisitedDataHandler.getKey());
+                } else {
+                    editor.putBoolean(MyApplication.RECEIVE_PAGE_IS_ALLOWED, true);
+
+                    /* New handler is added if needed */
+                    if (receiveHandlerRegistry.lookup(PageVisitedDataHandler.getKey()) == null) {
+                        PageVisitedDataHandler pageHandler = new PageVisitedDataHandler(
+                                getApplicationContext());
+                        receiveHandlerRegistry.bind(PageVisitedDataHandler.getKey(), pageHandler);
+                    }
+                }
+                editor.commit();
             }
         });
         
         butHtmlVisited.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 if (!butPagesVisited.isChecked()){
                 	butHtmlVisited.setChecked(false);
                 	Toast.makeText(mContext, R.string.pages_visited_must_be_on, Toast.LENGTH_SHORT).show();
+                } else {
+                    SharedPreferences permissions = getSharedPreferences(MyApplication.PERMISSIONS_PREFERENCES,
+                            Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = permissions.edit();
+
+                    DataHandlerRegistry receiveHandlerRegistry = DataHandlerRegistry.getInstance(
+                            MyApplication.RECEIVE_FROM_SERVICE_REGISTRY);
+                    PageVisitedDataHandler pageHandler = (PageVisitedDataHandler)
+                            receiveHandlerRegistry.lookup(PageVisitedDataHandler.getKey());
+
+                    editor.putBoolean(MyApplication.RECEIVE_HTML_IS_ALLOWED, isChecked);
+                    pageHandler.setSaveHtmlVisited(isChecked);
+
+                    editor.commit();
                 }
             }
         });
-                   
+
+        butSearchQueries.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                SharedPreferences permissions = getSharedPreferences(MyApplication.PERMISSIONS_PREFERENCES,
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = permissions.edit();
+
+                DataHandlerRegistry receiveHandlerRegistry = DataHandlerRegistry.getInstance(
+                        MyApplication.RECEIVE_FROM_SERVICE_REGISTRY);
+
+                if (!isChecked) {
+                    editor.putBoolean(MyApplication.RECEIVE_SEARCH_IS_ALLOWED, false);
+                    receiveHandlerRegistry.unbind(WebSearchDataHandler.getKey());
+                } else {
+                    editor.putBoolean(MyApplication.RECEIVE_SEARCH_IS_ALLOWED, true);
+
+                    /* New handler is added if needed */
+                    if (receiveHandlerRegistry.lookup(WebSearchDataHandler.getKey()) == null) {
+                        WebSearchDataHandler searchHandler = new WebSearchDataHandler(
+                                getApplicationContext());
+                        receiveHandlerRegistry.bind(WebSearchDataHandler.getKey(), searchHandler);
+                    }
+                }
+                editor.commit();
+            }
+        });
+
 	}
 
 	@Override
 	public void onStart(){
 	    super.onStart();
-	    SharedPreferences prefs = getSharedPreferences("MisPreferencias",
+	    SharedPreferences prefs = getSharedPreferences(MyApplication.PERMISSIONS_PREFERENCES,
 				Context.MODE_PRIVATE);
-	    Boolean isCheckedButPagesVisited = prefs.getBoolean("butPagesVisited", false);
-	    butPagesVisited.setChecked(isCheckedButPagesVisited);
-	    Boolean isCheckedButSearchQueries = prefs.getBoolean("butSearchQueries", false);
-	    butSearchQueries.setChecked(isCheckedButSearchQueries);
-	    Boolean isCheckedButHtmlVisited = prefs.getBoolean("butHtmlVisited", false);
-	    butHtmlVisited.setChecked(isCheckedButHtmlVisited);
+
+	    butPagesVisited.setChecked(prefs.getBoolean(MyApplication.RECEIVE_PAGE_IS_ALLOWED, true));
+	    butSearchQueries.setChecked(prefs.getBoolean(MyApplication.RECEIVE_SEARCH_IS_ALLOWED, true));
+	    butHtmlVisited.setChecked(prefs.getBoolean(MyApplication.RECEIVE_HTML_IS_ALLOWED, true));
 	}
 
-	@Override
-	public void onResume(){
-		super.onResume();
-		if (!butPagesVisited.isChecked()){
-			butHtmlVisited.setChecked(false);
-		}
-	}
-	
-	@Override
-	public void onStop(){
-	    super.onStop();
-	    SharedPreferences prefs = getSharedPreferences("MisPreferencias",
-				Context.MODE_PRIVATE);
-	    SharedPreferences.Editor editor = prefs.edit();
-		editor.putBoolean("butHtmlVisited", butHtmlVisited.isChecked());
-		editor.putBoolean("butSearchQueries", butSearchQueries.isChecked());
-		editor.putBoolean("butPagesVisited", butPagesVisited.isChecked());
-		editor.commit();	
-	}
 }

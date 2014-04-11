@@ -10,6 +10,7 @@ import com.mnopi.data.DataHandler;
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.PageVisitedDataHandler;
 import com.mnopi.data.WebSearchDataHandler;
+import com.mnopi.mnopi.MyApplication;
 
 
 public class DataCollectorService extends IntentService {
@@ -19,37 +20,18 @@ public class DataCollectorService extends IntentService {
 	public DataCollectorService() {
 		super(DataCollectorService.class.getSimpleName());
 	}
-	
+
 	@Override
 	public void onCreate() {
+        //android.os.Debug.waitForDebugger();
 		super.onCreate();
-		dataHandlers = new DataHandlerRegistry();
-		
-		WebSearchDataHandler webHandler = new WebSearchDataHandler(getApplicationContext());
-		PageVisitedDataHandler pageHandler = new PageVisitedDataHandler(getApplicationContext());
-		dataHandlers.bind(webHandler.getKey(), webHandler);
-		dataHandlers.bind(pageHandler.getKey(), pageHandler);
+        dataHandlers = DataHandlerRegistry.getInstance(MyApplication.RECEIVE_FROM_SERVICE_REGISTRY);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		SharedPreferences prefs = getSharedPreferences(
-				"MisPreferencias", Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = prefs.edit();
-		Boolean butDataCollector = prefs.getBoolean("butDataCollector", true);
-		if (butDataCollector){
-			
-			Bundle bundle = intent.getExtras();			
-			DataHandler handler = dataHandlers.lookup(bundle.getString("handler_key"));
-			if (handler != null) {
-				handler.saveData(bundle);
-			}
-
-		}
-		else {
-
-		}
-		
+        Bundle bundle = intent.getExtras();
+        dataHandlers.saveData(bundle.getString("handler_key"), bundle);
 	}
 
 }

@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mnopi.mnopi.MyApplication;
 import com.mnopi.mnopi.MySSLSocketFactory;
 import com.mnopi.mnopi.R;
 
@@ -41,43 +42,43 @@ import com.mnopi.mnopi.R;
 public class PageVisitedDataHandler extends DataHandler {
 
 	private static String HANDLER_KEY = "page_visited";
-	
-	
-	
+
+    private boolean saveHtmlVisited = true;
+
 	public PageVisitedDataHandler(Context context){
 		super(context);
 	}
-	
+
 	@Override
 	public void saveData(Bundle bundle) {
-		SharedPreferences prefs = context.getSharedPreferences("MisPreferencias",
-				context.MODE_PRIVATE);
-		
-		if (prefs.getBoolean("butPagesVisited", false)){
-			ContentValues row = new ContentValues();
-			String url = bundle.getString("url");
-			String date = bundle.getString("date");
-			if (prefs.getBoolean("butHtmlVisited", false)){
-				String htmlCode = bundle.getString("html_code");
-				row.put("html_code", htmlCode);
-			}
-			row.put("url", url);
-			row.put("date", date);
+
+        ContentValues row = new ContentValues();
+        String url = bundle.getString("url");
+        String date = bundle.getString("date");
+        if (saveHtmlVisited) {
+            String htmlCode = bundle.getString("html_code");
+            row.put("html_code", htmlCode);
+        }
+        row.put("url", url);
+        row.put("date", date);
 			
-			db.insert(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null ,row);
-		}	
+        db.insert(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null ,row);
 	}
 
 	@Override
 	public void sendData() {
 		new SendPageVisited().execute();
 	}
-	
+
+    public void setSaveHtmlVisited(boolean saveHtmlVisited) {
+        this.saveHtmlVisited = saveHtmlVisited;
+    }
+
 	/**
 	 * Returns the handler key for looking up in the registry
 	 * @return
 	 */
-	public String getKey() {
+	public static String getKey() {
 		return HANDLER_KEY;
 	}
 	
@@ -102,8 +103,8 @@ public class PageVisitedDataHandler extends DataHandler {
 			
 	        String urlString = "https://ec2-54-197-231-98.compute-1.amazonaws.com/api/v1/page_visited/";
 			Cursor cursor = db.query(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null, null, null, null, null);
-			SharedPreferences prefs = context.getSharedPreferences("MisPreferencias",
-					context.MODE_PRIVATE);
+			SharedPreferences prefs = context.getSharedPreferences(
+                    MyApplication.PERMISSIONS_PREFERENCES, context.MODE_PRIVATE);
 			
 			if(cursor != null){
 				if(cursor.moveToFirst()){
@@ -173,22 +174,9 @@ public class PageVisitedDataHandler extends DataHandler {
 			
 			db.delete(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null);
 			// show information about the data sent
-				if (anyError){
-					Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_SHORT).show();
-				}else if (!hasResultError){
-					if (!dataExists){
-						Toast.makeText(context, R.string.no_data_to_send, Toast.LENGTH_SHORT).show();
-					}
-					else{
-						Toast.makeText(context, R.string.sent_succesful, Toast.LENGTH_SHORT).show();
-						
-						//TODO: when POST lists is ready, think about what to delete and how
-						db.delete(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null);
-					}					
-					
-				}else{
-					Toast.makeText(context, R.string.error_sending_data, Toast.LENGTH_SHORT).show();
-				}
+				if (anyError) {
+                    Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_SHORT).show();
+                }
 		}
 	}
 	

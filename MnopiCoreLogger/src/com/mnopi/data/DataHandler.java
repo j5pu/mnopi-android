@@ -18,7 +18,7 @@ public abstract class DataHandler {
 	public DataHandler(Context c){
 		context = c;
 		DataLogOpenHelper dbHelper = new DataLogOpenHelper(context);
-		db = dbHelper.getWritableDatabase(); //TODO: Check if getting the database every time is too time-consuming
+		db = dbHelper.getWritableDatabase();
 	}
 	
 	/**

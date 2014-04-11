@@ -72,8 +72,6 @@ public class RegisterActivity extends Activity {
         registerErrorMsg = (TextView) findViewById(R.id.register_error);
         
         myApplication = ((MyApplication) this.getApplication());
-		SharedPreferences prefs = getSharedPreferences("MisPreferencias",
-				Context.MODE_PRIVATE);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -217,7 +215,7 @@ public class RegisterActivity extends Activity {
 	
 
 	// ---------------------------------------------------------------------------------------------------------
-	// ----------------------             MÉTODOS PRIVADOS             -----------------------------------------
+	// ----------------------             Mï¿½TODOS PRIVADOS             -----------------------------------------
 	// ---------------------------------------------------------------------------------------------------------
 		
 	/**  

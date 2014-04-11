@@ -10,29 +10,6 @@
         android:gravity="center_horizontal|center_vertical" >
 
         <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:text="@string/data_delivery"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <ToggleButton
-            android:id="@+id/butDataDelivery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ToggleButton"
-            android:textOff="Off"
-            android:textOn="On" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal|center_vertical" >
-
-        <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,13 +37,30 @@
             android:id="@+id/btnSendImmediately"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send_immediately" />
+            android:text="@string/send_immediately"
+            android:layout_gravity="center_horizontal" />
 
         <Button
             android:id="@+id/btnPermissionConsole"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/permission_console" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Number of queries saved:"
+            android:id="@+id/search_queries_number" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Number of pages saved: "
+            android:id="@+id/pages_visited_number"
+            android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 
 </LinearLayout>
