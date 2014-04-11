@@ -81,16 +81,11 @@ public class MainActivity extends Activity {
 		
 		//Global vars and sharedpreferences
 		myApplication = ((MyApplication) this.getApplication());
-		SharedPreferences prefs = getSharedPreferences("MisPreferencias",
+		SharedPreferences prefs = getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
 				Context.MODE_PRIVATE);
 		myApplication.setLogged_user(prefs.getBoolean("logged_user",false));
 		
 		Boolean logged_user = myApplication.getLogged_user();
-		Boolean butDataCollector = myApplication.getButDataCollector();
-		Boolean butDataDelivery = myApplication.getButDataDelivery();
-		Boolean butSearchQueries = myApplication.getButSearchQueries();
-		Boolean butHtmlVisited = myApplication.getButHtmlVisited();
-		Boolean butPagesVisited = myApplication.getButPagesVisited();
 		String user_name = prefs.getString("user_name", null);
 		String session_token = prefs.getString("session_token", null);
 		String user_resource = prefs.getString("user_resource", null);
@@ -244,7 +239,7 @@ public class MainActivity extends Activity {
 						loginErrorMsg.setText(result_error);
 					}else{
 					// login is ok
-						SharedPreferences prefs = getSharedPreferences("MisPreferencias",
+						SharedPreferences prefs = getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
 								Context.MODE_PRIVATE);
 						SharedPreferences.Editor editor = prefs.edit();
 						// save session_token and user_resource
@@ -305,7 +300,7 @@ public class MainActivity extends Activity {
 	
 
 	// ---------------------------------------------------------------------------------------------------------
-	// ----------------------             MÉTODOS PRIVADOS             -----------------------------------------
+	// ----------------------             Mï¿½TODOS PRIVADOS             -----------------------------------------
 	// ---------------------------------------------------------------------------------------------------------
 		
 	/**  TODO

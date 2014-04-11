@@ -146,7 +146,7 @@ public class ViewPagesVisitedActivity extends Activity{
     			urlString = myApplication.getSERVER_ADRESS() + meta_next;
 	    	}
 	    	HttpResponse response = null;
-	        SharedPreferences prefs = getBaseContext().getSharedPreferences("MisPreferencias",
+	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
 	        		getBaseContext().MODE_PRIVATE);
 	        session_token = prefs.getString("session_token", null);
 	        
@@ -234,7 +234,7 @@ public class ViewPagesVisitedActivity extends Activity{
 			String urlString = myApplication.getSERVER_ADRESS() + page.getResource_uri()
 					+ "categories";
 	    	HttpResponse response = null;
-	        SharedPreferences prefs = getBaseContext().getSharedPreferences("MisPreferencias",
+	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
 	        		getBaseContext().MODE_PRIVATE);
 	        session_token = prefs.getString("session_token", null);
 	        

@@ -41,7 +41,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
@@ -148,7 +147,7 @@ public class ViewQueriesActivity extends Activity{
     			urlString = myApplication.getSERVER_ADRESS() + meta_next;
 	    	}
 	    	HttpResponse response = null;
-	        SharedPreferences prefs = getBaseContext().getSharedPreferences("MisPreferencias",
+	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
 	        		getBaseContext().MODE_PRIVATE);
 	        session_token = prefs.getString("session_token", null);
 	        

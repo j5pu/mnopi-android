@@ -29,7 +29,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,18 +48,18 @@ public class WebSearchDataHandler extends DataHandler {
 	}
 	
 	@Override
-	public void saveData(Bundle bundle) {
-		
-		String url = bundle.getString("search_results");
-		String query = bundle.getString("search_query");
-		String date = bundle.getString("date"); 
-		
-		ContentValues row = new ContentValues();
-		row.put("url", url);
-		row.put("query", query);
-		row.put("date", date);
-		
-		db.insert(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null ,row);
+	public void saveData(Bundle bundle) {		
+
+        String url = bundle.getString("search_results");
+        String query = bundle.getString("search_query");
+        String date = bundle.getString("date");
+
+        ContentValues row = new ContentValues();
+        row.put("url", url);
+        row.put("query", query);
+        row.put("date", date);
+
+        db.insert(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null ,row);
 	}
 
 	@Override
@@ -72,7 +71,7 @@ public class WebSearchDataHandler extends DataHandler {
 	 * Returns the handler key for looking up in the registry
 	 * @return handler key
 	 */
-	public String getKey() {
+	public static String getKey() {
 		return HANDLER_KEY;
 	}
 	
@@ -97,7 +96,7 @@ public class WebSearchDataHandler extends DataHandler {
 			
 	        String urlString = "https://ec2-54-197-231-98.compute-1.amazonaws.com/api/v1/search_query/";
 			Cursor cursor = db.query(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null, null, null, null, null);
-			SharedPreferences prefs = context.getSharedPreferences("MisPreferencias",
+			SharedPreferences prefs = context.getSharedPreferences(MyApplication.APPLICATION_PREFERENCES,
 					context.MODE_PRIVATE);
 			
 			if(cursor != null){
@@ -166,24 +165,11 @@ public class WebSearchDataHandler extends DataHandler {
 		
 		@Override
 	    protected void onPostExecute(Void result) {
-			db.delete(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null);
-			// show information about the data sent
-				if (anyError){
-					Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_SHORT).show();
-				}else if (!hasResultError){
-					if (!dataExists){
-						Toast.makeText(context, R.string.no_data_to_send, Toast.LENGTH_SHORT).show();
-					}
-					else{
-						Toast.makeText(context, R.string.sent_succesful, Toast.LENGTH_SHORT).show();
-						
-						//TODO: when POST lists is ready, think about what to delete and how
-						db.delete(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null);
-					}
-			
-				}else{
-					Toast.makeText(context, R.string.error_sending_data, Toast.LENGTH_SHORT).show();
-				}
+            if (anyError){
+                Toast.makeText(context, R.string.error_occurred, Toast.LENGTH_SHORT).show();
+            } else {
+                db.delete(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null);
+            }
 		}
 	}
 	
