@@ -39,6 +39,7 @@ public class ViewQueriesActivity extends Activity{
 	private ListView listQueries;
 	private QueryAdapter qAdapter;
 	private Boolean there_are_more_queries;
+	private Boolean queriesIsEmpty;
 	private String meta_next;
 	private Boolean sendingQueries;
 	private Context mContext;
@@ -53,6 +54,7 @@ public class ViewQueriesActivity extends Activity{
 		qAdapter = new QueryAdapter(this, R.layout.query_item, queries );
 		listQueries.setAdapter(qAdapter);
 		there_are_more_queries = true;
+		queriesIsEmpty = false;
 		sendingQueries = false;
 		mContext = this;
 		progress = new ProgressDialog(this);
@@ -68,13 +70,19 @@ public class ViewQueriesActivity extends Activity{
 	            if ((++firstVisibleItem + visibleItemCount > totalItemCount) 
 	            		&& there_are_more_queries) {
 	            	if (!sendingQueries){
-	            		if (Connectivity.isOnline(mContext)){
+	            		if ((Connectivity.isOnline(mContext)) && (!queriesIsEmpty)){
 	            			new GetQueries().execute(); 
 	            		}
 	            		else{
-	    					Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
-	    					toast.show();
-	    			    }	     			    		
+		            		if (!Connectivity.isOnline(mContext)){
+		    					Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
+		    					toast.show();
+		    			    }	 
+		            		else{
+		            			Toast toast = Toast.makeText(mContext, R.string.no_data, Toast.LENGTH_LONG);
+		            			toast.show();
+		            		}
+	            		}
 	            	}     		
 	            }
 	        }
@@ -116,7 +124,7 @@ public class ViewQueriesActivity extends Activity{
 			
 			String urlString = null;
 	    	if (queries.size() == 0){
-	    		urlString = MnopiApplication.SERVER_ADDRESS + "/api/v1/search_query/";
+	    		urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.SEARCH_QUERY_RESOURCE;
 	    	}    
 	    	else{
 	    		if (meta_next.equals("null")){
@@ -124,49 +132,52 @@ public class ViewQueriesActivity extends Activity{
 	    		}
     			urlString = MnopiApplication.SERVER_ADDRESS + meta_next;
 	    	}
-	    	HttpResponse response = null;
-	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
-	        		getBaseContext().MODE_PRIVATE);
-	        session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
-	        
-	        try{
-	             //HttpClient client = new DefaultHttpClient();
-	             HttpClient httpclient = Connectivity.getNewHttpClient();
-	             HttpGet getQueries = new HttpGet(urlString);
-	             getQueries.setHeader("Content-Type", "application/json");
-	             getQueries.setHeader("Session-Token", session_token);
-	             
-	             response = httpclient.execute(getQueries);
-	             String respStr = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
-	             
-	             Log.i("WE", respStr);
-	             JSONObject respJson = new JSONObject(respStr);
-	             JSONObject respMetaJson = respJson.getJSONObject("meta");
-				 meta_next = respMetaJson.getString("next");
-				 
-				 JSONArray queriesObject = respJson.getJSONArray("objects");
-				 
-				 for (int i = 0; i < queriesObject.length(); i++) {
-					 JSONObject queryObject = queriesObject.getJSONObject(i);
-					 final String date = queryObject.getString("date");
-					 final String search_query = queryObject.getString("search_query");
-					 final String resource_uri = queryObject.getString("resource_uri");
-					 final String result = queryObject.getString("search_results");
-					 final String dateFormated = date.substring(0, 10);
-					 final String hour = date.substring(11, 19);
-					 runOnUiThread(new Runnable() {
-							@Override
-							public void run() {					 
-								 Query queryAux = new Query(resource_uri, search_query
-										 , dateFormated, result, hour);
-								 queries.add(queryAux);
-							}
-					 });		
-				 }
-	        }
-	        catch (Exception ex){
-	             Log.e("Debug", "error: " + ex.getMessage(), ex);
-	        }
+	    	if (there_are_more_queries){
+		    	HttpResponse response = null;
+		        SharedPreferences prefs = getBaseContext().getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
+		        		getBaseContext().MODE_PRIVATE);
+		        session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
+		        
+		        try{
+		             //HttpClient client = new DefaultHttpClient();
+		             HttpClient httpclient = Connectivity.getNewHttpClient();
+		             HttpGet getQueries = new HttpGet(urlString);
+		             getQueries.setHeader("Content-Type", "application/json");
+		             getQueries.setHeader("Session-Token", session_token);
+		             
+		             response = httpclient.execute(getQueries);
+		             String respStr = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
+		             
+		             Log.i("WE", respStr);
+		             JSONObject respJson = new JSONObject(respStr);
+		             JSONObject respMetaJson = respJson.getJSONObject("meta");
+					 meta_next = respMetaJson.getString("next");
+					 queriesIsEmpty = respMetaJson.getInt("total_count") == 0;
+					 
+					 JSONArray queriesObject = respJson.getJSONArray("objects");
+					 
+					 for (int i = 0; i < queriesObject.length(); i++) {
+						 JSONObject queryObject = queriesObject.getJSONObject(i);
+						 final String date = queryObject.getString("date");
+						 final String search_query = queryObject.getString("search_query");
+						 final String resource_uri = queryObject.getString("resource_uri");
+						 final String result = queryObject.getString("search_results");
+						 final String dateFormated = date.substring(0, 10);
+						 final String hour = date.substring(11, 19);
+						 runOnUiThread(new Runnable() {
+								@Override
+								public void run() {					 
+									 Query queryAux = new Query(resource_uri, search_query
+											 , dateFormated, result, hour);
+									 queries.add(queryAux);
+								}
+						 });		
+					 }
+		        }
+		        catch (Exception ex){
+		             Log.e("Debug", "error: " + ex.getMessage(), ex);
+		        }
+	    	}
 			return null;
 	      
 	    }

@@ -17,13 +17,13 @@ import android.widget.TextView;
 public class QueryAdapter extends ArrayAdapter<Query>{
 	
 	private ArrayList<Query> queries;
-	private int my_layout;
+	private int layout;
 	private Context context;
 	
 	public QueryAdapter(Context context, int resource, ArrayList<Query> queries){
 		super (context, resource, queries);
 		this.queries = queries;
-		this.my_layout = resource;
+		this.layout = resource;
 		this.context = context;
 	}
 	
@@ -36,17 +36,17 @@ public class QueryAdapter extends ArrayAdapter<Query>{
     	View myView ;
     	
     	 LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-    	 myView = inflater.inflate(my_layout, parent, false);
+    	 myView = inflater.inflate(layout, parent, false);
     	 
 
     	Query query = queries.get(position);
     	
-    	TextView txt_query = (TextView) myView.findViewById(R.id.txt_query);
-    	TextView txt_date = (TextView) myView.findViewById(R.id.txt_date);
+    	TextView txtQuery = (TextView) myView.findViewById(R.id.txt_query);
+    	TextView txtDate = (TextView) myView.findViewById(R.id.txt_date);
 
     	
-    	txt_query.setText(query.getQuery());
-    	txt_date.setText(query.getDate());
+    	txtQuery.setText(query.getQuery());
+    	txtDate.setText(query.getDate());
     	
     	return myView;
     	

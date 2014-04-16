@@ -1,22 +1,11 @@
 package com.mnopi.mnopi;
 
 import java.net.URL;
-import java.security.KeyStore;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -49,6 +38,7 @@ public class ViewPagesVisitedActivity extends Activity{
 	private ListView listPages;
 	private PageAdapter pAdapter;
 	private Boolean there_are_more_pages;
+	private Boolean pagesIsEmpty;
 	private String meta_next;
 	private Boolean sendingPages;
 	private Context mContext;
@@ -63,6 +53,7 @@ public class ViewPagesVisitedActivity extends Activity{
         pAdapter = new PageAdapter(this, R.layout.page_item, pages);
 		listPages.setAdapter(pAdapter);
 		there_are_more_pages = true;
+		pagesIsEmpty = false;
 		sendingPages = false;
 		mContext = this;
 		progress = new ProgressDialog(this);
@@ -78,13 +69,19 @@ public class ViewPagesVisitedActivity extends Activity{
 	            if ((++firstVisibleItem + visibleItemCount > totalItemCount) 
 	            		&& there_are_more_pages) {
 	            	if (!sendingPages){
-	            		if (Connectivity.isOnline(mContext)){
+	            		if ((Connectivity.isOnline(mContext)) && (!pagesIsEmpty)){
 	            			new GetPages().execute(); 
 	            		}
 	            		else{
-	    					Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
-	    					toast.show();
-	    			    }	     			    		
+		            		if (!Connectivity.isOnline(mContext)){
+		    					Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
+		    					toast.show();
+		    			    }	 
+		            		else{
+		            			Toast toast = Toast.makeText(mContext, R.string.no_data, Toast.LENGTH_LONG);
+		            			toast.show();
+		            		}    
+	            		}
 	            	}     		
 	            }
 	        }
@@ -135,7 +132,7 @@ public class ViewPagesVisitedActivity extends Activity{
 			
 			String urlString = null;
 	    	if (pages.size() == 0){
-	    		urlString = MnopiApplication.SERVER_ADDRESS + "/api/v1/page_visited/";
+	    		urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.PAGE_VISITED_RESOURCE;
 	    	}    
 	    	else{
 	    		if (meta_next.equals("null")){
@@ -143,62 +140,65 @@ public class ViewPagesVisitedActivity extends Activity{
 	    		}
     			urlString = MnopiApplication.SERVER_ADDRESS + meta_next;
 	    	}
-	    	HttpResponse response = null;
-	        SharedPreferences prefs = getBaseContext().getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
-	        		getBaseContext().MODE_PRIVATE);
-	        session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
-	        
-	        try{
-	             HttpClient httpclient = Connectivity.getNewHttpClient();
-	             HttpGet getPages = new HttpGet(urlString);
-	             getPages.setHeader("Content-Type", "application/json");
-	             getPages.setHeader("Session-Token", session_token);
-	             
-	             response = httpclient.execute(getPages);
-	             String respStr = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
-	             
-	             Log.i("WE", respStr);
-	             JSONObject respJson = new JSONObject(respStr);
-	             JSONObject respMetaJson = respJson.getJSONObject("meta");
-				 meta_next = respMetaJson.getString("next");
-				 
-				 JSONArray queriesObject = respJson.getJSONArray("objects");
-				 
-				 for (int i = 0; i < queriesObject.length(); i++) {
-					 JSONObject queryObject = queriesObject.getJSONObject(i);
-					 final String date = queryObject.getString("date");
-					 final String url = queryObject.getString("page_visited");
-					 final String resource_uri = queryObject.getString("resource_uri");
+	    	if (there_are_more_pages){
+		    	HttpResponse response = null;
+		        SharedPreferences prefs = getBaseContext().getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
+		        		getBaseContext().MODE_PRIVATE);
+		        session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
+		        
+		        try{
+		             HttpClient httpclient = Connectivity.getNewHttpClient();
+		             HttpGet getPages = new HttpGet(urlString);
+		             getPages.setHeader("Content-Type", "application/json");
+		             getPages.setHeader("Session-Token", session_token);
+		             
+		             response = httpclient.execute(getPages);
+		             String respStr = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
+		             
+		             Log.i("WE", respStr);
+		             JSONObject respJson = new JSONObject(respStr);
+		             JSONObject respMetaJson = respJson.getJSONObject("meta");
+					 meta_next = respMetaJson.getString("next");
+					 pagesIsEmpty = respMetaJson.getInt("total_count") == 0;
 					 
-					 // get domain, dateFormated, hour, categories
-					 String uri = url;
-					 if(!url.startsWith("http") && !url.startsWith("https")){
-					     uri = "http://" + url;
-					 }        
-					 URL netUrl = new URL(uri);
-					 String host = netUrl.getHost();
-					 if(host.startsWith("www")){
-					    host = host.substring("www".length()+1);
+					 JSONArray queriesObject = respJson.getJSONArray("objects");
+					 
+					 for (int i = 0; i < queriesObject.length(); i++) {
+						 JSONObject queryObject = queriesObject.getJSONObject(i);
+						 final String date = queryObject.getString("date");
+						 final String url = queryObject.getString("page_visited");
+						 final String resource_uri = queryObject.getString("resource_uri");
+						 
+						 // get domain, dateFormated, hour, categories
+						 String uri = url;
+						 if(!url.startsWith("http") && !url.startsWith("https")){
+						     uri = "http://" + url;
+						 }        
+						 URL netUrl = new URL(uri);
+						 String host = netUrl.getHost();
+						 if(host.startsWith("www")){
+						    host = host.substring("www".length()+1);
+						 }
+						 final String domain = host;
+						 final String dateFormated = date.substring(0, 10);
+						 final String hour = date.substring(11, 19);
+						              
+		            	 ArrayList<String> categoriesAux = new ArrayList<String>();
+			             final ArrayList<String> categories = categoriesAux;
+						 runOnUiThread(new Runnable() {
+								@Override
+								public void run() {					 
+									 PageVisited pageAux = new PageVisited(url, domain, dateFormated, hour
+											 , resource_uri, categories );
+									 pages.add(pageAux);
+								}
+						 });		
 					 }
-					 final String domain = host;
-					 final String dateFormated = date.substring(0, 10);
-					 final String hour = date.substring(11, 19);
-					              
-	            	 ArrayList<String> categoriesAux = new ArrayList<String>();
-		             final ArrayList<String> categories = categoriesAux;
-					 runOnUiThread(new Runnable() {
-							@Override
-							public void run() {					 
-								 PageVisited pageAux = new PageVisited(url, domain, dateFormated, hour
-										 , resource_uri, categories );
-								 pages.add(pageAux);
-							}
-					 });		
-				 }
-	        }
-	        catch (Exception ex){
-	             Log.e("Debug", "error: " + ex.getMessage(), ex);
-	        }
+		        }
+		        catch (Exception ex){
+		             Log.e("Debug", "error: " + ex.getMessage(), ex);
+		        }
+	    	}    
 			return null;
 	      
 	    }

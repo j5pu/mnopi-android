@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -16,6 +18,7 @@ public class PermissionActivity extends Activity{
 	private ToggleButton butPagesVisited;
 	private ToggleButton butSearchQueries;
 	private ToggleButton butHtmlVisited;
+	private TextView txtHtml;
 	private Context mContext;
 		
 	@Override
@@ -24,10 +27,15 @@ public class PermissionActivity extends Activity{
         setContentView(R.layout.permission);
         
         mContext = this;
+        txtHtml = (TextView) findViewById(R.id.textHtml);
         butPagesVisited = (ToggleButton) findViewById(R.id.butPagesVisited);
         butSearchQueries = (ToggleButton) findViewById(R.id.butSearchQueries);
         butHtmlVisited = (ToggleButton) findViewById(R.id.butHtmlVisited);
         
+        if (!butPagesVisited.isChecked()){
+        	butHtmlVisited.setVisibility(View.GONE);
+        	txtHtml.setVisibility(View.GONE);
+        }
         butPagesVisited.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -35,7 +43,14 @@ public class PermissionActivity extends Activity{
                 /* Html permission depends on page permission, so disable it */
                 if (!isChecked) {
                     butHtmlVisited.setChecked(false);
+                    butHtmlVisited.setVisibility(View.GONE);
+                    txtHtml.setVisibility(View.GONE);
                 }
+                else{
+                	butHtmlVisited.setVisibility(View.VISIBLE);
+                	txtHtml.setVisibility(View.VISIBLE);
+                }
+                
 
                 SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
                         Context.MODE_PRIVATE);

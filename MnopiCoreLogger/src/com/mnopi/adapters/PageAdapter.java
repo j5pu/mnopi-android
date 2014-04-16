@@ -16,13 +16,13 @@ import com.mnopi.models.PageVisited;
 public class PageAdapter extends ArrayAdapter<PageVisited>{
 	
 	private ArrayList<PageVisited> pages;
-	private int my_layout;
+	private int layout;
 	private Context context;
 	
 	public PageAdapter(Context context, int resource, ArrayList<PageVisited> pages){
 		super (context, resource, pages);
 		this.pages = pages;
-		this.my_layout = resource;
+		this.layout = resource;
 		this.context = context;
 	}
 	
@@ -35,17 +35,17 @@ public class PageAdapter extends ArrayAdapter<PageVisited>{
     	View myView ;
     	
     	 LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-    	 myView = inflater.inflate(my_layout, parent, false);
+    	 myView = inflater.inflate(layout, parent, false);
     	 
 
     	PageVisited pageVisited = pages.get(position);
     	
-    	TextView txt_domain = (TextView) myView.findViewById(R.id.txt_domain);
-    	TextView txt_date = (TextView) myView.findViewById(R.id.txt_date);
+    	TextView txtDomain = (TextView) myView.findViewById(R.id.txt_domain);
+    	TextView txtDate = (TextView) myView.findViewById(R.id.txt_date);
 
     	
-    	txt_domain.setText(pageVisited.getDomain());
-    	txt_date.setText(pageVisited.getDate());
+    	txtDomain.setText(pageVisited.getDomain());
+    	txtDate.setText(pageVisited.getDate());
     	
     	return myView;
     	

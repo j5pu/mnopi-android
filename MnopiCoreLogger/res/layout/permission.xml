@@ -2,15 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:gravity="center_vertical"
+    android:layout_marginLeft="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|center_horizontal" >
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical" >
 
         <TextView
             android:id="@+id/textView1"
+            style="@style/CodeFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.46"
@@ -21,21 +25,27 @@
             android:id="@+id/butPagesVisited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ToggleButton" 
+            android:text="ToggleButton"
             android:textOff="Off"
-            android:textOn="On"/>
+            android:textOn="On" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layoutHtml"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|center_horizontal" >
+        
+        android:gravity="center_horizontal" >
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/textHtml"
+            style="@style/CodeFont"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.41"
+            android:layout_height="match_parent"
+            android:layout_weight="0.42"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:paddingLeft="30dp"
             android:text="@string/html_visited"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -43,18 +53,20 @@
             android:id="@+id/butHtmlVisited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ToggleButton" 
+            android:text="ToggleButton"
             android:textOff="Off"
-            android:textOn="On"/>
+            android:textOn="On" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|center_horizontal" >
+        android:gravity="center_vertical|center_horizontal" 
+        android:layout_marginTop="30dp">
 
         <TextView
             android:id="@+id/textView3"
+            style="@style/CodeFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.42"

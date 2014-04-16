@@ -88,8 +88,8 @@ public class PageVisitedDataHandler extends DataHandler {
 		
 		@Override
 		protected Void doInBackground(Void... params){
-			
-	        String urlString = "https://ec2-54-197-231-98.compute-1.amazonaws.com/api/v1/page_visited/";
+
+	        String urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.PAGE_VISITED_RESOURCE;
 			Cursor cursor = db.query(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null, null, null, null, null);
 			SharedPreferences prefs = context.getSharedPreferences(
                     MnopiApplication.APPLICATION_PREFERENCES, context.MODE_PRIVATE);
@@ -151,9 +151,9 @@ public class PageVisitedDataHandler extends DataHandler {
 				        }
 				        
 				    } while (cursor.moveToNext());
+					cursor.close();
 				}
 			}
-	        
 	        return null;
 		}
 		

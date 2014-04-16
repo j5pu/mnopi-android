@@ -25,7 +25,6 @@ public class WelcomeActivity extends Activity{
 	private Button btnSendImmediately;
 	private Button btnPermissionConsole;
 	private Button btnViewData;
-	private Button action_settings;
     private TextView txtQueriesNumber;
     private TextView txtPagesNumber;
 	private ToggleButton butDataCollector;
@@ -44,7 +43,6 @@ public class WelcomeActivity extends Activity{
         btnSendImmediately = (Button) findViewById(R.id.btnSendImmediately);
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
         btnViewData = (Button) findViewById(R.id.btnViewData);
-        action_settings = (Button) findViewById(R.id.action_settings);
         butDataCollector = (ToggleButton) findViewById(R.id.butDataCollector);
 
         btnPermissionConsole.setOnClickListener(new View.OnClickListener() {
@@ -118,12 +116,14 @@ public class WelcomeActivity extends Activity{
 
                                 Cursor cursor = db.rawQuery("select * from web_searches", null);
                                 queryNumber = cursor.getCount();
+                                cursor.close();
 
                                 cursor = db.rawQuery("select * from visited_web_pages", null);
                                 pagesNumber = cursor.getCount();
-
+                                cursor.close();	
                                 txtQueriesNumber.setText("Number of queries saved: " + queryNumber);
                                 txtPagesNumber.setText("Number of pages saved: " + pagesNumber);
+                                db.close();
                             }
                         });
                     }
@@ -184,4 +184,5 @@ public class WelcomeActivity extends Activity{
 				Context.MODE_PRIVATE);
 	    butDataCollector.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_IS_ALLOWED, true));
 	}
+	
 }

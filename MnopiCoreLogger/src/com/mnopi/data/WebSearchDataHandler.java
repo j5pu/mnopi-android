@@ -83,7 +83,7 @@ public class WebSearchDataHandler extends DataHandler {
 		protected Void doInBackground(Void... params){
 
             //TODO: utilizar las variables globales de mnopi y concatenar con alguna estructura de API para que sean todo constantes las urls
-	        String urlString = "https://ec2-54-197-231-98.compute-1.amazonaws.com/api/v1/search_query/";
+	        String urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.SEARCH_QUERY_RESOURCE;
 			Cursor cursor = db.query(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null, null, null, null, null);
 			SharedPreferences prefs = context.getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
 					context.MODE_PRIVATE);
@@ -148,7 +148,6 @@ public class WebSearchDataHandler extends DataHandler {
 					cursor.close();
 				}
 			}
-	        
 	        return null;
 		}
 		

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#0B0B61"
+    android:background="#000E36"
     android:paddingLeft="5dp"
     android:textAlignment="viewEnd" >
 
@@ -72,9 +72,9 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
+        android:layout_width="wrap_content"
+        android:layout_height="63dp"
+        android:layout_marginBottom="10dp" >
 
         <TextView
             android:id="@+id/txtDate"

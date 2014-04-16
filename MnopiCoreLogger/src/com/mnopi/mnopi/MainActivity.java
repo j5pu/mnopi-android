@@ -126,7 +126,7 @@ public class MainActivity extends Activity {
 	    protected Void doInBackground(Void... params) {
 	 
 	    	HttpEntity resEntity;
-	        String urlString = MnopiApplication.SERVER_ADDRESS + "/api/v1/user/login/";
+	        String urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.LOGIN_SERVICE;
 	        
 	        try{
 	             HttpClient httpclient = Connectivity.getNewHttpClient();
