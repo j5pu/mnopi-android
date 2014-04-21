@@ -16,15 +16,17 @@ public class DataLogOpenHelper extends SQLiteOpenHelper{
 	
 	public static final String WEB_SEARCHES_TABLE_NAME = "web_searches";
 	private static final String WEB_SEARCHES_TABLE_CREATE =
-			"CREATE TABLE " + WEB_SEARCHES_TABLE_NAME + 
-			" (query TEXT," +
+			"CREATE TABLE " + WEB_SEARCHES_TABLE_NAME +
+			" (_id INTEGER PRIMARY KEY AUTOINCREMENT, "  +
+			  "query TEXT," +
 			  "url TEXT," +
 			  "date TEXT);";
 	
 	public static final String VISITED_WEB_PAGES_TABLE_NAME = "visited_web_pages";
 	private static final String VISITED_WEB_PAGES_TABLE_CREATE =
 			"CREATE TABLE " + VISITED_WEB_PAGES_TABLE_NAME +
-			" (url TEXT," +
+			" (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+			  "url TEXT," +
 			  "date TEXT," +
 			  "html_code TEXT);";
 	

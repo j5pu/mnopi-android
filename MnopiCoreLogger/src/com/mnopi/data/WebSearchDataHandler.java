@@ -9,14 +9,18 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import com.mnopi.data.DataProvider.PageVisited;
+import com.mnopi.data.DataProvider.WebSearch;
 import com.mnopi.mnopi.MnopiApplication;
 import com.mnopi.mnopi.R;
 import com.mnopi.utils.Connectivity;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,17 +41,29 @@ public class WebSearchDataHandler extends DataHandler {
 	
 	@Override
 	public void saveData(Bundle bundle) {		
-
-        String url = bundle.getString("search_results");
-        String query = bundle.getString("search_query");
+		//Guardar mediante contentProvider
+		Uri webSearchUri = DataProvider.WEB_SEARCH_URI;
+		ContentResolver cr = context.getContentResolver();
+		ContentValues row = new ContentValues();
+		String url = bundle.getString("search_results");
         String date = bundle.getString("date");
-
-        ContentValues row = new ContentValues();
+        String query = bundle.getString("search_query");
         row.put("url", url);
-        row.put("query", query);
         row.put("date", date);
-
-        db.insert(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null ,row);
+        row.put("query", query);
+        cr.insert(webSearchUri, row);
+		//Guardar mediante contentProvider
+        
+//        String url = bundle.getString("search_results");
+//        String query = bundle.getString("search_query");
+//        String date = bundle.getString("date");
+//
+//        ContentValues row = new ContentValues();
+//        row.put("url", url);
+//        row.put("query", query);
+//        row.put("date", date);
+//
+//        db.insert(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null ,row);
 	}
 
 	@Override
@@ -67,14 +83,12 @@ public class WebSearchDataHandler extends DataHandler {
 		
 		private String result = null;
 		private String reason;
-		private boolean hasResultError;
 		private String resultError;
 		private boolean anyError;
 		private boolean dataExists;
 
 		@Override
 		protected void onPreExecute(){		
-			hasResultError = false;
 			anyError = false;
 			dataExists = false;
 		}
@@ -82,9 +96,22 @@ public class WebSearchDataHandler extends DataHandler {
 		@Override
 		protected Void doInBackground(Void... params){
 
-            //TODO: utilizar las variables globales de mnopi y concatenar con alguna estructura de API para que sean todo constantes las urls
+			/* Coger registros mediante content provider 
+			 */
+			String[] projection = new String[]{
+				WebSearch._ID,				
+				WebSearch.COL_QUERY,
+				WebSearch.COL_URL,
+				WebSearch.COL_DATE
+			};
+			Uri webSearchUri = DataProvider.WEB_SEARCH_URI;
+			ContentResolver cr = context.getContentResolver();
+			
+			Cursor cursor = cr.query(webSearchUri, projection, null, null, null);
+			/* Coger registros mediante content provider 
+			 */
+			
 	        String urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.SEARCH_QUERY_RESOURCE;
-			Cursor cursor = db.query(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null, null, null, null, null, null);
 			SharedPreferences prefs = context.getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
 					context.MODE_PRIVATE);
 			
@@ -103,9 +130,9 @@ public class WebSearchDataHandler extends DataHandler {
 				            JSONObject dato = new JSONObject();	
 				            
 				            String user = prefs.getString(MnopiApplication.USER_RESOURCE, null);
-				            String query = cursor.getString(0);
-							String url = cursor.getString(1);		
-							String date = cursor.getString(2);
+				            String query = cursor.getString(1);
+							String url = cursor.getString(2);		
+							String date = cursor.getString(3);
 							
 							dato.put("user", user);
 							dato.put("search_query", query);
@@ -128,7 +155,6 @@ public class WebSearchDataHandler extends DataHandler {
 					                	 if (respJSON.has("reason")){
 						                	 	reason = respJSON.getString("reason");
 						                	 	resultError = respJSON.getString("erroneous_parameters");
-						                	    hasResultError = true;
 								                Log.i("Send data","Error " + reason + ": " + resultError);
 					                	 }
 					                 }

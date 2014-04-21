@@ -9,15 +9,18 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mnopi.data.DataProvider.PageVisited;
 import com.mnopi.mnopi.MnopiApplication;
 import com.mnopi.mnopi.R;
 import com.mnopi.utils.Connectivity;
@@ -36,12 +39,14 @@ public class PageVisitedDataHandler extends DataHandler {
 	public PageVisitedDataHandler(Context context){
 		super(context);
 	}
-
+	
 	@Override
 	public void saveData(Bundle bundle) {
-
-        ContentValues row = new ContentValues();
-        String url = bundle.getString("url");
+		//Guardar mediante contentProvider
+		Uri pageVisitedUri = DataProvider.PAGE_VISITED_URI;
+		ContentResolver cr = context.getContentResolver();
+		ContentValues row = new ContentValues();
+		String url = bundle.getString("url");
         String date = bundle.getString("date");
         if (saveHtmlVisited) {
             String htmlCode = bundle.getString("html_code");
@@ -49,8 +54,20 @@ public class PageVisitedDataHandler extends DataHandler {
         }
         row.put("url", url);
         row.put("date", date);
-			
-        db.insert(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null ,row);
+        cr.insert(pageVisitedUri, row);
+		//Guardar mediante contentProvider
+		
+//        ContentValues row = new ContentValues();
+//        String url = bundle.getString("url");
+//        String date = bundle.getString("date");
+//        if (saveHtmlVisited) {
+//            String htmlCode = bundle.getString("html_code");
+//            row.put("html_code", htmlCode);
+//        }
+//        row.put("url", url);
+//        row.put("date", date);
+//			
+//        db.insert(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null ,row);
 	}
 
 	@Override
@@ -89,8 +106,22 @@ public class PageVisitedDataHandler extends DataHandler {
 		@Override
 		protected Void doInBackground(Void... params){
 
+			/* Coger registros mediante content provider 
+			 */
+			String[] projection = new String[]{
+				PageVisited._ID,				
+				PageVisited.COL_URL,
+				PageVisited.COL_DATE,
+				PageVisited.COL_HTML_CODE
+			};
+			Uri pageVisitedUri = DataProvider.PAGE_VISITED_URI;
+			ContentResolver cr = context.getContentResolver();
+			
+			Cursor cursor = cr.query(pageVisitedUri, projection, null, null, null);
+			/* Coger registros mediante content provider 
+			 */
+			
 	        String urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.PAGE_VISITED_RESOURCE;
-			Cursor cursor = db.query(DataLogOpenHelper.VISITED_WEB_PAGES_TABLE_NAME, null, null, null, null, null, null);
 			SharedPreferences prefs = context.getSharedPreferences(
                     MnopiApplication.APPLICATION_PREFERENCES, context.MODE_PRIVATE);
 			
@@ -109,9 +140,9 @@ public class PageVisitedDataHandler extends DataHandler {
 				            JSONObject jsonObject = new JSONObject();	
 				            
 				            String user = prefs.getString(MnopiApplication.USER_RESOURCE, null);
-				            String url = cursor.getString(0);
-							String date = cursor.getString(1);		
-							String html_code = cursor.getString(2);
+				            String url = cursor.getString(1);
+							String date = cursor.getString(2);		
+							String html_code = cursor.getString(3);
 							
 							jsonObject.put("user", user);
 							jsonObject.put("url", url);

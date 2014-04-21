@@ -14,7 +14,9 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/CustomTheme" >      
+        android:theme="@style/CustomTheme" >  
+        <provider android:name="com.mnopi.data.DataProvider"
+        android:authorities="com.mnopi.android.contentprovider"/>    
         <activity
             android:name="com.mnopi.mnopi.MainActivity" 
             android:theme="@style/CustomThemeBlack">
