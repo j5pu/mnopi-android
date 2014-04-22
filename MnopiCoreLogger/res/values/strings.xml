@@ -91,5 +91,6 @@
     <string name="categories">Categories</string>    
     <string name="no_data">No data available</string>
     <string name="no_category">No category</string>    
-    <string name="pages_visited_must_be_on">Pages visited must be on to save HTML</string>     
+    <string name="pages_visited_must_be_on">Pages visited must be on to save HTML</string>
+    <string name="logout">Logout</string>
 </resources>

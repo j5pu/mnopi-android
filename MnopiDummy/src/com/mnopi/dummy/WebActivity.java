@@ -48,8 +48,6 @@ public class WebActivity extends Activity {
 		webView.setWebViewClient(new WebViewClient() {
 			
 			public void onPageFinished(WebView view, String url) {
-				String molona = "javascript:HtmlSender.sendHtml" +
-						"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>', " + "'" + url + "');";
 				webView.loadUrl("javascript:HtmlSender.sendHtml" +
 						"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>', " + "'" + url + "');");
 			}
