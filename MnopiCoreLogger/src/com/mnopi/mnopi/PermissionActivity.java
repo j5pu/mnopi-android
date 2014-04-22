@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -15,9 +16,9 @@ import com.mnopi.data.PageVisitedDataHandler;
 import com.mnopi.data.WebSearchDataHandler;
 
 public class PermissionActivity extends Activity{
-	private ToggleButton butPagesVisited;
-	private ToggleButton butSearchQueries;
-	private ToggleButton butHtmlVisited;
+	private Switch butPagesVisited;
+	private Switch butSearchQueries;
+	private Switch butHtmlVisited;
 	private TextView txtHtml;
 	private Context mContext;
 		
@@ -28,10 +29,10 @@ public class PermissionActivity extends Activity{
         
         mContext = this;
         txtHtml = (TextView) findViewById(R.id.textHtml);
-        butPagesVisited = (ToggleButton) findViewById(R.id.butPagesVisited);
-        butSearchQueries = (ToggleButton) findViewById(R.id.butSearchQueries);
-        butHtmlVisited = (ToggleButton) findViewById(R.id.butHtmlVisited);
-        
+        butPagesVisited = (Switch) findViewById(R.id.butPagesVisited);
+        butSearchQueries = (Switch) findViewById(R.id.butSearchQueries);
+        butHtmlVisited = (Switch) findViewById(R.id.butHtmlVisited);
+
         if (!butPagesVisited.isChecked()){
         	butHtmlVisited.setVisibility(View.GONE);
         	txtHtml.setVisibility(View.GONE);
@@ -50,7 +51,7 @@ public class PermissionActivity extends Activity{
                 	butHtmlVisited.setVisibility(View.VISIBLE);
                 	txtHtml.setVisibility(View.VISIBLE);
                 }
-                
+
 
                 SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
                         Context.MODE_PRIVATE);

@@ -21,11 +21,10 @@
             android:text="@string/pages_visited"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <ToggleButton
+        <Switch
             android:id="@+id/butPagesVisited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ToggleButton"
             android:textOff="Off"
             android:textOn="On" />
     </LinearLayout>
@@ -41,7 +40,7 @@
             android:id="@+id/textHtml"
             style="@style/CodeFont"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="0.42"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
@@ -49,11 +48,10 @@
             android:text="@string/html_visited"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <ToggleButton
+        <Switch
             android:id="@+id/butHtmlVisited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ToggleButton"
             android:textOff="Off"
             android:textOn="On" />
     </LinearLayout>
@@ -73,11 +71,10 @@
             android:text="@string/search_queries"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <ToggleButton
+        <Switch
             android:id="@+id/butSearchQueries"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ToggleButton" 
             android:textOff="Off"
             android:textOn="On"/>
     </LinearLayout>
