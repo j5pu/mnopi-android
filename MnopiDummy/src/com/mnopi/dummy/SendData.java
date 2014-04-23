@@ -61,10 +61,10 @@ public class SendData extends Activity{
 
                 try {
                     searchSender.send(querySearch, searchResult);
+                    Toast.makeText(context, "Search query sent", Toast.LENGTH_SHORT).show();
                 } catch (SearchValidationException ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(context, "Search query sent", Toast.LENGTH_SHORT).show();
 			}
         });
         
@@ -77,10 +77,10 @@ public class SendData extends Activity{
 
                 try {
                     pageSender.send(urlVisited, htmlVisited);
+                    Toast.makeText(context, "Page visited sent", Toast.LENGTH_SHORT).show();
                 } catch (PageValidationException ex) {
                     Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(context, "Page visited sent", Toast.LENGTH_SHORT).show();
         	}
         });
         
