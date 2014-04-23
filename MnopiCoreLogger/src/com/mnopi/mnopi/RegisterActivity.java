@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
 
-    private TextView lblGotoLogin;
     private Button btnRegister;
     private EditText inputUser;
     private EditText inputEmail;
@@ -43,6 +42,7 @@ public class RegisterActivity extends Activity {
 	private String result_error;
 	private boolean any_error;
 	private String reason;
+    private MainActivity ma= new MainActivity();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,6 @@ public class RegisterActivity extends Activity {
         inputPassword = (EditText) findViewById(R.id.txtPass);
         inputPassword2 = (EditText) findViewById(R.id.txtPass2);
         btnRegister = (Button) findViewById(R.id.btnRegister);
-        lblGotoLogin = (TextView) findViewById(R.id.link_to_login);
         registerErrorMsg = (TextView) findViewById(R.id.register_error);
         
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +63,7 @@ public class RegisterActivity extends Activity {
 					if (checkFields()){
 						new SignUpUser().execute();
 					}
+			        ma.fa.finish();
 				}
 				else{
 					Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
@@ -72,15 +72,6 @@ public class RegisterActivity extends Activity {
             }
         });
         
-        lblGotoLogin.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(RegisterActivity.this,
-						MainActivity.class);
-				startActivity(intent);				
-			}
-		});
         progress = new ProgressDialog(this);
 		progress.setTitle(R.string.signing_up);
 		progress.setMessage(getResources().getString(R.string.wait_please));
@@ -162,6 +153,9 @@ public class RegisterActivity extends Activity {
 				Toast.makeText(mContext, R.string.error_signing_up, Toast.LENGTH_SHORT).show();
 			}else if (!has_result_error){
 				Toast.makeText(mContext, R.string.sign_up_succesful, Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+				startActivity(intent);
+				finish();
 			}else{
 				if (result_error.equalsIgnoreCase("{\"username\":\"Username already exists\"}")){
 					inputUser.setError(getResources().getString(R.string.username_already_exists));
