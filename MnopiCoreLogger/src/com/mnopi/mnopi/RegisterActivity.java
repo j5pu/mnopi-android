@@ -196,7 +196,7 @@ public class RegisterActivity extends Activity {
 			all_correct = false;
 		}		
 		// username alphanumeric
-		if (user.matches("^.*[^a-zA-Z0-9 ].*$")){
+		if (user.matches("^.*[^a-zA-Z0-9Ññ ].*$")){
 			inputUser.setError(getResources().getString(R.string.username_alphanumeric));
 			all_correct = false;
 		}
