@@ -15,7 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;

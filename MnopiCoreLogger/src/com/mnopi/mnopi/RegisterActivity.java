@@ -24,7 +24,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
@@ -34,7 +33,6 @@ public class RegisterActivity extends Activity {
     private EditText inputEmail;
     private EditText inputPassword;
     private EditText inputPassword2;
-    private TextView registerErrorMsg; 
 	private Context mContext;
 	private ProgressDialog progress;
 	private String result = null;
@@ -42,7 +40,6 @@ public class RegisterActivity extends Activity {
 	private String result_error;
 	private boolean any_error;
 	private String reason;
-    private MainActivity ma= new MainActivity();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +52,6 @@ public class RegisterActivity extends Activity {
         inputPassword = (EditText) findViewById(R.id.txtPass);
         inputPassword2 = (EditText) findViewById(R.id.txtPass2);
         btnRegister = (Button) findViewById(R.id.btnRegister);
-        registerErrorMsg = (TextView) findViewById(R.id.register_error);
         
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -155,7 +151,7 @@ public class RegisterActivity extends Activity {
 				Toast.makeText(mContext, R.string.sign_up_succesful, Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
 				startActivity(intent);
-				ma.fa.finish();
+				MainActivity.fa.finish();
 				finish();
 			}else{
 				if (result_error.equalsIgnoreCase("{\"username\":\"Username already exists\"}")){
