@@ -20,6 +20,12 @@ public class DataCollectorService extends IntentService {
 	public void onCreate() {
         //android.os.Debug.waitForDebugger();
 		super.onCreate();
+
+        // Handlers must be recreated if the main activity was destroyed
+        if (!DataHandlerRegistry.isUsed()) {
+            MnopiApplication.initHandlerRegistries(this);
+        }
+
         dataHandlers = DataHandlerRegistry.getInstance(MnopiApplication.RECEIVE_FROM_SERVICE_REGISTRY);
 	}
 
