@@ -30,7 +30,6 @@ public class WelcomeActivity extends Activity{
     private TextView txtPagesNumber;
 	private Switch butDataCollector;
 	private Context mContext;
-    private MainActivity ma= new MainActivity();
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,6 @@ public class WelcomeActivity extends Activity{
             MnopiApplication.initHandlerRegistries(this);
         }
         
-        ma.fa.finish();
         mContext = this;
         btnSendImmediately = (Button) findViewById(R.id.btnSendImmediately);
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);

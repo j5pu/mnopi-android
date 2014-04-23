@@ -63,7 +63,6 @@ public class RegisterActivity extends Activity {
 					if (checkFields()){
 						new SignUpUser().execute();
 					}
-			        ma.fa.finish();
 				}
 				else{
 					Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
@@ -78,11 +77,12 @@ public class RegisterActivity extends Activity {
 		progress.setCancelable(false);
     }
     
+    
     private class SignUpUser extends AsyncTask<Void,Integer,Void> {
     	@Override
 		protected void onPreExecute(){   		
 			has_result_error = false;
-			any_error = false;			
+			any_error = false;		
 			// Show ProgressDialog
 			progress.show();
 		}
@@ -155,6 +155,7 @@ public class RegisterActivity extends Activity {
 				Toast.makeText(mContext, R.string.sign_up_succesful, Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
 				startActivity(intent);
+				ma.fa.finish();
 				finish();
 			}else{
 				if (result_error.equalsIgnoreCase("{\"username\":\"Username already exists\"}")){
