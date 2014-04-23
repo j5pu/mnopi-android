@@ -17,7 +17,7 @@ public class SearchSender {
 	private static final short SEARCH_RESULTS_MAX_LENGTH = 500;
 
 	public static final String DATE_CANT_BE_A_FUTURE_DATE = "Date can't be a future date";
-	public static final String SEARCH_RESULT_MUST_BE_AN_URL = "Search result must be an url";
+	public static final String SEARCH_RESULT_MUST_BE_AN_URL = "Search results must be an url";
 	public static final String DATE_NOT_SPECIFIED = "Date not specified";
 	public static final String SEARCH_RESULTS_NOT_SPECIFIED = "Search results not specified";
 	public static final String SEARCH_QUERY_NOT_SPECIFIED = "Search query not specified";
@@ -55,7 +55,6 @@ public class SearchSender {
 		}
 		
 		if (searchResults.length() > SEARCH_RESULTS_MAX_LENGTH) {
-			
 			throw new SearchValidationException(SEARCH_RESULTS_MAX_LENGTH_ERROR);
 		}
 		

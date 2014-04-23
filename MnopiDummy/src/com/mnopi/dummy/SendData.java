@@ -4,12 +4,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.mnopi.mnopiapi.PageValidationException;
+import com.mnopi.mnopiapi.PageVisitedSender;
+import com.mnopi.mnopiapi.SearchSender;
+import com.mnopi.mnopiapi.SearchValidationException;
 
 
 public class SendData extends Activity{
@@ -22,11 +28,17 @@ public class SendData extends Activity{
 	
 	private EditText inputUrlVisited;
 	private EditText inputHtmlVisited;
+
+    private SearchSender searchSender;
+    private PageVisitedSender pageSender;
+
+    private Context context;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.send_data);
+        context = this;
 				
 		inputQuerySearch = (EditText) findViewById(R.id.search);
 		inputSearchResult = (EditText) findViewById(R.id.result);
@@ -36,25 +48,23 @@ public class SendData extends Activity{
 		inputHtmlVisited = (EditText) findViewById(R.id.html_page_visited);
 		btnSendPage = (Button) findViewById(R.id.btn_send_page_visited);
 		btnOpenBrowser = (Button) findViewById(R.id.btn_open_browser);
+
+        searchSender = new SearchSender(this);
+        pageSender = new PageVisitedSender(this);
 		
         btnSendSearch.setOnClickListener(new View.OnClickListener() {          
                        
 			@Override
 			public void onClick(View v) {       	
-				Calendar c = Calendar.getInstance();
-				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				
-				String formattedDate = df.format(c.getTime());		
 				String querySearch = inputQuerySearch.getText().toString();
-				String searchResult = inputSearchResult.getText().toString();        
-				
-				Intent searchIntent = new Intent("com.mnopi.services.DataCollectorService");
-				searchIntent.putExtra("search_query", querySearch);
-				searchIntent.putExtra("search_results", searchResult);
-				searchIntent.putExtra("date", formattedDate);
-				searchIntent.putExtra("handler_key", "web_search");
+				String searchResult = inputSearchResult.getText().toString();
 
-				startService(searchIntent);
+                try {
+                    searchSender.send(querySearch, searchResult);
+                } catch (SearchValidationException ex) {
+                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(context, "Search query sent", Toast.LENGTH_SHORT).show();
 			}
         });
         
@@ -62,20 +72,15 @@ public class SendData extends Activity{
         	
         	@Override
         	public void onClick(View v) {
-        		Calendar c = Calendar.getInstance();
-        		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        		
-        		String formattedDate = df.format(c.getTime());
         		String urlVisited = inputUrlVisited.getText().toString();
         		String htmlVisited = inputHtmlVisited.getText().toString();
-        		
-        		Intent pageIntent = new Intent("com.mnopi.services.DataCollectorService");
-        		pageIntent.putExtra("url", urlVisited);
-        		pageIntent.putExtra("html_code", htmlVisited);
-        		pageIntent.putExtra("date", formattedDate);
-        		pageIntent.putExtra("handler_key", "page_visited");
-        		
-        		startService(pageIntent);
+
+                try {
+                    pageSender.send(urlVisited, htmlVisited);
+                } catch (PageValidationException ex) {
+                    Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(context, "Page visited sent", Toast.LENGTH_SHORT).show();
         	}
         });
         
