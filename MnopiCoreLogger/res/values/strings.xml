@@ -36,7 +36,13 @@
     
     <string name="field_required">This field is required</string>
     
-    <string name="minimum4">Required minimum 4 characters</string>
+    <string name="incorrect_user_password">Incorrect user or password</string>
+    
+    <string name="unexpected_session">The session does not exists or it expired</string>
+    
+    <string name="minimum6">Required minimum 6 characters</string>
+    
+    <string name="minimum1">Required minimum 1 characters</string>
     
     <string name="username_not_accepted">Username not accepted</string>
     
@@ -64,6 +70,10 @@
     
     <string name="username_alphanumeric">Username can consist only of letters and numbers</string>
     
+    <string name="username_already_exists">Username already exists</string>
+    
+    <string name="email_already_registered">Email already registered</string>
+        
     <string name="pass_length">Password must have between 6 and 40 characters</string>
     
     <string name="invalid_email">Email must be a valid email address</string>

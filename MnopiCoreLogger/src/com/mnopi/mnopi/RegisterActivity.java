@@ -163,7 +163,14 @@ public class RegisterActivity extends Activity {
 			}else if (!has_result_error){
 				Toast.makeText(mContext, R.string.sign_up_succesful, Toast.LENGTH_SHORT).show();
 			}else{
-				Toast.makeText(mContext, result_error, Toast.LENGTH_SHORT).show();
+				if (result_error.equalsIgnoreCase("{\"username\":\"Username already exists\"}")){
+					inputUser.setError(getResources().getString(R.string.username_already_exists));
+				}if (result_error.equalsIgnoreCase("{\"email\":\"Not an email address\"}")){
+					inputEmail.setError(getResources().getString(R.string.invalid_email));
+				}else if (result_error.equalsIgnoreCase("{\"email\":\"Email already registered\"}")){
+					inputEmail.setError(getResources().getString(R.string.email_already_registered));
+				}
+				
 			}
 		}
     }

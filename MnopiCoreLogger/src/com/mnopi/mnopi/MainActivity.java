@@ -205,7 +205,15 @@ public class MainActivity extends Activity {
 			else{
 				 if (!login_error){
 					if (has_result_error){
-						loginErrorMsg.setText(result_error);
+						if (result_error.equalsIgnoreCase("INCORRECT_USER_PASSWORD")){
+							loginErrorMsg.setText(R.string.incorrect_user_password);
+						}else if (result_error.equalsIgnoreCase("UNEXPECTED_SESSION")){
+							loginErrorMsg.setText(R.string.unexpected_session);
+						}
+						else {
+							loginErrorMsg.setText(result_error);
+						}
+
 					}else{
                         // login is ok
 						SharedPreferences prefs = getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
@@ -243,9 +251,9 @@ public class MainActivity extends Activity {
 		inputUser.setError(null);
 		inputPassword.setError(null);
 		
-		// username minimum 4 char
-		if (inputUser.getText().toString().length() < 4){
-			inputUser.setError(getResources().getString(R.string.minimum4));
+		// username minimum 1 char
+		if (inputUser.getText().toString().length() < 1){
+			inputUser.setError(getResources().getString(R.string.minimum1));
 			allCorrect = false;
 		}
 		
@@ -263,9 +271,9 @@ public class MainActivity extends Activity {
 			allCorrect = false;
 		}
 
-		// Password minimum 4 char
-		if (inputPassword.getText().toString().length() < 4){
-			inputPassword.setError(getResources().getString(R.string.minimum4));
+		// Password minimum 6 char
+		if (inputPassword.getText().toString().length() < 6){
+			inputPassword.setError(getResources().getString(R.string.minimum6));
 			allCorrect = false;
 		}
 		
