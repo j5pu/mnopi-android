@@ -3,6 +3,7 @@ package com.mnopi.mnopi;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.PageVisitedDataHandler;
@@ -65,6 +66,8 @@ public class MnopiApplication extends Application {
         if (settings.getBoolean(RECEIVE_PAGE_IS_ALLOWED, true)) {
             receiveHandlerRegistry.bind(pageHandler.getKey(), pageHandler);
         }
+	    Log.i("permisosMnopiApplication",settings.getBoolean(RECEIVE_HTML_IS_ALLOWED, false)+" " + settings.getBoolean(RECEIVE_SEARCH_IS_ALLOWED, true) +
+	    		" "+ settings.getBoolean(RECEIVE_PAGE_IS_ALLOWED, false));
 
     }
 
