@@ -8,6 +8,7 @@ import java.util.Calendar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.webkit.URLUtil;
 
 public class SearchSender {
 
@@ -59,12 +60,11 @@ public class SearchSender {
 		}
 		
 		/* Search results must be an URL*/
-		try {
-			new URL(searchResults);
-		} catch (MalformedURLException e) {
-			throw new SearchValidationException(SEARCH_RESULT_MUST_BE_AN_URL);
-		}
-		
+        if (!URLUtil.isValidUrl(searchResults) ||
+                !(URLUtil.isHttpUrl(searchResults) || URLUtil.isHttpsUrl(searchResults))) {
+            throw new SearchValidationException(SEARCH_RESULT_MUST_BE_AN_URL);
+        }
+
 		/* Date can't be a future date */
 		if (date.compareTo(Calendar.getInstance()) > 0) {
 			throw new SearchValidationException(DATE_CANT_BE_A_FUTURE_DATE);
