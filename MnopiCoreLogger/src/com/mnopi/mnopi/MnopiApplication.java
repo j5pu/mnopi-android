@@ -57,9 +57,9 @@ public class MnopiApplication extends Application {
         if (settings.getBoolean(SEND_PAGE_IS_ALLOWED, true)) {
             sendHandlerRegistry.bind(pageHandler.getKey(), pageHandler);
         }
-        if (settings.getBoolean(RECEIVE_HTML_IS_ALLOWED, true)) {
-            pageHandler.setSaveHtmlVisited(true);
-        }
+
+        pageHandler.setSaveHtmlVisited(settings.getBoolean(RECEIVE_HTML_IS_ALLOWED, true));
+
         if (settings.getBoolean(RECEIVE_SEARCH_IS_ALLOWED, true)) {
             receiveHandlerRegistry.bind(searchHandler.getKey(), searchHandler);
         }
