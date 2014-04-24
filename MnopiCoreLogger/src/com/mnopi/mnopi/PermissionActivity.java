@@ -75,6 +75,9 @@ public class PermissionActivity extends Activity{
                         PageVisitedDataHandler pageHandler = new PageVisitedDataHandler(
                                 getApplicationContext());
                         receiveHandlerRegistry.bind(PageVisitedDataHandler.getKey(), pageHandler);
+
+                        // Html visited true by default when page visited is enabled
+                        butHtmlVisited.setChecked(true);
                     }
                 }
                 editor.commit();

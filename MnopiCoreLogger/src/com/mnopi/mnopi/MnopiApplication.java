@@ -34,7 +34,7 @@ public class MnopiApplication extends Application {
     // Particular reception and sending permission
     public static final String SEND_PAGE_IS_ALLOWED = "send_page_visited";
     public static final String RECEIVE_PAGE_IS_ALLOWED = "receive_page_visited";
-    public static final String RECEIVE_HTML_IS_ALLOWED = "send_page_visited";
+    public static final String RECEIVE_HTML_IS_ALLOWED = "receive_html_visited";
     public static final String SEND_SEARCH_IS_ALLOWED = "send_search_query";
     public static final String RECEIVE_SEARCH_IS_ALLOWED = "receive_search_query";
 
