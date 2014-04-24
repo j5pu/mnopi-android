@@ -7,6 +7,7 @@ import java.util.Calendar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.webkit.URLUtil;
 
 public class PageVisitedSender {
 	
@@ -44,13 +45,13 @@ public class PageVisitedSender {
 		if (url.length() > URL_MAX_LENGTH){
 			throw new PageValidationException(URL_MAX_LENGTH_ERROR);
 		}
-		
-		try {
-			new URL(url);
-		} catch (MalformedURLException e){
-			throw new PageValidationException(URL_MUST_BE_A_CORRECT_URL);
-		}
-		
+
+        /* Url must be an url */
+        if (!URLUtil.isValidUrl(url) ||
+                !(URLUtil.isHttpUrl(url) || URLUtil.isHttpsUrl(url))) {
+            throw new PageValidationException(URL_MUST_BE_A_CORRECT_URL);
+        }
+
 		/* Date can't be a future date */
 		if (date.compareTo(Calendar.getInstance()) > 0) {
 			throw new PageValidationException(DATE_CANT_BE_A_FUTURE_DATE);
