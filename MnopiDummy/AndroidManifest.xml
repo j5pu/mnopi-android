@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.enviadato"
+    package="com.mnopi.dummy"
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
 
     <application
+        android:name="com.mnopi.dummy.MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.enviadato.MainActivity"
+            android:name="com.mnopi.dummy.SendData"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.mnopi.dummy.WebActivity"
+            android:label="@string/title_activity_web"
+            android:parentActivityName="com.mnopi.dummy.SendData" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mnopi.dummy.SendData" />
         </activity>
     </application>
 

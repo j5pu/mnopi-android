@@ -1,5 +1,106 @@
 <resources>
 
-    <string name="app_name">MnopiSucker</string>
+    <string name="app_name">MnopiCoreLogger</string>
 
+    <string name="login">Login</string>
+
+    <string name="signup_">Sign up</string>
+
+    <string name="pages_visited">Pages visited</string>
+
+    <string name="html_visited">HTML visited</string>
+
+    <string name="search_queries">Search queries</string>
+
+    <string name="email">Email</string>
+
+    <string name="password">Password</string>
+
+    <string name="send">Send</string>
+
+    <string name="username">Username</string>
+
+    <string name="data_delivery">Data delivery</string>
+
+    <string name="data_collecter">Data collector</string>
+
+    <string name="send_immediately">Send immediately</string>
+
+    <string name="permission_console">Permission console</string>
+    
+    <string name="view_data">View data</string>
+
+    <string name="user">User</string>
+    
+    <string name="wait_please">Wait please</string>
+    
+    <string name="field_required">This field is required</string>
+    
+    <string name="incorrect_user_password">Incorrect user or password</string>
+    
+    <string name="unexpected_session">The session does not exists or it expired</string>
+    
+    <string name="minimum6">Required minimum 6 characters</string>
+    
+    <string name="minimum1">Required minimum 1 characters</string>
+    
+    <string name="username_not_accepted">Username not accepted</string>
+    
+    <string name="error_occurred">Sorry, an error occurred</string>
+    
+    <string name="login_succesful">Login successful</string>
+    
+    <string name="no_connection">No connection available</string>
+    
+    <string name="sent_succesful">Data successfully sent</string>
+    
+    <string name="error_sending_data">Error occurred sending some data </string>
+    
+    <string name="no_data_to_send">There is no data to send </string>
+    
+    <string name="repeat_password">Repeat password</string>
+    
+    <string name="signing_up">Signing up</string>
+    
+    <string name="sign_up_succesful">Successfully signed up</string>
+    
+    <string name="error_signing_up">Sorry, an error occurred while signing up</string>
+    
+    <string name="username_lengh">Username must have between 1 and 20 characters</string>
+    
+    <string name="username_alphanumeric">Username can consist only of letters and numbers</string>
+    
+    <string name="username_already_exists">Username already exists</string>
+    
+    <string name="email_already_registered">Email already registered</string>
+        
+    <string name="pass_length">Password must have between 6 and 40 characters</string>
+    
+    <string name="invalid_email">Email must be a valid email address</string>
+    
+    <string name="email_length">This field is required</string>
+    
+    <string name="different_pass">Passwords must match</string>
+    
+    <string name="view_queries">View queries</string>    
+    
+    <string name="getData">Getting data</string>    
+    
+    <string name="query">Query</string>    
+    
+    <string name="url">URL</string>    
+    
+    <string name="date">Date</string>    
+    
+    <string name="hour">Hour</string>    
+    
+    <string name="view_pages">View pages</string>    
+    
+    <string name="domain">Domain</string>    
+    
+    <string name="categories">Categories</string>    
+    <string name="no_data">No data available</string>
+    <string name="no_category">No category</string>    
+    <string name="pages_visited_must_be_on">Pages visited must be on to save HTML</string>
+    <string name="logout">Logout</string>
 </resources>

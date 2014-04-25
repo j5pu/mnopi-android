@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Search query" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Search result" />
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_search" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.79"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/url_page_visited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/url"
+            android:ems="10" />
+
+        <EditText
+            android:id="@+id/html_page_visited"
+            android:layout_width="match_parent"
+            android:layout_height="119dp"
+            android:ems="10"
+            android:hint="@string/html_text_default"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/btn_send_page_visited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/send_page_visited" />
+
+        <Button
+            android:id="@+id/btn_open_browser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_mnopi_browser" />
+
+    </LinearLayout>
+
+</LinearLayout>
