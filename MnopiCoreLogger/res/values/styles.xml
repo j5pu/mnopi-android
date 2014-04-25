@@ -7,15 +7,14 @@
         <item name="android:typeface">monospace</item>
     </style>
 
-    <style name="CustomTheme" parent="android:Theme.Light">
+    <style name="CustomTheme" parent="android:Theme.Holo">
         
     </style>
     <style name="buttonStyle" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/bluebutton</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
-    <style name="CustomThemeBlack" parent="android:Theme.Light">
-        <item name="android:background">#002136</item>
+    <style name="CustomThemeBlack" parent="android:Theme.Holo">
         <item name="android:buttonStyle">@style/buttonStyle</item>
     </style>
 

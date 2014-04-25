@@ -15,7 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
@@ -30,12 +29,11 @@ public class WelcomeActivity extends Activity{
     private TextView txtPagesNumber;
 	private Switch butDataCollector;
 	private Context mContext;
-
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
-
         if (!DataHandlerRegistry.isUsed()) {
             MnopiApplication.initHandlerRegistries(this);
         }

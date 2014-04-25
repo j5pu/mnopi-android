@@ -3,6 +3,7 @@ package com.mnopi.mnopi;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.PageVisitedDataHandler;
@@ -33,7 +34,7 @@ public class MnopiApplication extends Application {
     // Particular reception and sending permission
     public static final String SEND_PAGE_IS_ALLOWED = "send_page_visited";
     public static final String RECEIVE_PAGE_IS_ALLOWED = "receive_page_visited";
-    public static final String RECEIVE_HTML_IS_ALLOWED = "send_page_visited";
+    public static final String RECEIVE_HTML_IS_ALLOWED = "receive_html_visited";
     public static final String SEND_SEARCH_IS_ALLOWED = "send_search_query";
     public static final String RECEIVE_SEARCH_IS_ALLOWED = "receive_search_query";
 
@@ -56,15 +57,17 @@ public class MnopiApplication extends Application {
         if (settings.getBoolean(SEND_PAGE_IS_ALLOWED, true)) {
             sendHandlerRegistry.bind(pageHandler.getKey(), pageHandler);
         }
-        if (settings.getBoolean(RECEIVE_HTML_IS_ALLOWED, true)) {
-            pageHandler.setSaveHtmlVisited(true);
-        }
+
+        pageHandler.setSaveHtmlVisited(settings.getBoolean(RECEIVE_HTML_IS_ALLOWED, true));
+
         if (settings.getBoolean(RECEIVE_SEARCH_IS_ALLOWED, true)) {
             receiveHandlerRegistry.bind(searchHandler.getKey(), searchHandler);
         }
         if (settings.getBoolean(RECEIVE_PAGE_IS_ALLOWED, true)) {
             receiveHandlerRegistry.bind(pageHandler.getKey(), pageHandler);
         }
+	    Log.i("permisosMnopiApplication",settings.getBoolean(RECEIVE_HTML_IS_ALLOWED, false)+" " + settings.getBoolean(RECEIVE_SEARCH_IS_ALLOWED, true) +
+	    		" "+ settings.getBoolean(RECEIVE_PAGE_IS_ALLOWED, false));
 
     }
 

@@ -24,18 +24,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class RegisterActivity extends Activity {
 
-    private TextView lblGotoLogin;
     private Button btnRegister;
     private EditText inputUser;
     private EditText inputEmail;
     private EditText inputPassword;
     private EditText inputPassword2;
-    private TextView registerErrorMsg; 
 	private Context mContext;
 	private ProgressDialog progress;
 	private String result = null;
@@ -55,8 +52,6 @@ public class RegisterActivity extends Activity {
         inputPassword = (EditText) findViewById(R.id.txtPass);
         inputPassword2 = (EditText) findViewById(R.id.txtPass2);
         btnRegister = (Button) findViewById(R.id.btnRegister);
-        lblGotoLogin = (TextView) findViewById(R.id.link_to_login);
-        registerErrorMsg = (TextView) findViewById(R.id.register_error);
         
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -72,26 +67,18 @@ public class RegisterActivity extends Activity {
             }
         });
         
-        lblGotoLogin.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(RegisterActivity.this,
-						MainActivity.class);
-				startActivity(intent);				
-			}
-		});
         progress = new ProgressDialog(this);
 		progress.setTitle(R.string.signing_up);
 		progress.setMessage(getResources().getString(R.string.wait_please));
 		progress.setCancelable(false);
     }
     
+    
     private class SignUpUser extends AsyncTask<Void,Integer,Void> {
     	@Override
 		protected void onPreExecute(){   		
 			has_result_error = false;
-			any_error = false;			
+			any_error = false;		
 			// Show ProgressDialog
 			progress.show();
 		}
@@ -162,8 +149,19 @@ public class RegisterActivity extends Activity {
 				Toast.makeText(mContext, R.string.error_signing_up, Toast.LENGTH_SHORT).show();
 			}else if (!has_result_error){
 				Toast.makeText(mContext, R.string.sign_up_succesful, Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+				startActivity(intent);
+				MainActivity.fa.finish();
+				finish();
 			}else{
-				Toast.makeText(mContext, result_error, Toast.LENGTH_SHORT).show();
+				if (result_error.equalsIgnoreCase("{\"username\":\"Username already exists\"}")){
+					inputUser.setError(getResources().getString(R.string.username_already_exists));
+				}if (result_error.equalsIgnoreCase("{\"email\":\"Not an email address\"}")){
+					inputEmail.setError(getResources().getString(R.string.invalid_email));
+				}else if (result_error.equalsIgnoreCase("{\"email\":\"Email already registered\"}")){
+					inputEmail.setError(getResources().getString(R.string.email_already_registered));
+				}
+				
 			}
 		}
     }
@@ -196,7 +194,7 @@ public class RegisterActivity extends Activity {
 			all_correct = false;
 		}		
 		// username alphanumeric
-		if (user.matches("^.*[^a-zA-Z0-9 ].*$")){
+		if (user.matches("^.*[^a-zA-Z0-9Ññ ].*$")){
 			inputUser.setError(getResources().getString(R.string.username_alphanumeric));
 			all_correct = false;
 		}
