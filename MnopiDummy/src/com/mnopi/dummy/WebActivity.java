@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,16 +20,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.mnopi.mnopiapi.PageValidationException;
+import com.mnopi.mnopiapi.PageVisitedSender;
+
 public class WebActivity extends Activity {
 
 	private EditText addressBar;
 	private Button btnOpenUrl; 
 	private WebView webView;
 
+    private PageVisitedSender pageSender;
+
+    private Context context;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_web);
+
+        context = this;
+        pageSender = new PageVisitedSender(this);
+
 		// Show the Up button in the action bar.
 		setupActionBar();
 
@@ -49,8 +59,6 @@ public class WebActivity extends Activity {
 		webView.setWebViewClient(new WebViewClient() {
 			
 			public void onPageFinished(WebView view, String url) {
-				String molona = "javascript:HtmlSender.sendHtml" +
-						"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>', " + "'" + url + "');";
 				webView.loadUrl("javascript:HtmlSender.sendHtml" +
 						"('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>', " + "'" + url + "');");
 			}
@@ -81,21 +89,12 @@ public class WebActivity extends Activity {
 		@JavascriptInterface
 		public void sendHtml(String html, String url) {
 			
-			Calendar c = Calendar.getInstance();
-    		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    		
-    		String formattedDate = df.format(c.getTime());
-    		
-    		Intent pageIntent = new Intent("com.mnopi.services.DataCollectorService");
-    		pageIntent.putExtra("url", url);
-    		pageIntent.putExtra("html_code", html);
-    		pageIntent.putExtra("date", formattedDate);
-    		pageIntent.putExtra("handler_key", "page_visited");
-    		
-    		startService(pageIntent);
-    		
-			Toast toast = Toast.makeText(ctx, url, Toast.LENGTH_LONG);
-			toast.show();
+			try {
+                pageSender.send(url, html);
+                Toast.makeText(ctx, url, Toast.LENGTH_LONG).show();
+            } catch (PageValidationException ex) {
+                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            }
 		}
 	}
 
@@ -115,22 +114,4 @@ public class WebActivity extends Activity {
 		getMenuInflater().inflate(R.menu.web, menu);
 		return true;
 	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
 }

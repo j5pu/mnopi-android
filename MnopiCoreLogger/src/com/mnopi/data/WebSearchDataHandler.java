@@ -130,9 +130,9 @@ public class WebSearchDataHandler extends DataHandler {
 				            JSONObject dato = new JSONObject();	
 				            
 				            String user = prefs.getString(MnopiApplication.USER_RESOURCE, null);
-				            String query = cursor.getString(1);
-							String url = cursor.getString(2);		
-							String date = cursor.getString(3);
+				            String query = cursor.getString(cursor.getColumnIndex ("query"));
+							String url = cursor.getString(cursor.getColumnIndex ("url"));		
+							String date = cursor.getString(cursor.getColumnIndex ("date"));
 							
 							dato.put("user", user);
 							dato.put("search_query", query);

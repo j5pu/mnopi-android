@@ -4,20 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.PageVisitedDataHandler;
 import com.mnopi.data.WebSearchDataHandler;
 
 public class PermissionActivity extends Activity{
-	private ToggleButton butPagesVisited;
-	private ToggleButton butSearchQueries;
-	private ToggleButton butHtmlVisited;
+	private Switch butPagesVisited;
+	private Switch butSearchQueries;
+	private Switch butHtmlVisited;
 	private TextView txtHtml;
 	private Context mContext;
 		
@@ -28,10 +29,10 @@ public class PermissionActivity extends Activity{
         
         mContext = this;
         txtHtml = (TextView) findViewById(R.id.textHtml);
-        butPagesVisited = (ToggleButton) findViewById(R.id.butPagesVisited);
-        butSearchQueries = (ToggleButton) findViewById(R.id.butSearchQueries);
-        butHtmlVisited = (ToggleButton) findViewById(R.id.butHtmlVisited);
-        
+        butPagesVisited = (Switch) findViewById(R.id.butPagesVisited);
+        butSearchQueries = (Switch) findViewById(R.id.butSearchQueries);
+        butHtmlVisited = (Switch) findViewById(R.id.butHtmlVisited);
+
         if (!butPagesVisited.isChecked()){
         	butHtmlVisited.setVisibility(View.GONE);
         	txtHtml.setVisibility(View.GONE);
@@ -42,6 +43,9 @@ public class PermissionActivity extends Activity{
 
                 /* Html permission depends on page permission, so disable it */
                 if (!isChecked) {
+                	if (butHtmlVisited.isChecked()){
+                    	Toast.makeText(mContext, R.string.pages_visited_must_be_on, Toast.LENGTH_SHORT).show();
+                	}
                     butHtmlVisited.setChecked(false);
                     butHtmlVisited.setVisibility(View.GONE);
                     txtHtml.setVisibility(View.GONE);
@@ -50,7 +54,7 @@ public class PermissionActivity extends Activity{
                 	butHtmlVisited.setVisibility(View.VISIBLE);
                 	txtHtml.setVisibility(View.VISIBLE);
                 }
-                
+
 
                 SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
                         Context.MODE_PRIVATE);
@@ -61,6 +65,7 @@ public class PermissionActivity extends Activity{
 
                 if (!isChecked) {
                     editor.putBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false);
+                    editor.putBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false);
                     receiveHandlerRegistry.unbind(PageVisitedDataHandler.getKey());
                 } else {
                     editor.putBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, true);
@@ -70,10 +75,17 @@ public class PermissionActivity extends Activity{
                         PageVisitedDataHandler pageHandler = new PageVisitedDataHandler(
                                 getApplicationContext());
                         receiveHandlerRegistry.bind(PageVisitedDataHandler.getKey(), pageHandler);
+
+                        // Html visited true by default when page visited is enabled
+                        butHtmlVisited.setChecked(true);
                     }
                 }
                 editor.commit();
+        	    Log.i("pagevisited",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
+        	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
+        	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
             }
+            
         });
         
         butHtmlVisited.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -82,7 +94,6 @@ public class PermissionActivity extends Activity{
 
                 if (!butPagesVisited.isChecked()){
                 	butHtmlVisited.setChecked(false);
-                	Toast.makeText(mContext, R.string.pages_visited_must_be_on, Toast.LENGTH_SHORT).show();
                 } else {
                     SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
                             Context.MODE_PRIVATE);
@@ -97,6 +108,9 @@ public class PermissionActivity extends Activity{
                     pageHandler.setSaveHtmlVisited(isChecked);
 
                     editor.commit();
+                    Log.i("htmlvisited",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
+            	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
+            	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
                 }
             }
         });
@@ -126,6 +140,9 @@ public class PermissionActivity extends Activity{
                     }
                 }
                 editor.commit();
+                Log.i("query",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
+        	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
+        	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
             }
         });
 
@@ -140,6 +157,7 @@ public class PermissionActivity extends Activity{
 	    butPagesVisited.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, true));
 	    butSearchQueries.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, true));
 	    butHtmlVisited.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, true));
+	    Log.i("permisosStart",butPagesVisited.isChecked()+" " + butHtmlVisited.isChecked() + " "+ butSearchQueries.isChecked());
 	}
 
 }

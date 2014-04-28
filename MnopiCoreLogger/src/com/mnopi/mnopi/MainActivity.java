@@ -35,23 +35,23 @@ public class MainActivity extends Activity {
 	private EditText inputUser;
 	private EditText inputPassword;
 	private TextView loginErrorMsg;
-	private boolean has_name_error;
 	private boolean has_result_error;
 	private boolean login_error = false;
 	private boolean any_error;
 	private ProgressDialog progress;
 	private String result = null;
 	private String reason;
-	private String name_error;
 	private String result_error;
 	private String loginMessageError;
 	private Context mContext;
-
+	public static Activity fa;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		fa = this;
 		setContentView(R.layout.activity_main);
-
 		mContext = this;
 		//Layout
 		inputUser = (EditText) findViewById(R.id.txtUser);
@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
 			 Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
 			 startActivity(intent);
 			 finish();
-		 }
+		}
 
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 
@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
 		progress.setMessage(getResources().getString(R.string.wait_please));
 		progress.setCancelable(false);
 	}
-	
+    
 	private class LogInUser extends AsyncTask<Void,Integer,Void> {
 		 
 		private String username;
@@ -113,7 +113,6 @@ public class MainActivity extends Activity {
 		
 		@Override
 		protected void onPreExecute(){
-			has_name_error = false;
 			has_result_error = false;
 			login_error = false;
 			any_error = false;
@@ -205,7 +204,15 @@ public class MainActivity extends Activity {
 			else{
 				 if (!login_error){
 					if (has_result_error){
-						loginErrorMsg.setText(result_error);
+						if (result_error.equalsIgnoreCase("INCORRECT_USER_PASSWORD")){
+							loginErrorMsg.setText(R.string.incorrect_user_password);
+						}else if (result_error.equalsIgnoreCase("UNEXPECTED_SESSION")){
+							loginErrorMsg.setText(R.string.unexpected_session);
+						}
+						else {
+							loginErrorMsg.setText(result_error);
+						}
+
 					}else{
                         // login is ok
 						SharedPreferences prefs = getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
@@ -243,9 +250,9 @@ public class MainActivity extends Activity {
 		inputUser.setError(null);
 		inputPassword.setError(null);
 		
-		// username minimum 4 char
-		if (inputUser.getText().toString().length() < 4){
-			inputUser.setError(getResources().getString(R.string.minimum4));
+		// username minimum 1 char
+		if (inputUser.getText().toString().length() < 1){
+			inputUser.setError(getResources().getString(R.string.minimum1));
 			allCorrect = false;
 		}
 		
@@ -263,9 +270,9 @@ public class MainActivity extends Activity {
 			allCorrect = false;
 		}
 
-		// Password minimum 4 char
-		if (inputPassword.getText().toString().length() < 4){
-			inputPassword.setError(getResources().getString(R.string.minimum4));
+		// Password minimum 6 char
+		if (inputPassword.getText().toString().length() < 6){
+			inputPassword.setError(getResources().getString(R.string.minimum6));
 			allCorrect = false;
 		}
 		

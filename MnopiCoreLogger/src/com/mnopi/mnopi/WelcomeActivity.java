@@ -12,9 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
@@ -27,14 +27,13 @@ public class WelcomeActivity extends Activity{
 	private Button btnViewData;
     private TextView txtQueriesNumber;
     private TextView txtPagesNumber;
-	private ToggleButton butDataCollector;
+	private Switch butDataCollector;
 	private Context mContext;
-
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
-
         if (!DataHandlerRegistry.isUsed()) {
             MnopiApplication.initHandlerRegistries(this);
         }
@@ -43,7 +42,7 @@ public class WelcomeActivity extends Activity{
         btnSendImmediately = (Button) findViewById(R.id.btnSendImmediately);
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
         btnViewData = (Button) findViewById(R.id.btnViewData);
-        butDataCollector = (ToggleButton) findViewById(R.id.butDataCollector);
+        butDataCollector = (Switch) findViewById(R.id.butDataCollector);
 
         btnPermissionConsole.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {

@@ -140,9 +140,9 @@ public class PageVisitedDataHandler extends DataHandler {
 				            JSONObject jsonObject = new JSONObject();	
 				            
 				            String user = prefs.getString(MnopiApplication.USER_RESOURCE, null);
-				            String url = cursor.getString(1);
-							String date = cursor.getString(2);		
-							String html_code = cursor.getString(3);
+				            String url = cursor.getString(cursor.getColumnIndex ("url"));
+							String date = cursor.getString(cursor.getColumnIndex ("date"));		
+							String html_code = cursor.getString(cursor.getColumnIndex ("html_code"));
 							
 							jsonObject.put("user", user);
 							jsonObject.put("url", url);
