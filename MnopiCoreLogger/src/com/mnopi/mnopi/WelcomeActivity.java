@@ -1,5 +1,8 @@
 package com.mnopi.mnopi;
 
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +10,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +20,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mnopi.authentication.AccountGeneral;
+import com.mnopi.authentication.MnopiAuthenticator;
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
 import com.mnopi.utils.Connectivity;

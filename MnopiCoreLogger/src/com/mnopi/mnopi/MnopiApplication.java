@@ -11,7 +11,8 @@ import com.mnopi.data.WebSearchDataHandler;
 
 public class MnopiApplication extends Application {
 
-	//TODO: Prepare a list of api endpoints with constants
+    public final static String MNOPI_CLIENT = "android-v1.0b";
+
 	public final static String SERVER_ADDRESS = "https://ec2-54-197-231-98.compute-1.amazonaws.com";
 	public final static String PAGE_VISITED_RESOURCE = "/api/v1/page_visited/";
 	public final static String SEARCH_QUERY_RESOURCE = "/api/v1/search_query/";
