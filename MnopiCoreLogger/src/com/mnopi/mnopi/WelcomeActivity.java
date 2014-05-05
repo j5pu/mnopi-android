@@ -29,6 +29,8 @@ public class WelcomeActivity extends Activity{
     private TextView txtPagesNumber;
 	private Switch butDataCollector;
 	private Context mContext;
+    private Boolean isSent;
+
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class WelcomeActivity extends Activity{
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
         btnViewData = (Button) findViewById(R.id.btnViewData);
         butDataCollector = (Switch) findViewById(R.id.butDataCollector);
+        isSent = false;
 
         btnPermissionConsole.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
@@ -63,9 +66,27 @@ public class WelcomeActivity extends Activity{
         btnSendImmediately.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
         		if (Connectivity.isOnline(mContext)){
-                    DataHandlerRegistry sendRegistry =
-                            DataHandlerRegistry.getInstance(MnopiApplication.SEND_TO_SERVER_REGISTRY);
-        			sendRegistry.sendAll();
+                    DataLogOpenHelper dbHelper = new DataLogOpenHelper(mContext);
+                    SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+                    int queryNumber = 0;
+                    int pagesNumber = 0;
+
+                    Cursor cursor = db.rawQuery("select * from web_searches", null);
+                    queryNumber = cursor.getCount();
+                    cursor.close();
+
+                    cursor = db.rawQuery("select * from visited_web_pages", null);
+                    pagesNumber = cursor.getCount();
+                    cursor.close();
+                    db.close();
+                    isSent = (queryNumber + pagesNumber) == 0 ;
+                    if (!isSent){
+                        DataHandlerRegistry sendRegistry =
+                                DataHandlerRegistry.getInstance(MnopiApplication.SEND_TO_SERVER_REGISTRY);
+                        sendRegistry.sendAll();
+                        isSent = true;
+                    }
         		}
         		else{
                     Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
