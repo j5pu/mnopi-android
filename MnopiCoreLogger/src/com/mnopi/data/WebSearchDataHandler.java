@@ -96,10 +96,9 @@ public class WebSearchDataHandler extends DataHandler {
 		@Override
 		protected Void doInBackground(Void... params){
 
-			/* Coger registros mediante content provider 
+			/* get data from content provider
 			 */
 			String[] projection = new String[]{
-				WebSearch._ID,				
 				WebSearch.COL_QUERY,
 				WebSearch.COL_URL,
 				WebSearch.COL_DATE
@@ -108,8 +107,6 @@ public class WebSearchDataHandler extends DataHandler {
 			ContentResolver cr = context.getContentResolver();
 			
 			Cursor cursor = cr.query(webSearchUri, projection, null, null, null);
-			/* Coger registros mediante content provider 
-			 */
 			
 	        String urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.SEARCH_QUERY_RESOURCE;
 			SharedPreferences prefs = context.getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,

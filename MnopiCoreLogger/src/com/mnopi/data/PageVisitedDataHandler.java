@@ -106,10 +106,9 @@ public class PageVisitedDataHandler extends DataHandler {
 		@Override
 		protected Void doInBackground(Void... params){
 
-			/* Coger registros mediante content provider 
+			/* get data from content provider
 			 */
 			String[] projection = new String[]{
-				PageVisited._ID,				
 				PageVisited.COL_URL,
 				PageVisited.COL_DATE,
 				PageVisited.COL_HTML_CODE
@@ -118,8 +117,6 @@ public class PageVisitedDataHandler extends DataHandler {
 			ContentResolver cr = context.getContentResolver();
 			
 			Cursor cursor = cr.query(pageVisitedUri, projection, null, null, null);
-			/* Coger registros mediante content provider 
-			 */
 			
 	        String urlString = MnopiApplication.SERVER_ADDRESS + MnopiApplication.PAGE_VISITED_RESOURCE;
 			SharedPreferences prefs = context.getSharedPreferences(
