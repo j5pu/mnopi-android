@@ -46,9 +46,15 @@ public class ViewPagesVisitedActivity extends Activity{
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.viewpages);  
-        
-        pages = new ArrayList<PageVisited>();
+        setContentView(R.layout.viewpages);
+
+        if (savedInstanceState != null){
+            pages = savedInstanceState.getParcelableArrayList("pages");
+            meta_next = savedInstanceState.getString("meta_next");
+        }else{
+            pages = new ArrayList<PageVisited>();
+        }
+
         listPages = (ListView) findViewById(R.id.listPages);
         pAdapter = new PageAdapter(this, R.layout.page_item, pages);
 		listPages.setAdapter(pAdapter);
@@ -115,6 +121,13 @@ public class ViewPagesVisitedActivity extends Activity{
 			
 		});
 	}
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("pages", pages);
+        outState.putString("meta_next", meta_next);
+    }
 	
 	private class GetPages extends AsyncTask<Void,Integer,Void> {
 		 

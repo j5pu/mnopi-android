@@ -1,8 +1,11 @@
 package com.mnopi.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class PageVisited {
+public class PageVisited implements Parcelable {
 
 	private String url;
 	private String domain;
@@ -69,5 +72,19 @@ public class PageVisited {
 	public void setCategories(ArrayList<String> categories) {
 		this.categories = categories;
 	}
-	
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(url);
+        parcel.writeString(domain);
+        parcel.writeString(date);
+        parcel.writeString(hour);
+        parcel.writeString(resource_uri);
+        parcel.writeStringList(categories);
+    }
 }
