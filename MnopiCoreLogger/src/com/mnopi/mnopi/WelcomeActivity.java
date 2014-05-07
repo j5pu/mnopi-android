@@ -1,8 +1,7 @@
 package com.mnopi.mnopi;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mnopi.authentication.AccountGeneral;
-import com.mnopi.authentication.MnopiAuthenticator;
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
 import com.mnopi.utils.Connectivity;
@@ -165,11 +162,20 @@ public class WelcomeActivity extends Activity{
         DataHandlerRegistry.clearRegistries();
     }
 
+    private void removeMnopiAccount(){
+        AccountManager mAccountManager = AccountManager.get(this);
+        Account[] accounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+
+        // If we are logged there must be exactly one account
+        mAccountManager.removeAccount(accounts[0], null, null);
+    }
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	    case R.id.action_logout:
+            removeMnopiAccount();
             clearSessionToken();
             resetHandlers();
 

@@ -51,10 +51,18 @@ public class MainActivity extends Activity {
     public void onStart(){
         super.onStart();
 
-        getTokenForAccountCreateIfNeeded();
+        getToken();
+    }
+    
+    private void setTokenOnPreferences(String authToken){
+        SharedPreferences settings = getSharedPreferences(
+                MnopiApplication.APPLICATION_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(MnopiApplication.SESSION_TOKEN, authToken);
+        editor.commit();
     }
 
-    private void getTokenForAccountCreateIfNeeded() {
+    private void getToken() {
         final AccountManagerFuture<Bundle> future = mAccountManager.getAuthTokenByFeatures(AccountGeneral.ACCOUNT_TYPE,
                 MnopiAuthenticator.STANDARD_ACCOUNT_TYPE, null, this, null, null,
                 new AccountManagerCallback<Bundle>() {
@@ -63,9 +71,10 @@ public class MainActivity extends Activity {
                         Bundle bnd = null;
                         try {
                             bnd = future.getResult();
-                            final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-//                          Toast.makeText(mContext, (authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL", Toast.LENGTH_LONG).show();
-                            Log.d("udinic", "GetTokenForAccount Bundle is " + bnd);
+                            final String authToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
+                            setTokenOnPreferences(authToken);
+
+                            Log.d("mnopi", "GetTokenForAccount Bundle is " + bnd);
 
                             Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
                             startActivity(intent);
