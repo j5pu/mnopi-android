@@ -97,6 +97,7 @@ public class RegisterActivity extends Activity {
                         ServerApi.userSignIn(username, password, MnopiApplication.MNOPI_CLIENT);
 
                 respData.putString(AccountManager.KEY_ACCOUNT_NAME, username);
+                respData.putString(AccountManager.KEY_ACCOUNT_TYPE, AccountGeneral.ACCOUNT_TYPE);
                 respData.putString(AccountManager.KEY_AUTHTOKEN, loginResponse.get("session_token"));
                 respData.putString(MnopiAuthenticator.KEY_USER_RESOURCE, response.get("user_resource"));
             } catch (Exception e) {

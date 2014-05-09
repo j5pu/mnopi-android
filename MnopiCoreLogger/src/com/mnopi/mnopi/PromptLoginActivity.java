@@ -1,59 +1,37 @@
 package com.mnopi.mnopi;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
-
 import com.mnopi.authentication.AccountGeneral;
 import com.mnopi.authentication.MnopiAuthenticator;
-import com.mnopi.authentication.RegisterActivity;
-import com.mnopi.utils.Connectivity;
 
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-public class MainActivity extends Activity {
+/**
+ * Init class for the application. Automatically tries to recover a user token, which opens
+ * the login screen if needed
+ */
+public class PromptLoginActivity extends Activity {
 
     private AccountManager mAccountManager;
+    private Activity mActivity;
 
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
         mAccountManager = AccountManager.get(this);
-
-	}
-
-    @Override
-    public void onStart(){
-        super.onStart();
+        mActivity = this;
 
         getToken();
-    }
-    
+	}
+
     private void setTokenOnPreferences(String authToken){
         SharedPreferences settings = getSharedPreferences(
                 MnopiApplication.APPLICATION_PREFERENCES, Context.MODE_PRIVATE);
@@ -68,19 +46,23 @@ public class MainActivity extends Activity {
                 new AccountManagerCallback<Bundle>() {
                     @Override
                     public void run(AccountManagerFuture<Bundle> future) {
-                        Bundle bnd = null;
+                        if (future.isCancelled()){
+                            // User pressed back button on login screen
+                            mActivity.finish();
+                            return;
+                        }
                         try {
-                            bnd = future.getResult();
-                            final String authToken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
+                            Bundle bundle = future.getResult();
+                            final String authToken = bundle.getString(AccountManager.KEY_AUTHTOKEN);
                             setTokenOnPreferences(authToken);
 
-                            Log.d("mnopi", "GetTokenForAccount Bundle is " + bnd);
+                            Log.d("mnopi", "GetTokenForAccount Bundle is " + bundle);
 
-                            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+                            Intent intent = new Intent(PromptLoginActivity.this, HomeActivity.class);
                             startActivity(intent);
-                            finish();
+                            mActivity.finish();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            mActivity.finish();
                         }
                     }
                 }

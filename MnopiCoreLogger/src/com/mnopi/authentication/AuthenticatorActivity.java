@@ -8,11 +8,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.mnopi.mnopi.MnopiApplication;
+import com.mnopi.mnopi.PromptLoginActivity;
 import com.mnopi.mnopi.R;
 import com.mnopi.utils.Connectivity;
 import com.mnopi.utils.ServerApi;
 
 import android.accounts.AccountManager;
+import android.accounts.OnAccountsUpdateListener;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +43,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
 
     private Context mContext;
     private AccountManager mAccountManager;
+    private OnAccountsUpdateListener accountsListener;
+
+    private boolean transitionToHomeStarted = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,30 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
         btnLogin = (Button) findViewById(R.id.btnLogin);
         loginErrorMsg = (TextView) findViewById(R.id.login_error);
         lblGotoRegister = (TextView) findViewById(R.id.link_to_register);
+
+        // If the Mnopi account was added in settings while we were in the login screen
+        accountsListener = new OnAccountsUpdateListener() {
+            @Override
+            public void onAccountsUpdated(Account[] accounts) {
+                Account[] mnopiAccounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+                if (mnopiAccounts.length == 1 && !transitionToHomeStarted) {
+                    Intent result = new Intent();
+                    Bundle b = new Bundle();
+                    result.putExtras(b);
+
+                    // Cancel login: next time the app is loaded the token will be present
+                    setAccountAuthenticatorResult(null);
+                    setResult(RESULT_OK, result);
+                    finish();
+
+                    // Avoid listener to be called before the activity is actually destroyed
+                    transitionToHomeStarted = true;
+                }
+                return;
+            }
+        };
+
+        mAccountManager.addOnAccountsUpdatedListener(accountsListener, null, true);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
 
@@ -119,6 +148,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
                         ServerApi.userSignIn(username, password, MnopiApplication.MNOPI_CLIENT);
 
                 respData.putString(AccountManager.KEY_ACCOUNT_NAME, username);
+                respData.putString(AccountManager.KEY_ACCOUNT_TYPE, AccountGeneral.ACCOUNT_TYPE);
                 respData.putString(AccountManager.KEY_AUTHTOKEN, response.get("session_token"));
                 respData.putString(MnopiAuthenticator.KEY_USER_RESOURCE, response.get("user_resource"));
             } catch (Exception e) {
@@ -223,4 +253,21 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
         return allCorrect;
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent result = new Intent();
+        Bundle b = new Bundle();
+        result.putExtras(b);
+
+        setAccountAuthenticatorResult(null);
+        setResult(RESULT_OK, result);
+        finish();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        mAccountManager.removeOnAccountsUpdatedListener(accountsListener);
+    }
 }

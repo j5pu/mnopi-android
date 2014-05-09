@@ -2,6 +2,7 @@ package com.mnopi.mnopi;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +24,7 @@ import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
 import com.mnopi.utils.Connectivity;
 
-public class WelcomeActivity extends Activity{
+public class HomeActivity extends Activity{
 	
 	private Button btnSendImmediately;
 	private Button btnPermissionConsole;
@@ -32,6 +33,10 @@ public class WelcomeActivity extends Activity{
     private TextView txtPagesNumber;
 	private Switch butDataCollector;
 	private Context mContext;
+    private AccountManager mAccountManager;
+    private OnAccountsUpdateListener accountsListener;
+
+    private boolean transitionToLoginStarted = false;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,16 +45,36 @@ public class WelcomeActivity extends Activity{
         if (!DataHandlerRegistry.isUsed()) {
             MnopiApplication.initHandlerRegistries(this);
         }
-        
+
         mContext = this;
         btnSendImmediately = (Button) findViewById(R.id.btnSendImmediately);
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
         btnViewData = (Button) findViewById(R.id.btnViewData);
         butDataCollector = (Switch) findViewById(R.id.butDataCollector);
 
+        mAccountManager = AccountManager.get(this);
+
+        // If the Mnopi account was removed the application must log out
+        accountsListener = new OnAccountsUpdateListener() {
+            @Override
+            public void onAccountsUpdated(Account[] accounts) {
+                Account[] mnopiAccounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+                if (mnopiAccounts.length == 0 && !transitionToLoginStarted) {
+                    Intent i = new Intent(mContext, PromptLoginActivity.class);
+                    startActivity(i);
+                    finish();
+                    // Avoid listener to be called before the activity is actually destroyed
+                    transitionToLoginStarted = true;
+                }
+                return;
+            }
+        };
+
+        mAccountManager.addOnAccountsUpdatedListener(accountsListener, null, true);
+
         btnPermissionConsole.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
-        		Intent intent = new Intent(WelcomeActivity.this,
+        		Intent intent = new Intent(HomeActivity.this,
 						PermissionActivity.class);
 				startActivity(intent);
         	}        	
@@ -57,7 +82,7 @@ public class WelcomeActivity extends Activity{
         
         btnViewData.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
-        		Intent intent = new Intent(WelcomeActivity.this,
+        		Intent intent = new Intent(HomeActivity.this,
 						ViewDataActivity.class);
 				startActivity(intent);
         	}        	
@@ -175,13 +200,9 @@ public class WelcomeActivity extends Activity{
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	    case R.id.action_logout:
-            removeMnopiAccount();
             clearSessionToken();
             resetHandlers();
-
-			Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-			startActivity(intent);
-			finish();
+            removeMnopiAccount();
 	        return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
@@ -195,5 +216,12 @@ public class WelcomeActivity extends Activity{
 				Context.MODE_PRIVATE);
 	    butDataCollector.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_IS_ALLOWED, true));
 	}
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        mAccountManager.removeOnAccountsUpdatedListener(accountsListener);
+    }
 	
 }

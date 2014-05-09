@@ -16,14 +16,14 @@
         <provider android:name="com.mnopi.data.DataProvider"
         android:authorities="com.mnopi.android.contentprovider"/>    
         <activity
-            android:name="com.mnopi.mnopi.MainActivity" 
+            android:name=".PromptLoginActivity"
             android:theme="@style/CustomThemeBlack">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mnopi.mnopi.WelcomeActivity"
+        <activity android:name=".HomeActivity"
             android:theme="@style/CustomThemeBlack">
         </activity>
         <activity android:name="com.mnopi.mnopi.PermissionActivity" 
