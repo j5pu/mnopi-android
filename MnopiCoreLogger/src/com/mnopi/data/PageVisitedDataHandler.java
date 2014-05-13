@@ -191,9 +191,9 @@ public class PageVisitedDataHandler extends DataHandler {
 				        }
 				        
 				    } while (cursor.moveToNext());
+                    cursor.close();
 				}
 			}
-            cursor.close();
 	        return null;
 		}
 		
