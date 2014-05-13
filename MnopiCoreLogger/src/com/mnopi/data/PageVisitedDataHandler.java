@@ -9,6 +9,8 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,6 +22,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mnopi.authentication.AccountGeneral;
+import com.mnopi.authentication.MnopiAuthenticator;
 import com.mnopi.data.DataProvider.PageVisited;
 import com.mnopi.mnopi.MnopiApplication;
 import com.mnopi.mnopi.R;
@@ -36,8 +40,11 @@ public class PageVisitedDataHandler extends DataHandler {
 
     private boolean saveHtmlVisited = true;
 
+    private Context context;
+
 	public PageVisitedDataHandler(Context context){
-		super(context);
+        super(context);
+        this.context = context;
 	}
 	
 	@Override
@@ -134,14 +141,19 @@ public class PageVisitedDataHandler extends DataHandler {
 				            post.setHeader("Content-Type", "application/json");
 				            post.setHeader("Session-Token", session_token);
 				             
-				            JSONObject jsonObject = new JSONObject();	
-				            
-				            String user = prefs.getString(MnopiApplication.USER_RESOURCE, null);
+				            JSONObject jsonObject = new JSONObject();
+
+                            AccountManager mAccountManager = AccountManager.get(context);
+                            Account[] mnopiAccounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+                            // Only one account
+                            String userResource = mAccountManager.getUserData(mnopiAccounts[0], MnopiAuthenticator.KEY_USER_RESOURCE);
+
+                            //String userResource = prefs.getString(MnopiApplication.USER_RESOURCE, null);
 				            String url = cursor.getString(cursor.getColumnIndex ("url"));
 							String date = cursor.getString(cursor.getColumnIndex ("date"));		
 							String html_code = cursor.getString(cursor.getColumnIndex ("html_code"));
 							
-							jsonObject.put("user", user);
+							jsonObject.put("user", userResource);
 							jsonObject.put("url", url);
 							jsonObject.put("html_code", html_code);
 							jsonObject.put("date", date);
@@ -179,9 +191,9 @@ public class PageVisitedDataHandler extends DataHandler {
 				        }
 				        
 				    } while (cursor.moveToNext());
-					cursor.close();
 				}
 			}
+            cursor.close();
 	        return null;
 		}
 		

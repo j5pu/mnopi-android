@@ -67,8 +67,6 @@ public class MnopiApplication extends Application {
         if (settings.getBoolean(RECEIVE_PAGE_IS_ALLOWED, true)) {
             receiveHandlerRegistry.bind(pageHandler.getKey(), pageHandler);
         }
-	    Log.i("permisosMnopiApplication",settings.getBoolean(RECEIVE_HTML_IS_ALLOWED, false)+" " + settings.getBoolean(RECEIVE_SEARCH_IS_ALLOWED, true) +
-	    		" "+ settings.getBoolean(RECEIVE_PAGE_IS_ALLOWED, false));
 
     }
 

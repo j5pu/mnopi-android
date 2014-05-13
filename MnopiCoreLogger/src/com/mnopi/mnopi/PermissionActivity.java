@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -81,9 +80,6 @@ public class PermissionActivity extends Activity{
                     }
                 }
                 editor.commit();
-        	    Log.i("pagevisited",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
-        	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
-        	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
             }
             
         });
@@ -108,9 +104,6 @@ public class PermissionActivity extends Activity{
                     pageHandler.setSaveHtmlVisited(isChecked);
 
                     editor.commit();
-                    Log.i("htmlvisited",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
-            	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
-            	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
                 }
             }
         });
@@ -140,9 +133,6 @@ public class PermissionActivity extends Activity{
                     }
                 }
                 editor.commit();
-                Log.i("query",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
-        	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
-        	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
             }
         });
 
@@ -157,7 +147,6 @@ public class PermissionActivity extends Activity{
 	    butPagesVisited.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, true));
 	    butSearchQueries.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, true));
 	    butHtmlVisited.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, true));
-	    Log.i("permisosStart",butPagesVisited.isChecked()+" " + butHtmlVisited.isChecked() + " "+ butSearchQueries.isChecked());
 	}
 
 }

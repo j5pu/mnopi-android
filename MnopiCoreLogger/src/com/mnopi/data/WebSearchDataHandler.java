@@ -9,12 +9,16 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
+import com.mnopi.authentication.AccountGeneral;
+import com.mnopi.authentication.MnopiAuthenticator;
 import com.mnopi.data.DataProvider.PageVisited;
 import com.mnopi.data.DataProvider.WebSearch;
 import com.mnopi.mnopi.MnopiApplication;
 import com.mnopi.mnopi.R;
 import com.mnopi.utils.Connectivity;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -34,14 +38,16 @@ import android.widget.Toast;
 public class WebSearchDataHandler extends DataHandler {
 	
 	private static String HANDLER_KEY = "web_search";
+    private Context context;
 
 	public WebSearchDataHandler(Context c){
 		super(c);
+        this.context = c;
 	}
 	
 	@Override
 	public void saveData(Bundle bundle) {		
-		//Guardar mediante contentProvider
+		//Save data to contentProvider
 		Uri webSearchUri = DataProvider.WEB_SEARCH_URI;
 		ContentResolver cr = context.getContentResolver();
 		ContentValues row = new ContentValues();
@@ -52,18 +58,7 @@ public class WebSearchDataHandler extends DataHandler {
         row.put("date", date);
         row.put("query", query);
         cr.insert(webSearchUri, row);
-		//Guardar mediante contentProvider
-        
-//        String url = bundle.getString("search_results");
-//        String query = bundle.getString("search_query");
-//        String date = bundle.getString("date");
-//
-//        ContentValues row = new ContentValues();
-//        row.put("url", url);
-//        row.put("query", query);
-//        row.put("date", date);
-//
-//        db.insert(DataLogOpenHelper.WEB_SEARCHES_TABLE_NAME, null ,row);
+
 	}
 
 	@Override
@@ -124,14 +119,19 @@ public class WebSearchDataHandler extends DataHandler {
 				            post.setHeader("Content-Type", "application/json");
 				            post.setHeader("Session-Token", session_token);
 				             
-				            JSONObject dato = new JSONObject();	
+				            JSONObject dato = new JSONObject();
+
+                            AccountManager mAccountManager = AccountManager.get(context);
+                            Account[] mnopiAccounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+                            // Only one account
+                            String userResource = mAccountManager.getUserData(mnopiAccounts[0], MnopiAuthenticator.KEY_USER_RESOURCE);
 				            
-				            String user = prefs.getString(MnopiApplication.USER_RESOURCE, null);
+				            //String user = prefs.getString(MnopiApplication.USER_RESOURCE, null);
 				            String query = cursor.getString(cursor.getColumnIndex ("query"));
 							String url = cursor.getString(cursor.getColumnIndex ("url"));		
 							String date = cursor.getString(cursor.getColumnIndex ("date"));
 							
-							dato.put("user", user);
+							dato.put("user", userResource);
 							dato.put("search_query", query);
 							dato.put("search_results", url);
 							dato.put("date", date);
@@ -168,9 +168,9 @@ public class WebSearchDataHandler extends DataHandler {
 				        }
 				        
 				    } while (cursor.moveToNext());
-					cursor.close();
 				}
 			}
+            cursor.close();
 	        return null;
 		}
 		
