@@ -86,8 +86,6 @@ public class RegisterActivity extends Activity {
         @Override
         protected Intent doInBackground(Void... params) {
 
-            HttpEntity resEntity;
-
             Bundle respData = new Bundle();
             try {
                 HashMap<String, String> response =

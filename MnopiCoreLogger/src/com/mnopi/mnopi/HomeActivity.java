@@ -100,7 +100,12 @@ public class HomeActivity extends Activity{
         		if (Connectivity.isOnline(mContext)){
                     DataHandlerRegistry sendRegistry =
                             DataHandlerRegistry.getInstance(MnopiApplication.SEND_TO_SERVER_REGISTRY);
-        			sendRegistry.sendAll();
+        			try {
+                        sendRegistry.sendAll(AccountGeneral.getAccount(mContext));
+                    } catch (Exception ex) {
+                        Toast toast = Toast.makeText(mContext, "Error sending data", Toast.LENGTH_LONG);
+                        toast.show();
+                    }
         		}
         		else{
                     Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);

@@ -21,8 +21,14 @@ import java.util.Iterator;
  */
 public class ServerApi {
 
-    private final static String SIGN_IN_URI = MnopiApplication.SERVER_ADDRESS + MnopiApplication.LOGIN_SERVICE;
-    private final static String SIGN_UP_URI = MnopiApplication.SERVER_ADDRESS + MnopiApplication.REGISTRATION_SERVICE;
+    private final static String SIGN_IN_URI = MnopiApplication.SERVER_ADDRESS +
+            MnopiApplication.LOGIN_SERVICE;
+    private final static String SIGN_UP_URI = MnopiApplication.SERVER_ADDRESS +
+            MnopiApplication.REGISTRATION_SERVICE;
+    private final static String SEND_PAGE_VISITED_URI = MnopiApplication.SERVER_ADDRESS +
+            MnopiApplication.PAGE_VISITED_RESOURCE;
+    private final static String SEND_WEB_SEARCH_URI = MnopiApplication.SERVER_ADDRESS +
+            MnopiApplication.SEARCH_QUERY_RESOURCE;
 
     public final static String STATUS_CODE = "status_code";
 
@@ -51,14 +57,18 @@ public class ServerApi {
      * @throws Exception
      */
     public static HashMap<String, String> postRequest(String uri,
-                                                      HashMap<String, String> parameters)
+                                                      HashMap<String, String> parameters,
+                                                      String sessionToken)
             throws Exception {
 
         HttpEntity resEntity;
-        HttpClient httpclient = Connectivity.getNewHttpClient();
+        HttpClient httpClient = Connectivity.getNewHttpClient();
 
         HttpPost post = new HttpPost(uri);
         post.setHeader("Content-Type", "application/json");
+        if (sessionToken != null) {
+            post.setHeader("Session-Token", sessionToken);
+        }
 
         JSONObject postData = new JSONObject(parameters);
 
@@ -66,7 +76,7 @@ public class ServerApi {
         StringEntity entity = new StringEntity(postData.toString(), HTTP.UTF_8);
         post.setEntity(entity);
 
-        HttpResponse response = httpclient.execute(post);
+        HttpResponse response = httpClient.execute(post);
         resEntity = response.getEntity();
         final String responseStr = EntityUtils.toString(resEntity);
 
@@ -83,6 +93,79 @@ public class ServerApi {
 
     }
 
+    /**
+     * Saves a new search resource in the server
+     * @param userResource
+     * @param date
+     * @param searchQuery
+     * @param searchResults
+     * @param sessionToken
+     * @return key-value response
+     * @throws Exception
+     */
+    public static HashMap<String, String> sendWebSearch(String userResource, String date,
+                                                        String searchQuery, String searchResults,
+                                                        String sessionToken)
+            throws Exception {
+
+        HashMap<String, String> searchData = new HashMap<String, String>();
+        HashMap<String, String> response;
+
+        searchData.put("user", userResource);
+        searchData.put("search_query", searchQuery);
+        searchData.put("search_results", searchResults);
+        searchData.put("date", date);
+
+        response = postRequest(SEND_WEB_SEARCH_URI, searchData, sessionToken);
+        if (Integer.parseInt(response.get(STATUS_CODE)) != HttpStatus.SC_CREATED) {
+            if (response.get("result").equals("ERR")) {
+                if (response.containsKey("reason")) {
+                    throw new Exception(response.get("reason"));
+                } else {
+                    throw new Exception("Undefined error");
+                }
+            }
+        }
+        return response;
+
+    }
+
+    /**
+     * Saves a new page visited resource in the server
+     * @param userResource
+     * @param url
+     * @param date
+     * @param htmlCode
+     * @param sessionToken
+     * @return key-value response
+     * @throws Exception
+     */
+    public static HashMap<String, String> sendPageVisited(String userResource, String url, String date,
+                                                          String htmlCode, String sessionToken)
+            throws Exception {
+
+        HashMap<String, String> pageVisitedData = new HashMap<String, String>();
+        HashMap<String, String> response;
+
+        pageVisitedData.put("user", userResource);
+        pageVisitedData.put("url", url);
+        pageVisitedData.put("html_code", htmlCode);
+        pageVisitedData.put("date", date);
+
+        response = postRequest(SEND_PAGE_VISITED_URI, pageVisitedData, sessionToken);
+        if (Integer.parseInt(response.get(STATUS_CODE)) != HttpStatus.SC_CREATED) {
+            if (response.get("result").equals("ERR")) {
+                if (response.containsKey("reason")) {
+                    throw new Exception(response.get("reason"));
+                } else {
+                    throw new Exception("Undefined error");
+                }
+            }
+        }
+        return response;
+
+    }
+    
     /**
      *
      * @param userName
@@ -102,10 +185,10 @@ public class ServerApi {
         signInData.put("key", password);
         signInData.put("client", client);
 
-        response = postRequest(SIGN_IN_URI, signInData);
+        response = postRequest(SIGN_IN_URI, signInData, null);
         if (response.get("result").equals("ERR")) {
             if (response.containsKey("reason")) {
-                throw new Exception(response.get("reason")); //TODO: Change
+                throw new Exception(response.get("reason"));
             } else {
                 throw new Exception("Undefined error");
             }
@@ -125,7 +208,7 @@ public class ServerApi {
         signUpData.put("password", password);
         signUpData.put("email", email);
 
-        response = postRequest(SIGN_UP_URI, signUpData);
+        response = postRequest(SIGN_UP_URI, signUpData, null);
         if (Integer.parseInt(response.get(STATUS_CODE)) != HttpStatus.SC_CREATED){
             if (response.containsKey("reason") && response.containsKey("erroneous_parameters")) {
                 throw new Exception(response.get("erroneous_parameters"));

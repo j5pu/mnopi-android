@@ -1,5 +1,7 @@
 package com.mnopi.data;
 
+import android.accounts.Account;
+import android.accounts.AuthenticatorException;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -30,6 +32,6 @@ public abstract class DataHandler {
 	/**
 	 * Specifies how to send the data to the server
 	 */
-	abstract public void sendData();
+	abstract public void sendData(Account account) throws Exception;
 }
 
