@@ -14,8 +14,10 @@ public class SyncService extends Service {
 
     @Override
     public void onCreate(){
-        if (sSyncAdapter == null){
-            sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
+        synchronized (sSyncAdapterLock){
+            if (sSyncAdapter == null) {
+                sSyncAdapter = new SyncAdapter(getApplicationContext(), true);
+            }
         }
     }
 
