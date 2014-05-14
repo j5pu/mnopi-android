@@ -60,7 +60,8 @@ public class HomeActivity extends Activity{
         mAccountManager = AccountManager.get(this);
         Account account = mAccountManager.getAccountsByType(ACCOUNT_TYPE)[0];
         Bundle bundle = new Bundle(1);
-        ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
+        ContentResolver.setSyncAutomatically(account, AUTHORITY, false);
+        ContentResolver.addPeriodicSync(account, AUTHORITY, bundle, 60);
         // If the Mnopi account was removed the application must log out
         accountsListener = new OnAccountsUpdateListener() {
             @Override
