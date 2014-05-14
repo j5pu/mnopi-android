@@ -36,6 +36,10 @@
         </activity>
         <activity android:name="com.mnopi.mnopi.ViewPagesVisitedActivity" >
         </activity>
+        <activity android:name="com.mnopi.mnopi.ViewQueriesDeviceActivity" >
+        </activity>
+        <activity android:name="com.mnopi.mnopi.ViewPagesVisitedDeviceActivity" >
+        </activity>
         <activity android:name="com.mnopi.authentication.AuthenticatorActivity"></activity>
         <activity android:name="com.mnopi.authentication.RegisterActivity"></activity>
         <service android:name="com.mnopi.services.DataCollectorService"

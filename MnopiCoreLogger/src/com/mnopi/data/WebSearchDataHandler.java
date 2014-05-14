@@ -69,7 +69,7 @@ public class WebSearchDataHandler extends DataHandler {
                 String user = AccountGeneral.getLoggedUserResource(context, account);
                 String url = cursor.getString(cursor.getColumnIndex(WebSearch.COL_URL));
                 String date = cursor.getString(cursor.getColumnIndex(WebSearch.COL_DATE));
-                String query = cursor.getString(cursor.getColumnIndex((WebSearch.COL_QUERY)));
+                String query = cursor.getString(cursor.getColumnIndex(WebSearch.COL_QUERY));
 
                 try {
                     AccountManager mAccountManager = AccountManager.get(context);

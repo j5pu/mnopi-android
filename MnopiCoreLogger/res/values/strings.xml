@@ -106,4 +106,6 @@
     <string name="mnopi_name">Mnopi</string>
     <string name="server_error">Error in server</string>
     <string name="already_mnopi_account">There is already a Mnopi account in the device</string>
+    <string name="server">SERVER</string>
+    <string name="device">DEVICE</string>
 </resources>
