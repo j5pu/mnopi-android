@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.mnopi.data.DataProvider;
 import com.mnopi.mnopi.MnopiApplication;
 import com.mnopi.mnopi.PromptLoginActivity;
 import com.mnopi.mnopi.R;
@@ -16,6 +17,7 @@ import com.mnopi.utils.ServerApi;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -198,6 +200,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
 
             // Creating the account on the device and setting the auth token we got
             // (Not setting the auth token will cause another call to the server to authenticate the user)
+            ContentResolver.setIsSyncable(account, DataProvider.AUTHORITY, 1);
+            ContentResolver.setSyncAutomatically(account, DataProvider.AUTHORITY, true);
+            ContentResolver.addPeriodicSync(account, DataProvider.AUTHORITY, new Bundle(), 60);
             mAccountManager.addAccountExplicitly(account, null, accountExtraInfo);
             mAccountManager.setAuthToken(account, MnopiAuthenticator.STANDARD_ACCOUNT_TYPE, authtoken);
         }

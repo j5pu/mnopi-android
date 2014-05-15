@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.mnopi.authentication.AccountGeneral;
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
+import com.mnopi.data.DataProvider;
 import com.mnopi.utils.Connectivity;
 
 public class HomeActivity extends Activity{
@@ -39,8 +40,6 @@ public class HomeActivity extends Activity{
 
     private boolean transitionToLoginStarted = false;
 
-    public static final String AUTHORITY = "com.mnopi.android.contentprovider";
-    public static final String ACCOUNT_TYPE = "com.mnopi.auth";
     ContentResolver mResolver;
 	
 	@Override
@@ -58,10 +57,7 @@ public class HomeActivity extends Activity{
         butDataCollector = (Switch) findViewById(R.id.butDataCollector);
 
         mAccountManager = AccountManager.get(this);
-        Account account = mAccountManager.getAccountsByType(ACCOUNT_TYPE)[0];
-        Bundle bundle = new Bundle(1);
-        ContentResolver.setSyncAutomatically(account, AUTHORITY, false);
-        ContentResolver.addPeriodicSync(account, AUTHORITY, bundle, 60);
+
         // If the Mnopi account was removed the application must log out
         accountsListener = new OnAccountsUpdateListener() {
             @Override

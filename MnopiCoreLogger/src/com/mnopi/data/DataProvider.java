@@ -12,7 +12,7 @@ import android.provider.BaseColumns;
 
 public class DataProvider extends ContentProvider {
 
-	private static final String AUTHORITY = "com.mnopi.android.contentprovider";
+	public static final String AUTHORITY = "com.mnopi.android.contentprovider";
 	public static final Uri PAGE_VISITED_URI = Uri.parse("content://" + AUTHORITY + "/pagevisited");
 	public static final Uri WEB_SEARCH_URI = Uri.parse("content://" + AUTHORITY + "/websearch");
 

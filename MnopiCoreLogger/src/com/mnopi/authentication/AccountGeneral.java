@@ -16,7 +16,7 @@ public class AccountGeneral {
     public static final String ACCOUNT_NAME = "mnopi";
 
     /**
-     *
+     * Returns logged account. A user must be logged.
      * @param context
      * @return
      */
@@ -27,7 +27,7 @@ public class AccountGeneral {
     }
 
     /**
-     *
+     * Returns logged user resoruce. A user must be logged
      * @param context
      * @param account
      * @return
@@ -38,7 +38,7 @@ public class AccountGeneral {
     }
 
     /**
-     * 
+     * Returns logged user resoruce. A user must be logged
      * @param context
      * @return
      */
