@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.mnopi.adapters.PageAdapter;
@@ -27,18 +28,31 @@ public class ViewPagesVisitedDeviceActivity extends Activity {
     private ArrayList<PageVisited> pages;
     private ListView listPages;
     private PageAdapter pAdapter;
+    private Button btnRefresh;
     private Context mContext;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.viewpages);
+        setContentView(R.layout.viewpagesdevice);
 
+        showData();
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                showData();
+            }
+        });
+
+    }
+
+    public void showData(){
         pages = new ArrayList<PageVisited>();
         listPages = (ListView) findViewById(R.id.listPages);
         pAdapter = new PageAdapter(this, R.layout.page_item, pages);
         listPages.setAdapter(pAdapter);
+        btnRefresh = (Button) findViewById(R.id.btnRefresh);
         mContext = this;
 
         // Get data from content provider

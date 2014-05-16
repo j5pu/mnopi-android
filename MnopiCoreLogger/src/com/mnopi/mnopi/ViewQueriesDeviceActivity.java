@@ -3,11 +3,13 @@ package com.mnopi.mnopi;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.mnopi.adapters.QueryAdapter;
@@ -27,18 +29,42 @@ public class ViewQueriesDeviceActivity extends Activity{
     private ListView listQueries;
     private QueryAdapter qAdapter;
     private Context mContext;
+    private Button btnRefresh;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.viewqueries);
+        setContentView(R.layout.viewqueriesdevice);
 
+        showData();
+
+        listQueries.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                Query query = queries.get(position);
+                QueryDialog qDialog = new QueryDialog(mContext, query);
+                qDialog.setTitle(query.getQuery());
+                qDialog.show();
+            }
+
+        });
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                showData();
+            }
+            });
+    }
+
+    public void showData(){
         queries = new ArrayList<Query>();
         listQueries = (ListView) findViewById(R.id.listQueries);
         qAdapter = new QueryAdapter(this, R.layout.query_item, queries);
         listQueries.setAdapter(qAdapter);
+        btnRefresh = (Button) findViewById(R.id.btnRefresh);
         mContext = this;
-
         /* get data from content provider
 			 */
         String[] projection = new String[]{
@@ -66,18 +92,5 @@ public class ViewQueriesDeviceActivity extends Activity{
             }while (cursor.moveToNext());
         }
         cursor.close();
-
-        listQueries.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                                    long id) {
-                Query query = queries.get(position);
-                QueryDialog qDialog = new QueryDialog(mContext, query);
-                qDialog.setTitle(query.getQuery());
-                qDialog.show();
-            }
-
-        });
     }
 }

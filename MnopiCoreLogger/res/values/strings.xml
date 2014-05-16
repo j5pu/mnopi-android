@@ -108,4 +108,5 @@
     <string name="already_mnopi_account">There is already a Mnopi account in the device</string>
     <string name="server">SERVER</string>
     <string name="device">DEVICE</string>
+    <string name="refresh">Refresh</string>
 </resources>
