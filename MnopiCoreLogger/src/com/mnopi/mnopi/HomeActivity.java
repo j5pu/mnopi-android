@@ -18,17 +18,13 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mnopi.authentication.AccountGeneral;
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
-import com.mnopi.data.DataProvider;
-import com.mnopi.utils.Connectivity;
 
 public class HomeActivity extends Activity{
-	
-	private Button btnSendImmediately;
+
 	private Button btnPermissionConsole;
 	private Button btnViewData;
     private TextView txtQueriesNumber;
@@ -39,19 +35,16 @@ public class HomeActivity extends Activity{
     private OnAccountsUpdateListener accountsListener;
 
     private boolean transitionToLoginStarted = false;
-
-    ContentResolver mResolver;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome);
+        setContentView(R.layout.home);
         if (!DataHandlerRegistry.isUsed()) {
             MnopiApplication.initHandlerRegistries(this);
         }
 
         mContext = this;
-        btnSendImmediately = (Button) findViewById(R.id.btnSendImmediately);
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
         btnViewData = (Button) findViewById(R.id.btnViewData);
         butDataCollector = (Switch) findViewById(R.id.butDataCollector);
@@ -90,25 +83,6 @@ public class HomeActivity extends Activity{
 						ViewDataActivity.class);
 				startActivity(intent);
         	}        	
-        });
-        
-        btnSendImmediately.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View view) {
-        		if (Connectivity.isOnline(mContext)){
-                    DataHandlerRegistry sendRegistry =
-                            DataHandlerRegistry.getInstance(MnopiApplication.SEND_TO_SERVER_REGISTRY);
-        			try {
-                        sendRegistry.sendAll(AccountGeneral.getAccount(mContext));
-                    } catch (Exception ex) {
-                        Toast toast = Toast.makeText(mContext, "Error sending data", Toast.LENGTH_LONG);
-                        toast.show();
-                    }
-        		}
-        		else{
-                    Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
-					toast.show();
-			    }
-        	}
         });
 
         butDataCollector.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
