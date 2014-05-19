@@ -38,7 +38,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         DataHandlerRegistry sendRegistry =
                 DataHandlerRegistry.getInstance(MnopiApplication.SEND_TO_SERVER_REGISTRY);
         try {
-            sendRegistry.sendAll(account);
+            sendRegistry.sendAll(account, syncResult);
         } catch (Exception ex) {
             Log.i("Sync adapter", "Error sending data sync adapter");
         }

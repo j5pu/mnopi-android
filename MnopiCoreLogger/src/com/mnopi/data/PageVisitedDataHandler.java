@@ -8,6 +8,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -57,7 +58,7 @@ public class PageVisitedDataHandler extends DataHandler {
 	}
 
 	@Override
-	public void sendData(Account account) throws Exception {
+	public void sendData(Account account, SyncResult syncResult) throws Exception {
 
         // Get data from content provider
         String[] projection = new String[]{
@@ -92,10 +93,13 @@ public class PageVisitedDataHandler extends DataHandler {
                     Uri deleteUri = ContentUris.withAppendedId(DataProvider.PAGE_VISITED_URI, pageId);
                     cr.delete(deleteUri, null, null);
 
-                } catch (AuthenticatorException ex) {
-                    throw ex;
-                } catch (Exception ex){
-                    // Continue sending other records
+                } catch (Exception ex) {
+                    // All problems that indicate that the resource could not be created are
+                    // considered authExceptions as this is marked as hard error (shown in account)
+                    Log.e("Sync adapter", "Server response: page visited resource not created");
+                    syncResult.stats.numAuthExceptions++;
+
+                    // Continue synchronization
                 }
 
             } while (cursor.moveToNext());

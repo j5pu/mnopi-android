@@ -12,9 +12,11 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -49,7 +51,7 @@ public class WebSearchDataHandler extends DataHandler {
 	}
 
 	@Override
-	public void sendData(Account account) throws Exception {
+	public void sendData(Account account, SyncResult syncResult) throws Exception {
         // Get data from content provider
         String[] projection = new String[]{
                 WebSearch._ID,
@@ -83,10 +85,13 @@ public class WebSearchDataHandler extends DataHandler {
                     Uri deleteUri = ContentUris.withAppendedId(DataProvider.WEB_SEARCH_URI, searchId);
                     cr.delete(deleteUri, null, null);
 
-                } catch (AuthenticatorException ex) {
-                    throw ex;
                 } catch (Exception ex) {
-                    // Continue sending other records
+                    // All problems that indicate that the resource could not be created are
+                    // considered authExceptions as this is marked as hard error (shown in account)
+                    Log.e("Sync adapter", "Server response: web search resource not created");
+                    syncResult.stats.numAuthExceptions++;
+
+                    // Continue synchronization
                 }
 
             } while (cursor.moveToNext());
