@@ -47,5 +47,11 @@ public class AccountGeneral {
         return getLoggedUserResource(context, account);
     }
 
+    public static boolean isLogged(Context context) {
+        AccountManager mAccountManager = AccountManager.get(context);
+        Account[] mnopiAccounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+        return (mnopiAccounts.length > 0);
+    }
+
 
 }
