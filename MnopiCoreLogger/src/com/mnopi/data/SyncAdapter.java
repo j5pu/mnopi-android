@@ -18,9 +18,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
     private final AccountManager mAccountManager;
     ContentResolver mContentResolver;
+    Context mContext;
 
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
+        mContext = context;
         mAccountManager = AccountManager.get(context);
         mContentResolver = context.getContentResolver();
 
@@ -28,6 +30,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
+        mContext = context;
         mAccountManager = AccountManager.get(context);
         mContentResolver = context.getContentResolver();
     }
@@ -35,6 +38,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle bundle, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.i(TAG, "Beginning network synchronization");
+
+        // Handlers must be recreated if the main activity was destroyed
+        if (!DataHandlerRegistry.isUsed()) {
+            MnopiApplication.initHandlerRegistries(mContext);
+        }
+
         DataHandlerRegistry sendRegistry =
                 DataHandlerRegistry.getInstance(MnopiApplication.SEND_TO_SERVER_REGISTRY);
         try {
