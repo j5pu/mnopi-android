@@ -1,5 +1,7 @@
 package com.mnopi.data;
 
+import android.accounts.Account;
+import android.content.SyncResult;
 import android.os.Bundle;
 
 import java.util.HashMap;
@@ -96,21 +98,21 @@ public class DataHandlerRegistry {
      * Calls send on the specified handler
      * @param key key of the handler
      */
-    public void sendData(String key) {
+    public void sendData(String key, Account account, SyncResult syncResult) throws Exception {
         if (enabled) {
-            registry.get(key).sendData();
+            registry.get(key).sendData(account, syncResult);
         }
     }
 
     /**
      * Sends to the server all the information managed by the handlers
      */
-    public void sendAll() {
+    public void sendAll(Account account, SyncResult syncResult) throws Exception {
         DataHandler handler;
         if (enabled) {
             for (String handlerKey : this.getHandlersKeys()) {
                 handler = registry.get(handlerKey);
-                handler.sendData();
+                handler.sendData(account, syncResult);
             }
         }
     }

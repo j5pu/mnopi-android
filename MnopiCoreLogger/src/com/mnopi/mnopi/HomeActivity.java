@@ -1,6 +1,10 @@
 package com.mnopi.mnopi;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,42 +18,60 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.mnopi.authentication.AccountGeneral;
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
-import com.mnopi.utils.Connectivity;
 
-public class WelcomeActivity extends Activity{
-	
-	private Button btnSendImmediately;
+public class HomeActivity extends Activity{
+
 	private Button btnPermissionConsole;
 	private Button btnViewData;
     private TextView txtQueriesNumber;
     private TextView txtPagesNumber;
 	private Switch butDataCollector;
 	private Context mContext;
-    private Boolean isSent;
+    private AccountManager mAccountManager;
+    private OnAccountsUpdateListener accountsListener;
 
+    private boolean transitionToLoginStarted = false;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome);
+        setContentView(R.layout.home);
         if (!DataHandlerRegistry.isUsed()) {
             MnopiApplication.initHandlerRegistries(this);
         }
-        
+
         mContext = this;
-        btnSendImmediately = (Button) findViewById(R.id.btnSendImmediately);
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
         btnViewData = (Button) findViewById(R.id.btnViewData);
         butDataCollector = (Switch) findViewById(R.id.butDataCollector);
-        isSent = false;
+
+        mAccountManager = AccountManager.get(this);
+
+        // If the Mnopi account was removed the application must log out
+        accountsListener = new OnAccountsUpdateListener() {
+            @Override
+            public void onAccountsUpdated(Account[] accounts) {
+                Account[] mnopiAccounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+                if (mnopiAccounts.length == 0 && !transitionToLoginStarted) {
+                    Intent i = new Intent(mContext, PromptLoginActivity.class);
+                    startActivity(i);
+                    finish();
+                    // Avoid listener to be called before the activity is actually destroyed
+                    transitionToLoginStarted = true;
+                }
+                return;
+            }
+        };
+
+        mAccountManager.addOnAccountsUpdatedListener(accountsListener, null, true);
 
         btnPermissionConsole.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
-        		Intent intent = new Intent(WelcomeActivity.this,
+        		Intent intent = new Intent(HomeActivity.this,
 						PermissionActivity.class);
 				startActivity(intent);
         	}        	
@@ -57,44 +79,12 @@ public class WelcomeActivity extends Activity{
         
         btnViewData.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View view) {
-        		Intent intent = new Intent(WelcomeActivity.this,
+        		Intent intent = new Intent(HomeActivity.this,
 						ViewDataActivity.class);
 				startActivity(intent);
         	}        	
         });
         
-        btnSendImmediately.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View view) {
-        		if (Connectivity.isOnline(mContext)){
-                    DataLogOpenHelper dbHelper = new DataLogOpenHelper(mContext);
-                    SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-                    int queryNumber = 0;
-                    int pagesNumber = 0;
-
-                    Cursor cursor = db.rawQuery("select * from web_searches", null);
-                    queryNumber = cursor.getCount();
-                    cursor.close();
-
-                    cursor = db.rawQuery("select * from visited_web_pages", null);
-                    pagesNumber = cursor.getCount();
-                    cursor.close();
-                    db.close();
-                    isSent = (queryNumber + pagesNumber) == 0 ;
-                    if (!isSent){
-                        DataHandlerRegistry sendRegistry =
-                                DataHandlerRegistry.getInstance(MnopiApplication.SEND_TO_SERVER_REGISTRY);
-                        sendRegistry.sendAll();
-                        isSent = true;
-                    }
-        		}
-        		else{
-                    Toast toast = Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_LONG);
-					toast.show();
-			    }
-        	}
-        });
-
         butDataCollector.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -180,6 +170,14 @@ public class WelcomeActivity extends Activity{
         DataHandlerRegistry.clearRegistries();
     }
 
+    private void removeMnopiAccount(){
+        AccountManager mAccountManager = AccountManager.get(this);
+        Account[] accounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
+
+        // If we are logged there must be exactly one account
+        mAccountManager.removeAccount(accounts[0], null, null);
+    }
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
@@ -187,10 +185,7 @@ public class WelcomeActivity extends Activity{
 	    case R.id.action_logout:
             clearSessionToken();
             resetHandlers();
-
-			Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-			startActivity(intent);
-			finish();
+            removeMnopiAccount();
 	        return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
@@ -204,5 +199,12 @@ public class WelcomeActivity extends Activity{
 				Context.MODE_PRIVATE);
 	    butDataCollector.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_IS_ALLOWED, true));
 	}
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        mAccountManager.removeOnAccountsUpdatedListener(accountsListener);
+    }
 	
 }

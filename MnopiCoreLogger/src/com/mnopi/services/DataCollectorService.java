@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.mnopi.authentication.AccountGeneral;
 import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.mnopi.MnopiApplication;
 
@@ -32,7 +33,9 @@ public class DataCollectorService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
         Bundle bundle = intent.getExtras();
-        dataHandlers.saveData(bundle.getString("handler_key"), bundle);
+        if (AccountGeneral.isLogged(this)){
+            dataHandlers.saveData(bundle.getString("handler_key"), bundle);
+        }
 	}
 
 }
