@@ -74,18 +74,18 @@ public class PageVisitedDataHandler extends DataHandler {
         Cursor cursor = cr.query(pageVisitedUri, projection, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()){
-            do {
 
-                String user = AccountGeneral.getLoggedUserResource(context, account);
+            String user = AccountGeneral.getLoggedUserResource(context, account);
+            AccountManager mAccountManager = AccountManager.get(context);
+            String authToken = mAccountManager.blockingGetAuthToken(account,
+                    MnopiAuthenticator.STANDARD_ACCOUNT_TYPE, true);
+
+            do {
                 String url = cursor.getString(cursor.getColumnIndex(PageVisited.COL_URL));
                 String date = cursor.getString(cursor.getColumnIndex(PageVisited.COL_DATE));
                 String htmlCode = cursor.getString(cursor.getColumnIndex(PageVisited.COL_HTML_CODE));
 
                 try {
-                    AccountManager mAccountManager = AccountManager.get(context);
-                    String authToken = mAccountManager.blockingGetAuthToken(account,
-                            MnopiAuthenticator.STANDARD_ACCOUNT_TYPE, true);
-
                     HashMap<String, String> response = ServerApi.sendPageVisited(user,
                             url, date, htmlCode, authToken);
 

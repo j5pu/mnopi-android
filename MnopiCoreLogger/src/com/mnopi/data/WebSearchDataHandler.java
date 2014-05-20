@@ -66,17 +66,19 @@ public class WebSearchDataHandler extends DataHandler {
         Cursor cursor = cr.query(webSearchUri, projection, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
+
+            String user = AccountGeneral.getLoggedUserResource(context, account);
+            AccountManager mAccountManager = AccountManager.get(context);
+            String authToken = mAccountManager.blockingGetAuthToken(account,
+                    MnopiAuthenticator.STANDARD_ACCOUNT_TYPE, true);
+
             do {
 
-                String user = AccountGeneral.getLoggedUserResource(context, account);
                 String url = cursor.getString(cursor.getColumnIndex(WebSearch.COL_URL));
                 String date = cursor.getString(cursor.getColumnIndex(WebSearch.COL_DATE));
                 String query = cursor.getString(cursor.getColumnIndex(WebSearch.COL_QUERY));
 
                 try {
-                    AccountManager mAccountManager = AccountManager.get(context);
-                    String authToken = mAccountManager.blockingGetAuthToken(account,
-                            MnopiAuthenticator.STANDARD_ACCOUNT_TYPE, true);
 
                     HashMap<String, String> response = ServerApi.sendWebSearch(user, date,
                             query, url, authToken);
