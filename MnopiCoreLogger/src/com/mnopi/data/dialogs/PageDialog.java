@@ -1,9 +1,9 @@
-package com.mnopi.dialogs;
+package com.mnopi.data.dialogs;
 
 import java.util.ArrayList;
 
 import com.mnopi.mnopi.R;
-import com.mnopi.models.PageVisited;
+import com.mnopi.data.models.PageVisited;
 
 import android.app.Dialog;
 import android.content.Context;

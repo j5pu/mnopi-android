@@ -4,6 +4,8 @@ import android.accounts.Account;
 import android.content.SyncResult;
 import android.os.Bundle;
 
+import com.mnopi.data.handlers.DataHandler;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

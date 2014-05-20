@@ -1,4 +1,4 @@
-package com.mnopi.data;
+package com.mnopi.data.handlers;
 
 import android.accounts.Account;
 import android.accounts.AuthenticatorException;
@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+
+import com.mnopi.data.DataLogOpenHelper;
 
 /**
  * Abstract for data handlers. They control how the data is received,

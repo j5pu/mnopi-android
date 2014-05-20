@@ -3,7 +3,6 @@ package com.mnopi.mnopi;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,10 +11,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.mnopi.adapters.QueryAdapter;
+import com.mnopi.data.adapters.QueryAdapter;
 import com.mnopi.data.DataProvider;
-import com.mnopi.dialogs.QueryDialog;
-import com.mnopi.models.Query;
+import com.mnopi.data.dialogs.QueryDialog;
+import com.mnopi.data.models.Query;
 
 import java.util.ArrayList;
 

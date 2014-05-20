@@ -10,9 +10,9 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.mnopi.adapters.QueryAdapter;
-import com.mnopi.dialogs.QueryDialog;
-import com.mnopi.models.Query;
+import com.mnopi.data.adapters.QueryAdapter;
+import com.mnopi.data.dialogs.QueryDialog;
+import com.mnopi.data.models.Query;
 import com.mnopi.utils.Connectivity;
 
 

@@ -1,24 +1,22 @@
-package com.mnopi.data;
+package com.mnopi.data.handlers;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.mnopi.authentication.AccountGeneral;
 import com.mnopi.authentication.MnopiAuthenticator;
+import com.mnopi.data.DataProvider;
 import com.mnopi.data.DataProvider.PageVisited;
+import com.mnopi.data.handlers.DataHandler;
 import com.mnopi.utils.ServerApi;
 
 import java.util.HashMap;

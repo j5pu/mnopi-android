@@ -1,4 +1,4 @@
-package com.mnopi.models;
+package com.mnopi.data.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

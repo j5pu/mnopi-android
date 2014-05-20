@@ -27,8 +27,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.mnopi.mnopi.MySSLSocketFactory;
-
 public class Connectivity {
 
 	public static boolean isOnline(Context context) {

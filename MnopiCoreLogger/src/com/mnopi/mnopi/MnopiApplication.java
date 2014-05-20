@@ -3,11 +3,10 @@ package com.mnopi.mnopi;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.mnopi.data.DataHandlerRegistry;
-import com.mnopi.data.PageVisitedDataHandler;
-import com.mnopi.data.WebSearchDataHandler;
+import com.mnopi.data.handlers.PageVisitedDataHandler;
+import com.mnopi.data.handlers.WebSearchDataHandler;
 
 public class MnopiApplication extends Application {
 

@@ -11,10 +11,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.mnopi.adapters.PageAdapter;
+import com.mnopi.data.adapters.PageAdapter;
 import com.mnopi.data.DataProvider;
-import com.mnopi.dialogs.PageDialog;
-import com.mnopi.models.PageVisited;
+import com.mnopi.data.dialogs.PageDialog;
+import com.mnopi.data.models.PageVisited;
 
 import java.net.MalformedURLException;
 import java.net.URL;

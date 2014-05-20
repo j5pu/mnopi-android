@@ -102,8 +102,6 @@ public class HomeActivity extends Activity{
         });
 
         /* Timer to know number of records saved */
-        //TODO: chapuza temporal
-
         Thread t = new Thread() {
 
             @Override
@@ -143,8 +141,8 @@ public class HomeActivity extends Activity{
         };
 
         t.start();
-
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

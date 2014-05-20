@@ -26,9 +26,9 @@ import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.mnopi.adapters.PageAdapter;
-import com.mnopi.dialogs.PageDialog;
-import com.mnopi.models.PageVisited;
+import com.mnopi.data.adapters.PageAdapter;
+import com.mnopi.data.dialogs.PageDialog;
+import com.mnopi.data.models.PageVisited;
 import com.mnopi.utils.Connectivity;
 
 public class ViewPagesVisitedActivity extends Activity{

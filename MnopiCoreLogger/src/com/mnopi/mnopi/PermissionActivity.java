@@ -11,8 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mnopi.data.DataHandlerRegistry;
-import com.mnopi.data.PageVisitedDataHandler;
-import com.mnopi.data.WebSearchDataHandler;
+import com.mnopi.data.handlers.PageVisitedDataHandler;
+import com.mnopi.data.handlers.WebSearchDataHandler;
 
 public class PermissionActivity extends Activity{
 	private Switch butPagesVisited;
