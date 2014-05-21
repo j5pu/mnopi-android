@@ -45,10 +45,6 @@
         <activity android:name="com.mnopi.authentication.RegisterActivity"></activity>
         <service android:name="com.mnopi.services.DataCollectorService"
             android:exported="true">
-            <intent-filter>
-                <action android:name="com.mnopi.services.DataCollectorService" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </service>
         <service android:name="com.mnopi.authentication.MnopiAuthenticatorService"
             android:exported="true">
