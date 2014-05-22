@@ -42,7 +42,6 @@ public class MnopiAuthenticator extends AbstractAccountAuthenticator{
             final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             intent.putExtra(AuthenticatorActivity.ARG_IS_ADDING_NEW_ACCOUNT, true);
-            intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 
             result = new Bundle();
             result.putParcelable(AccountManager.KEY_INTENT, intent);
