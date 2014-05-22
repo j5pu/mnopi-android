@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.handlers.PageVisitedDataHandler;
 import com.mnopi.data.handlers.WebSearchDataHandler;
 
@@ -21,52 +20,11 @@ public class MnopiApplication extends Application {
     public static final String PERMISSIONS_PREFERENCES = "mnopi_permissions";
     public static final String APPLICATION_PREFERENCES = "mnopi_application";
 
-    public static final String SEND_TO_SERVER_REGISTRY = "send_registry";
-    public static final String RECEIVE_FROM_SERVICE_REGISTRY = "receive_registry";
-
-    // General reception permission
-    public static final String RECEIVE_IS_ALLOWED = "receive_allowed";
-
     public static final String SESSION_TOKEN = "session_token";
     public static final String USER_RESOURCE = "user_resource";
     public static final String USERNAME = "user_name";
 
-    // Particular reception and sending permission
-    public static final String SEND_PAGE_IS_ALLOWED = "send_page_visited";
-    public static final String RECEIVE_PAGE_IS_ALLOWED = "receive_page_visited";
-    public static final String RECEIVE_HTML_IS_ALLOWED = "receive_html_visited";
-    public static final String SEND_SEARCH_IS_ALLOWED = "send_search_query";
-    public static final String RECEIVE_SEARCH_IS_ALLOWED = "receive_search_query";
-
-    public static void initHandlerRegistries(Context context) {
-
-        DataHandlerRegistry sendHandlerRegistry =
-                DataHandlerRegistry.getInstance(SEND_TO_SERVER_REGISTRY);
-        DataHandlerRegistry receiveHandlerRegistry =
-                DataHandlerRegistry.getInstance(RECEIVE_FROM_SERVICE_REGISTRY);
-
-        WebSearchDataHandler searchHandler = new WebSearchDataHandler(context.getApplicationContext());
-        PageVisitedDataHandler pageHandler = new PageVisitedDataHandler(context.getApplicationContext());
-
-        SharedPreferences settings = context.getSharedPreferences(
-                PERMISSIONS_PREFERENCES, Context.MODE_PRIVATE);
-
-        if (settings.getBoolean(SEND_SEARCH_IS_ALLOWED, true)) {
-            sendHandlerRegistry.bind(searchHandler.getKey(), searchHandler);
-        }
-        if (settings.getBoolean(SEND_PAGE_IS_ALLOWED, true)) {
-            sendHandlerRegistry.bind(pageHandler.getKey(), pageHandler);
-        }
-
-        pageHandler.setSaveHtmlVisited(settings.getBoolean(RECEIVE_HTML_IS_ALLOWED, true));
-
-        if (settings.getBoolean(RECEIVE_SEARCH_IS_ALLOWED, true)) {
-            receiveHandlerRegistry.bind(searchHandler.getKey(), searchHandler);
-        }
-        if (settings.getBoolean(RECEIVE_PAGE_IS_ALLOWED, true)) {
-            receiveHandlerRegistry.bind(pageHandler.getKey(), pageHandler);
-        }
-
-    }
+    // General reception permission
+    public static final String RECEIVE_IS_ALLOWED = "receive_allowed";
 
 }

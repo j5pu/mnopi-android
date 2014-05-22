@@ -28,7 +28,8 @@ import java.util.HashMap;
  */
 public class PageVisitedDataHandler extends DataHandler {
 
-	private static String HANDLER_KEY = "page_visited";
+	public static final String HANDLER_KEY = "page_visited";
+    public static final String HTML_VISITED_KEY = "html_visited";
 
     private boolean saveHtmlVisited = true;
 
@@ -108,13 +109,5 @@ public class PageVisitedDataHandler extends DataHandler {
     public void setSaveHtmlVisited(boolean saveHtmlVisited) {
         this.saveHtmlVisited = saveHtmlVisited;
     }
-
-	/**
-	 * Returns the handler key for looking up in the registry
-	 * @return
-	 */
-	public static String getKey() {
-		return HANDLER_KEY;
-	}
 
 }

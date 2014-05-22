@@ -28,7 +28,7 @@ import java.util.HashMap;
  */
 public class WebSearchDataHandler extends DataHandler {
 	
-	private static String HANDLER_KEY = "web_search";
+	public static final String HANDLER_KEY = "web_search";
     private Context context;
 
 	public WebSearchDataHandler(Context c){
@@ -101,13 +101,4 @@ public class WebSearchDataHandler extends DataHandler {
         }
         cursor.close();
     }
-
-	/**
-	 * Returns the handler key for looking up in the registry
-	 * @return handler key
-	 */
-	public static String getKey() {
-		return HANDLER_KEY;
-	}
-
 }
