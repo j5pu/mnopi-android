@@ -117,7 +117,10 @@ public class ServerApi {
         searchData.put("date", date);
 
         response = postRequest(SEND_WEB_SEARCH_URI, searchData, sessionToken);
-        if (Integer.parseInt(response.get(STATUS_CODE)) != HttpStatus.SC_CREATED) {
+        int responseStatCode = Integer.parseInt(response.get(STATUS_CODE));
+        if (responseStatCode == HttpStatus.SC_UNAUTHORIZED) {
+            throw new UnauthorizedException();
+        } else if (Integer.parseInt(response.get(STATUS_CODE)) != HttpStatus.SC_CREATED) {
             if (response.get("result").equals("ERR")) {
                 if (response.containsKey("reason")) {
                     throw new Exception(response.get("reason"));
@@ -153,7 +156,10 @@ public class ServerApi {
         pageVisitedData.put("date", date);
 
         response = postRequest(SEND_PAGE_VISITED_URI, pageVisitedData, sessionToken);
-        if (Integer.parseInt(response.get(STATUS_CODE)) != HttpStatus.SC_CREATED) {
+        int responseStatCode = Integer.parseInt(response.get(STATUS_CODE));
+        if (responseStatCode == HttpStatus.SC_UNAUTHORIZED){
+            throw new UnauthorizedException();
+        } else if (responseStatCode != HttpStatus.SC_CREATED) {
             if (response.get("result").equals("ERR")) {
                 if (response.containsKey("reason")) {
                     throw new Exception(response.get("reason"));

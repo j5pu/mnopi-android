@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +19,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.mnopi.authentication.AccountGeneral;
-import com.mnopi.data.DataHandlerRegistry;
 import com.mnopi.data.DataLogOpenHelper;
 
 public class HomeActivity extends Activity{
@@ -40,9 +38,6 @@ public class HomeActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
-        if (!DataHandlerRegistry.isUsed()) {
-            MnopiApplication.initHandlerRegistries(this);
-        }
 
         mContext = this;
         btnPermissionConsole = (Button) findViewById(R.id.btnPermissionConsole);
@@ -88,10 +83,6 @@ public class HomeActivity extends Activity{
         butDataCollector.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-
-                DataHandlerRegistry receiveHandlerRegistry = DataHandlerRegistry.getInstance(
-                        MnopiApplication.RECEIVE_FROM_SERVICE_REGISTRY);
-                receiveHandlerRegistry.setEnabled(isChecked);
 
                 SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
                         Context.MODE_PRIVATE);
@@ -158,14 +149,12 @@ public class HomeActivity extends Activity{
         editor.commit();
     }
 
-    public void resetHandlers() {
+    public void resetPermissions() {
         SharedPreferences permissions = getSharedPreferences(
                 MnopiApplication.PERMISSIONS_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = permissions.edit();
         editor.clear();
         editor.commit();
-
-        DataHandlerRegistry.clearRegistries();
     }
 
     private void removeMnopiAccount(){
@@ -182,7 +171,7 @@ public class HomeActivity extends Activity{
 	    switch (item.getItemId()) {
 	    case R.id.action_logout:
             clearSessionToken();
-            resetHandlers();
+            resetPermissions();
             removeMnopiAccount();
 	        return true;
 	    default:

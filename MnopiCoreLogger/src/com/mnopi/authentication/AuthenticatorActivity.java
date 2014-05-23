@@ -74,13 +74,19 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
                     Bundle b = new Bundle();
                     result.putExtras(b);
 
-                    // Cancel login: next time the app is loaded the token will be present
-                    setAccountAuthenticatorResult(null);
-                    setResult(RESULT_OK, result);
-                    finish();
+                    // if token is present now cancel login
+                    String authToken = null;
+                    authToken = mAccountManager.peekAuthToken(mnopiAccounts[0],
+                            MnopiAuthenticator.STANDARD_ACCOUNT_TYPE);
 
-                    // Avoid listener to be called before the activity is actually destroyed
-                    transitionToHomeStarted = true;
+                    if (authToken != null){
+                        setAccountAuthenticatorResult(null);
+                        setResult(RESULT_OK, result);
+                        finish();
+
+                        // Avoid listener to be called before the activity is actually destroyed
+                        transitionToHomeStarted = true;
+                    }
                 }
                 return;
             }

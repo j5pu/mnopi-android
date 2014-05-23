@@ -6,6 +6,7 @@ import com.mnopi.data.DataProvider;
 import com.mnopi.data.DataProvider.WebSearch;
 import com.mnopi.data.handlers.DataHandler;
 import com.mnopi.utils.ServerApi;
+import com.mnopi.utils.UnauthorizedException;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -28,7 +29,7 @@ import java.util.HashMap;
  */
 public class WebSearchDataHandler extends DataHandler {
 	
-	private static String HANDLER_KEY = "web_search";
+	public static final String HANDLER_KEY = "web_search";
     private Context context;
 
 	public WebSearchDataHandler(Context c){
@@ -88,9 +89,17 @@ public class WebSearchDataHandler extends DataHandler {
                     Uri deleteUri = ContentUris.withAppendedId(DataProvider.WEB_SEARCH_URI, searchId);
                     cr.delete(deleteUri, null, null);
 
+                } catch (UnauthorizedException ex) {
+                    syncResult.stats.numAuthExceptions++;
+                    throw ex;
                 } catch (Exception ex) {
-                    // All problems that indicate that the resource could not be created are
+                    // All other problems that indicate that the resource could not be created are
                     // considered authExceptions as this is marked as hard error (shown in account)
+                    if (ex.getLocalizedMessage().equalsIgnoreCase("BAD_PARAMETERS")){
+                        int searchId = cursor.getInt(cursor.getColumnIndex(WebSearch._ID));
+                        Uri deleteUri = ContentUris.withAppendedId(DataProvider.WEB_SEARCH_URI, searchId);
+                        cr.delete(deleteUri, null, null);
+                    }
                     Log.e("Sync adapter", "Server response: web search resource not created");
                     syncResult.stats.numAuthExceptions++;
 
@@ -101,13 +110,4 @@ public class WebSearchDataHandler extends DataHandler {
         }
         cursor.close();
     }
-
-	/**
-	 * Returns the handler key for looking up in the registry
-	 * @return handler key
-	 */
-	public static String getKey() {
-		return HANDLER_KEY;
-	}
-
 }

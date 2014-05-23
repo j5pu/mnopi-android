@@ -18,6 +18,7 @@ import com.mnopi.data.DataProvider;
 import com.mnopi.data.DataProvider.PageVisited;
 import com.mnopi.data.handlers.DataHandler;
 import com.mnopi.utils.ServerApi;
+import com.mnopi.utils.UnauthorizedException;
 
 import java.util.HashMap;
 
@@ -28,7 +29,8 @@ import java.util.HashMap;
  */
 public class PageVisitedDataHandler extends DataHandler {
 
-	private static String HANDLER_KEY = "page_visited";
+	public static final String HANDLER_KEY = "page_visited";
+    public static final String HTML_VISITED_KEY = "html_visited";
 
     private boolean saveHtmlVisited = true;
 
@@ -91,9 +93,17 @@ public class PageVisitedDataHandler extends DataHandler {
                     Uri deleteUri = ContentUris.withAppendedId(DataProvider.PAGE_VISITED_URI, pageId);
                     cr.delete(deleteUri, null, null);
 
+                } catch (UnauthorizedException ex) {
+                    syncResult.stats.numAuthExceptions++;
+                    throw ex;
                 } catch (Exception ex) {
                     // All problems that indicate that the resource could not be created are
                     // considered authExceptions as this is marked as hard error (shown in account)
+                    if (ex.getLocalizedMessage().equalsIgnoreCase("BAD_PARAMETERS")){
+                        int pageId = cursor.getInt(cursor.getColumnIndex(DataProvider.PageVisited._ID));
+                        Uri deleteUri = ContentUris.withAppendedId(DataProvider.PAGE_VISITED_URI, pageId);
+                        cr.delete(deleteUri, null, null);
+                    }
                     Log.e("Sync adapter", "Server response: page visited resource not created");
                     syncResult.stats.numAuthExceptions++;
 
@@ -108,13 +118,5 @@ public class PageVisitedDataHandler extends DataHandler {
     public void setSaveHtmlVisited(boolean saveHtmlVisited) {
         this.saveHtmlVisited = saveHtmlVisited;
     }
-
-	/**
-	 * Returns the handler key for looking up in the registry
-	 * @return
-	 */
-	public static String getKey() {
-		return HANDLER_KEY;
-	}
 
 }
