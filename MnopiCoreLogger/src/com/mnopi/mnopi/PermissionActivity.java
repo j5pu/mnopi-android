@@ -47,19 +47,21 @@ public class PermissionActivity extends Activity{
                     butHtmlVisited.setChecked(false);
                     butHtmlVisited.setVisibility(View.GONE);
                     txtHtml.setVisibility(View.GONE);
+
+                    setPermissionSharedPrefs(PageVisitedDataHandler.HANDLER_KEY, false);
+                    setPermissionSharedPrefs(PageVisitedDataHandler.HTML_VISITED_KEY, false);
                 }
                 else{
                 	butHtmlVisited.setVisibility(View.VISIBLE);
                 	txtHtml.setVisibility(View.VISIBLE);
-                }
 
-                if (!isChecked) {
-                    setPermissionSharedPreference(PageVisitedDataHandler.HANDLER_KEY, false);
-                    setPermissionSharedPreference(PageVisitedDataHandler.HTML_VISITED_KEY, false);
-                } else {
-                    setPermissionSharedPreference(PageVisitedDataHandler.HANDLER_KEY, true);
-                }
+                    /* If the pages visited button was set previously, html permission is on */
+                    if (!getPermissionSharedPrefs(PageVisitedDataHandler.HANDLER_KEY)) {
+                        butHtmlVisited.setChecked(true);
+                    }
 
+                    setPermissionSharedPrefs(PageVisitedDataHandler.HANDLER_KEY, true);
+                }
             }
             
         });
@@ -71,7 +73,7 @@ public class PermissionActivity extends Activity{
                 if (!butPagesVisited.isChecked()){
                 	butHtmlVisited.setChecked(false);
                 } else {
-                    setPermissionSharedPreference(PageVisitedDataHandler.HTML_VISITED_KEY, isChecked);
+                    setPermissionSharedPrefs(PageVisitedDataHandler.HTML_VISITED_KEY, isChecked);
                 }
             }
         });
@@ -80,7 +82,7 @@ public class PermissionActivity extends Activity{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                setPermissionSharedPreference(WebSearchDataHandler.HANDLER_KEY, isChecked);
+                setPermissionSharedPrefs(WebSearchDataHandler.HANDLER_KEY, isChecked);
 
             }
         });
@@ -92,7 +94,7 @@ public class PermissionActivity extends Activity{
      * @param permission
      * @param isActive
      */
-    public void setPermissionSharedPreference(String permission, boolean isActive) {
+    public void setPermissionSharedPrefs(String permission, boolean isActive) {
 
         SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
                 Context.MODE_PRIVATE);
@@ -100,6 +102,18 @@ public class PermissionActivity extends Activity{
 
         editor.putBoolean(permission, isActive);
         editor.commit();
+    }
+
+    /**
+     * Gets the value of a given permission
+     * @param permission
+     * @return
+     */
+    public boolean getPermissionSharedPrefs(String permission) {
+        SharedPreferences settings = this.getSharedPreferences(
+                MnopiApplication.PERMISSIONS_PREFERENCES, Context.MODE_PRIVATE);
+
+        return settings.getBoolean(permission, true);
     }
 
 	@Override
