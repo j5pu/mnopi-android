@@ -6,6 +6,7 @@ import com.mnopi.data.DataProvider;
 import com.mnopi.data.DataProvider.WebSearch;
 import com.mnopi.data.handlers.DataHandler;
 import com.mnopi.utils.ServerApi;
+import com.mnopi.utils.UnauthorizedException;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -88,8 +89,11 @@ public class WebSearchDataHandler extends DataHandler {
                     Uri deleteUri = ContentUris.withAppendedId(DataProvider.WEB_SEARCH_URI, searchId);
                     cr.delete(deleteUri, null, null);
 
+                } catch (UnauthorizedException ex) {
+                    syncResult.stats.numAuthExceptions++;
+                    throw ex;
                 } catch (Exception ex) {
-                    // All problems that indicate that the resource could not be created are
+                    // All other problems that indicate that the resource could not be created are
                     // considered authExceptions as this is marked as hard error (shown in account)
                     Log.e("Sync adapter", "Server response: web search resource not created");
                     syncResult.stats.numAuthExceptions++;
