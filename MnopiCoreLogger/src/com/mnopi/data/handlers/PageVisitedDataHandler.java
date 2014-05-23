@@ -18,6 +18,7 @@ import com.mnopi.data.DataProvider;
 import com.mnopi.data.DataProvider.PageVisited;
 import com.mnopi.data.handlers.DataHandler;
 import com.mnopi.utils.ServerApi;
+import com.mnopi.utils.UnauthorizedException;
 
 import java.util.HashMap;
 
@@ -92,6 +93,9 @@ public class PageVisitedDataHandler extends DataHandler {
                     Uri deleteUri = ContentUris.withAppendedId(DataProvider.PAGE_VISITED_URI, pageId);
                     cr.delete(deleteUri, null, null);
 
+                } catch (UnauthorizedException ex) {
+                    syncResult.stats.numAuthExceptions++;
+                    throw ex;
                 } catch (Exception ex) {
                     // All problems that indicate that the resource could not be created are
                     // considered authExceptions as this is marked as hard error (shown in account)
