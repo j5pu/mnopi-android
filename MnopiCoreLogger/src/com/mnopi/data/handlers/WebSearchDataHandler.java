@@ -95,7 +95,8 @@ public class WebSearchDataHandler extends DataHandler {
                 } catch (Exception ex) {
                     // All other problems that indicate that the resource could not be created are
                     // considered authExceptions as this is marked as hard error (shown in account)
-                    if (ex.getLocalizedMessage().equalsIgnoreCase("BAD_PARAMETERS")){
+                    String exMessage = ex.getLocalizedMessage();
+                    if (exMessage != null && exMessage.equalsIgnoreCase("BAD_PARAMETERS")) {
                         int searchId = cursor.getInt(cursor.getColumnIndex(WebSearch._ID));
                         Uri deleteUri = ContentUris.withAppendedId(DataProvider.WEB_SEARCH_URI, searchId);
                         cr.delete(deleteUri, null, null);
