@@ -1,18 +1,24 @@
 package com.mnopi.utils;
 
+import com.mnopi.data.models.PageVisited;
+import com.mnopi.data.models.Query;
 import com.mnopi.mnopi.MnopiApplication;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -49,6 +55,20 @@ public class ServerApi {
     }
 
     /**
+     *
+     * @param jsonData
+     * @param metaResponse empty hashmap, results of "meta" part of api call will be written in here
+     * @throws JSONException
+     */
+    public static void jsonToMap(JSONObject jsonData, HashMap<String, String> metaResponse) throws JSONException {
+        Iterator<String> keyItr = jsonData.keys();
+        while(keyItr.hasNext()) {
+            String key = keyItr.next();
+            metaResponse.put(key, jsonData.getString(key));
+        }
+    }
+
+    /**
      * Performs a POST request to the given URI, transforming the parameters map to JSON.
      * @param uri
      * @param parameters
@@ -56,7 +76,7 @@ public class ServerApi {
      * under the key STATUS_CODE
      * @throws Exception
      */
-    public static HashMap<String, String> postRequest(String uri,
+    private static HashMap<String, String> postRequest(String uri,
                                                       HashMap<String, String> parameters,
                                                       String sessionToken)
             throws Exception {
@@ -91,6 +111,127 @@ public class ServerApi {
 
         return resultMap;
 
+    }
+
+    private static String getRequest(String uri, String sessionToken) throws Exception {
+        HttpClient httpClient = Connectivity.getNewHttpClient();
+        HttpGet getPages = new HttpGet(uri);
+        getPages.setHeader("Content-Type", "application/json");
+        getPages.setHeader("Session-Token", sessionToken);
+
+        HttpResponse response = httpClient.execute(getPages);
+        String respStr = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
+
+        return respStr;
+    }
+
+    /**
+     *
+     * @param sessionToken
+     * @param resourceUrl
+     * @param metaResponse empty hashmap, results of "meta" part of api call will be written in here
+     * @return
+     * @throws Exception
+     */
+    public static ArrayList<Query> getQueries(String sessionToken, String resourceUrl,
+                                              HashMap<String, String> metaResponse)
+            throws Exception {
+
+        String response = getRequest(resourceUrl, sessionToken);
+        JSONObject respJson = new JSONObject(response);
+
+        // Get meta data
+        JSONObject respMetaJson = respJson.getJSONObject("meta");
+        jsonToMap(respMetaJson, metaResponse);
+
+        // Get pages visited
+        JSONArray jsonQueries = respJson.getJSONArray("objects");
+
+        ArrayList<Query> resultQueries = new ArrayList<Query>();
+        for (int i = 0; i < jsonQueries.length(); i++) {
+            JSONObject queryObject = jsonQueries.getJSONObject(i);
+            final String date = queryObject.getString("date");
+            final String search_query = queryObject.getString("search_query");
+            final String resource_uri = queryObject.getString("resource_uri");
+            final String result = queryObject.getString("search_results");
+            final String dateFormated = date.substring(0, 10);
+            final String hour = date.substring(11, 19);
+            resultQueries.add(new Query(resource_uri, search_query
+                    , dateFormated, result, hour));
+        }
+        return resultQueries;
+    }
+
+    /**
+     * Gets page already visited
+     * @param sessionToken
+     * @param resourceUrl url with the resource containing pages_visited
+     * @param metaResponse empty hashmap, results of "meta" part of api call will be written in here
+     * @return
+     * @throws Exception
+     */
+    public static ArrayList<PageVisited> getPagesVisited(String sessionToken, String resourceUrl,
+                                                         HashMap<String, String> metaResponse)
+            throws Exception {
+
+        String response = getRequest(resourceUrl, sessionToken);
+        JSONObject respJson = new JSONObject(response);
+
+        // Get meta data
+        JSONObject respMetaJson = respJson.getJSONObject("meta");
+        jsonToMap(respMetaJson, metaResponse);
+
+        // Get pages visited
+        JSONArray jsonPagesVisited = respJson.getJSONArray("objects");
+
+        ArrayList<PageVisited> resultPagesVisited = new ArrayList<PageVisited>();
+        for (int i = 0; i < jsonPagesVisited.length(); i++) {
+            JSONObject queryObject = jsonPagesVisited.getJSONObject(i);
+            final String date = queryObject.getString("date");
+            String url = queryObject.getString("page_visited");
+            final String resourceUri = queryObject.getString("resource_uri");
+
+            if(!url.startsWith("http") && !url.startsWith("https")){
+                url = "http://" + url;
+            }
+
+            URL netUrl = new URL(url);
+            String host = netUrl.getHost();
+            if(host.startsWith("www")){
+                host = host.substring("www".length()+1);
+            }
+            final String dateFormatted = date.substring(0, 10);
+            final String hour = date.substring(11, 19);
+            ArrayList<String> categoriesAux = new ArrayList<String>();
+            final ArrayList<String> categories = categoriesAux;
+
+            resultPagesVisited.add(new PageVisited(url, host, dateFormatted, hour, resourceUri, categories));
+        }
+
+        return resultPagesVisited;
+
+    }
+
+    /**
+     *
+     * @param sessionToken
+     * @param resourceUrl
+     * @return
+     * @throws Exception
+     */
+    public static ArrayList<String> getCategories (String sessionToken, String resourceUrl)
+            throws Exception{
+        String response = getRequest(resourceUrl, sessionToken);
+        ArrayList<String> resultCategories = new ArrayList<String>();
+
+        JSONArray respJsonCat = new JSONArray(response);
+        if (respJsonCat.length() != 0){
+            for (int j=0; j<respJsonCat.length(); j++) {
+                String category = respJsonCat.getString(j);
+                resultCategories.add(category);
+            }
+        }
+        return resultCategories;
     }
 
     /**

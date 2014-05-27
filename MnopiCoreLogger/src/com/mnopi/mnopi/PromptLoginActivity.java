@@ -32,14 +32,6 @@ public class PromptLoginActivity extends Activity {
         getToken();
 	}
 
-    private void setTokenOnPreferences(String authToken){
-        SharedPreferences settings = getSharedPreferences(
-                MnopiApplication.APPLICATION_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(MnopiApplication.SESSION_TOKEN, authToken);
-        editor.commit();
-    }
-
     private void getToken() {
         final AccountManagerFuture<Bundle> future = mAccountManager.getAuthTokenByFeatures(AccountGeneral.ACCOUNT_TYPE,
                 MnopiAuthenticator.STANDARD_ACCOUNT_TYPE, null, this, null, null,
@@ -54,7 +46,6 @@ public class PromptLoginActivity extends Activity {
                         try {
                             Bundle bundle = future.getResult();
                             final String authToken = bundle.getString(AccountManager.KEY_AUTHTOKEN);
-                            setTokenOnPreferences(authToken);
 
                             Log.d("mnopi", "GetTokenForAccount Bundle is " + bundle);
 

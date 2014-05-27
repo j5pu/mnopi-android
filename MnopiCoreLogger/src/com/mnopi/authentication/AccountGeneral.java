@@ -2,7 +2,11 @@ package com.mnopi.authentication;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.content.Context;
+
+import java.io.IOException;
 
 public class AccountGeneral {
     /**
@@ -47,10 +51,35 @@ public class AccountGeneral {
         return getLoggedUserResource(context, account);
     }
 
+    /**
+     *
+     * @param context
+     * @return
+     */
     public static boolean isLogged(Context context) {
         AccountManager mAccountManager = AccountManager.get(context);
         Account[] mnopiAccounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
         return (mnopiAccounts.length > 0);
+    }
+
+    /**
+     * Gets the authentication token for the account.
+     * It uses blockingGetAuthToken, so it can't be called in the main thread
+     * @param context
+     * @return
+     */
+    public static String blockingGetAuthToken(Context context) {
+        AccountManager mAccountManager = AccountManager.get(context);
+        Account mnopiAccount = getAccount(context);
+        String authToken = null;
+        try {
+            authToken = mAccountManager.blockingGetAuthToken(mnopiAccount,
+                    MnopiAuthenticator.STANDARD_ACCOUNT_TYPE, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            authToken = "";
+        }
+        return authToken;
     }
 
 
