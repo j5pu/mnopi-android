@@ -50,11 +50,8 @@ public class HomeActivity extends Activity{
         accountsListener = new OnAccountsUpdateListener() {
             @Override
             public void onAccountsUpdated(Account[] accounts) {
-
-
                 Account[] mnopiAccounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
                 if (mnopiAccounts.length == 0 && !transitionToLoginStarted) {
-
                     Intent i = new Intent(mContext, PromptLoginActivity.class);
                     startActivity(i);
                     finish();
@@ -144,18 +141,9 @@ public class HomeActivity extends Activity{
 		return true;
 	}
 
-    public void resetPermissions() {
-        SharedPreferences permissions = getSharedPreferences(
-                MnopiApplication.PERMISSIONS_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = permissions.edit();
-        editor.clear();
-        editor.commit();
-    }
-
     private void removeMnopiAccount(){
         AccountManager mAccountManager = AccountManager.get(this);
         Account[] accounts = mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE);
-
         // If we are logged there must be exactly one account
         mAccountManager.removeAccount(accounts[0], null, null);
     }
@@ -165,7 +153,6 @@ public class HomeActivity extends Activity{
 	    // Handle item selection
 	    switch (item.getItemId()) {
 	    case R.id.action_logout:
-            resetPermissions();
             removeMnopiAccount();
 	        return true;
 	    default:

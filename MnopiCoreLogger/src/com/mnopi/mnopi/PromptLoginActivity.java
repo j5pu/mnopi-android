@@ -7,13 +7,11 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-
 /**
+
  * Init class for the application. Automatically tries to recover a user token, which opens
  * the login screen if needed
  */

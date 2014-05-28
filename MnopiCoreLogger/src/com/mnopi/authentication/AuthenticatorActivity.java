@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import com.mnopi.data.DataProvider;
 import com.mnopi.mnopi.MnopiApplication;
-import com.mnopi.mnopi.PromptLoginActivity;
 import com.mnopi.mnopi.R;
 import com.mnopi.utils.Connectivity;
 import com.mnopi.utils.ServerApi;
@@ -20,6 +19,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -204,6 +204,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
             accountExtraInfo.putString(MnopiAuthenticator.KEY_USER_RESOURCE,
                     intent.getStringExtra(MnopiAuthenticator.KEY_USER_RESOURCE));
 
+            resetPermissions();
             // Creating the account on the device and setting the auth token we got
             // (Not setting the auth token will cause another call to the server to authenticate the user)
             ContentResolver.setIsSyncable(account, DataProvider.AUTHORITY, 1);
@@ -218,6 +219,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
         finish();
     }
 
+    public void resetPermissions() {
+        SharedPreferences permissions = getSharedPreferences(
+                MnopiApplication.PERMISSIONS_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = permissions.edit();
+        editor.clear();
+        editor.commit();
+    }
 
     /**
      * check all fields
