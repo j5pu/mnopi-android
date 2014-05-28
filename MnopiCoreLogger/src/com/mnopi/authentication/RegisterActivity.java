@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntity;
-
 import com.mnopi.mnopi.MnopiApplication;
 import com.mnopi.mnopi.R;
 import com.mnopi.utils.Connectivity;
@@ -32,11 +30,6 @@ public class RegisterActivity extends Activity {
     private EditText inputPassword2;
 	private Context mContext;
 	private ProgressDialog progress;
-	private String result = null;
-	private boolean has_result_error;
-	private String result_error;
-	private boolean any_error;
-	private String reason;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

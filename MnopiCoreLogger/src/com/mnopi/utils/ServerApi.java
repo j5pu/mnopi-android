@@ -113,6 +113,13 @@ public class ServerApi {
 
     }
 
+    /**
+     *
+     * @param uri
+     * @param sessionToken
+     * @return
+     * @throws Exception
+     */
     private static String getRequest(String uri, String sessionToken) throws Exception {
         HttpClient httpClient = Connectivity.getNewHttpClient();
         HttpGet getPages = new HttpGet(uri);
@@ -344,6 +351,14 @@ public class ServerApi {
         return response;
     }
 
+    /**
+     *
+     * @param userName
+     * @param password
+     * @param email
+     * @return
+     * @throws Exception
+     */
     public static HashMap<String, String> userSignUp(String userName, String password,
                                                      String email)
         throws Exception {

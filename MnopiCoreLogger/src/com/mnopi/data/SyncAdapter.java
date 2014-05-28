@@ -16,10 +16,7 @@ import com.mnopi.authentication.AccountGeneral;
 import com.mnopi.authentication.MnopiAuthenticator;
 import com.mnopi.data.handlers.PageVisitedDataHandler;
 import com.mnopi.data.handlers.WebSearchDataHandler;
-import com.mnopi.mnopi.MnopiApplication;
 import com.mnopi.utils.UnauthorizedException;
-
-import java.io.IOException;
 
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {

@@ -1,7 +1,6 @@
 package com.mnopi.data.handlers;
 
 import android.accounts.Account;
-import android.accounts.AuthenticatorException;
 import android.content.Context;
 import android.content.SyncResult;
 import android.database.sqlite.SQLiteDatabase;

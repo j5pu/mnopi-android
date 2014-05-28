@@ -38,7 +38,6 @@ public class Connectivity {
 		return false;
 	}
 
-
     public static HttpClient getNewHttpClient() {
         try {
             KeyStore trustStore = KeyStore.getInstance(KeyStore
@@ -65,8 +64,6 @@ public class Connectivity {
             return new DefaultHttpClient();
         }
     }
-
-
 
     /**
      * Convert byte array to hex string

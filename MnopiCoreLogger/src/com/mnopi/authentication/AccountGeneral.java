@@ -2,11 +2,7 @@ package com.mnopi.authentication;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.content.Context;
-
-import java.io.IOException;
 
 public class AccountGeneral {
     /**
