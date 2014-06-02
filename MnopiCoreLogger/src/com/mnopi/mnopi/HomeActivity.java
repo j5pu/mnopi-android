@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.mnopi.authentication.AccountGeneral;
 import com.mnopi.data.DataLogOpenHelper;
+import com.mnopi.data.DataProvider;
 
 public class HomeActivity extends Activity{
 
@@ -33,7 +35,7 @@ public class HomeActivity extends Activity{
     private OnAccountsUpdateListener accountsListener;
 
     private boolean transitionToLoginStarted = false;
-	
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +57,7 @@ public class HomeActivity extends Activity{
                     Intent i = new Intent(mContext, PromptLoginActivity.class);
                     startActivity(i);
                     finish();
+                    DataProvider.deleteDatabase(mContext);
                     // Avoid listener to be called before the activity is actually destroyed
                     transitionToLoginStarted = true;
                 }

@@ -205,6 +205,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity{
                     intent.getStringExtra(MnopiAuthenticator.KEY_USER_RESOURCE));
 
             resetPermissions();
+            DataProvider.deleteDatabase(mContext);
+
             // Creating the account on the device and setting the auth token we got
             // (Not setting the auth token will cause another call to the server to authenticate the user)
             ContentResolver.setIsSyncable(account, DataProvider.AUTHORITY, 1);

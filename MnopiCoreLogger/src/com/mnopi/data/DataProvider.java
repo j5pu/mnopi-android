@@ -1,6 +1,7 @@
 package com.mnopi.data;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -216,6 +217,16 @@ public class DataProvider extends ContentProvider {
                 return null;
         }
 
+    }
+
+    /**
+     * Delete all registries
+     * @param context
+     */
+    public static void deleteDatabase(Context context) {
+        ContentResolver cr = context.getContentResolver();
+        cr.delete(DataProvider.PAGE_VISITED_URI, null, null);
+        cr.delete(DataProvider.WEB_SEARCH_URI, null, null);
     }
 
 }
