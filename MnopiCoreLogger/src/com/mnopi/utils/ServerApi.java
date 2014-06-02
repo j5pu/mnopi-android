@@ -39,100 +39,6 @@ public class ServerApi {
     public final static String STATUS_CODE = "status_code";
 
     /**
-     * Converts JsonObject to HashMap
-     * @param jsonData
-     * @return HashMap with json values
-     * @throws JSONException
-     */
-    public static HashMap<String, String> jsonToMap(JSONObject jsonData) throws JSONException {
-        Iterator<String> keyItr = jsonData.keys();
-        HashMap<String, String> outMap = new HashMap<String, String>();
-        while(keyItr.hasNext()) {
-            String key = keyItr.next();
-            outMap.put(key, jsonData.getString(key));
-        }
-        return outMap;
-    }
-
-    /**
-     *
-     * @param jsonData
-     * @param metaResponse empty hashmap, results of "meta" part of api call will be written in here
-     * @throws JSONException
-     */
-    public static void jsonToMap(JSONObject jsonData, HashMap<String, String> metaResponse) throws JSONException {
-        Iterator<String> keyItr = jsonData.keys();
-        while(keyItr.hasNext()) {
-            String key = keyItr.next();
-            metaResponse.put(key, jsonData.getString(key));
-        }
-    }
-
-    /**
-     * Performs a POST request to the given URI, transforming the parameters map to JSON.
-     * @param uri
-     * @param parameters
-     * @return Map of key-value obtained from a JSON response. It contains the http status code
-     * under the key STATUS_CODE
-     * @throws Exception
-     */
-    private static HashMap<String, String> postRequest(String uri,
-                                                      HashMap<String, String> parameters,
-                                                      String sessionToken)
-            throws Exception {
-
-        HttpEntity resEntity;
-        HttpClient httpClient = Connectivity.getNewHttpClient();
-
-        HttpPost post = new HttpPost(uri);
-        post.setHeader("Content-Type", "application/json");
-        if (sessionToken != null) {
-            post.setHeader("Session-Token", sessionToken);
-        }
-
-        JSONObject postData = new JSONObject(parameters);
-
-        // StringEntity UTF-8
-        StringEntity entity = new StringEntity(postData.toString(), HTTP.UTF_8);
-        post.setEntity(entity);
-
-        HttpResponse response = httpClient.execute(post);
-        resEntity = response.getEntity();
-        final String responseStr = EntityUtils.toString(resEntity);
-
-        HashMap resultMap;
-        try {
-            JSONObject respJSON = new JSONObject(responseStr);
-            resultMap = jsonToMap(respJSON);
-        } catch (JSONException ex) {
-            resultMap = new HashMap<String, String>();
-        }
-        resultMap.put(STATUS_CODE, Integer.toString(response.getStatusLine().getStatusCode()));
-
-        return resultMap;
-
-    }
-
-    /**
-     *
-     * @param uri
-     * @param sessionToken
-     * @return
-     * @throws Exception
-     */
-    private static String getRequest(String uri, String sessionToken) throws Exception {
-        HttpClient httpClient = Connectivity.getNewHttpClient();
-        HttpGet getPages = new HttpGet(uri);
-        getPages.setHeader("Content-Type", "application/json");
-        getPages.setHeader("Session-Token", sessionToken);
-
-        HttpResponse response = httpClient.execute(getPages);
-        String respStr = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
-
-        return respStr;
-    }
-
-    /**
      *
      * @param sessionToken
      * @param resourceUrl
@@ -144,12 +50,12 @@ public class ServerApi {
                                               HashMap<String, String> metaResponse)
             throws Exception {
 
-        String response = getRequest(resourceUrl, sessionToken);
+        String response = ServerUtils.getRequest(resourceUrl, sessionToken);
         JSONObject respJson = new JSONObject(response);
 
         // Get meta data
         JSONObject respMetaJson = respJson.getJSONObject("meta");
-        jsonToMap(respMetaJson, metaResponse);
+        ServerUtils.jsonToMap(respMetaJson, metaResponse);
 
         // Get pages visited
         JSONArray jsonQueries = respJson.getJSONArray("objects");
@@ -181,12 +87,12 @@ public class ServerApi {
                                                          HashMap<String, String> metaResponse)
             throws Exception {
 
-        String response = getRequest(resourceUrl, sessionToken);
+        String response = ServerUtils.getRequest(resourceUrl, sessionToken);
         JSONObject respJson = new JSONObject(response);
 
         // Get meta data
         JSONObject respMetaJson = respJson.getJSONObject("meta");
-        jsonToMap(respMetaJson, metaResponse);
+        ServerUtils.jsonToMap(respMetaJson, metaResponse);
 
         // Get pages visited
         JSONArray jsonPagesVisited = respJson.getJSONArray("objects");
@@ -228,7 +134,7 @@ public class ServerApi {
      */
     public static ArrayList<String> getCategories (String sessionToken, String resourceUrl)
             throws Exception{
-        String response = getRequest(resourceUrl, sessionToken);
+        String response = ServerUtils.getRequest(resourceUrl, sessionToken);
         ArrayList<String> resultCategories = new ArrayList<String>();
 
         JSONArray respJsonCat = new JSONArray(response);
@@ -264,7 +170,7 @@ public class ServerApi {
         searchData.put("search_results", searchResults);
         searchData.put("date", date);
 
-        response = postRequest(SEND_WEB_SEARCH_URI, searchData, sessionToken);
+        response = ServerUtils.postRequest(SEND_WEB_SEARCH_URI, searchData, sessionToken);
         int responseStatCode = Integer.parseInt(response.get(STATUS_CODE));
         if (responseStatCode == HttpStatus.SC_UNAUTHORIZED) {
             throw new UnauthorizedException();
@@ -303,7 +209,7 @@ public class ServerApi {
         pageVisitedData.put("html_code", htmlCode);
         pageVisitedData.put("date", date);
 
-        response = postRequest(SEND_PAGE_VISITED_URI, pageVisitedData, sessionToken);
+        response = ServerUtils.postRequest(SEND_PAGE_VISITED_URI, pageVisitedData, sessionToken);
         int responseStatCode = Integer.parseInt(response.get(STATUS_CODE));
         if (responseStatCode == HttpStatus.SC_UNAUTHORIZED){
             throw new UnauthorizedException();
@@ -339,7 +245,7 @@ public class ServerApi {
         signInData.put("key", password);
         signInData.put("client", client);
 
-        response = postRequest(SIGN_IN_URI, signInData, null);
+         response = ServerUtils.postRequest(SIGN_IN_URI, signInData, null);
         if (response.get("result").equals("ERR")) {
             if (response.containsKey("reason")) {
                 throw new Exception(response.get("reason"));
@@ -370,7 +276,7 @@ public class ServerApi {
         signUpData.put("password", password);
         signUpData.put("email", email);
 
-        response = postRequest(SIGN_UP_URI, signUpData, null);
+        response = ServerUtils.postRequest(SIGN_UP_URI, signUpData, null);
         if (Integer.parseInt(response.get(STATUS_CODE)) != HttpStatus.SC_CREATED){
             if (response.containsKey("reason") && response.containsKey("erroneous_parameters")) {
                 throw new Exception(response.get("erroneous_parameters"));
