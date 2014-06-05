@@ -1,26 +1,18 @@
 package com.mnopi.mnopi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.mnopi.adapters.QueryAdapter;
-import com.mnopi.dialogs.QueryDialog;
-import com.mnopi.models.Query;
+import com.mnopi.authentication.AccountGeneral;
+import com.mnopi.data.adapters.QueryAdapter;
+import com.mnopi.data.dialogs.QueryDialog;
+import com.mnopi.data.models.Query;
 import com.mnopi.utils.Connectivity;
-
-
+import com.mnopi.utils.ServerApi;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,7 +30,7 @@ public class ViewQueriesActivity extends Activity{
 	private ArrayList<Query> queries;
 	private ListView listQueries;
 	private QueryAdapter qAdapter;
-	private Boolean there_are_more_queries;
+	private Boolean thereAreMoreQueries;
 	private Boolean queriesIsEmpty;
 	private String meta_next;
 	private Boolean sendingQueries;
@@ -48,12 +40,12 @@ public class ViewQueriesActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewqueries);  
-	
-		queries = new ArrayList<Query>();
+
+        queries = new ArrayList<Query>();
 		listQueries = (ListView) findViewById(R.id.listQueries);
 		qAdapter = new QueryAdapter(this, R.layout.query_item, queries );
 		listQueries.setAdapter(qAdapter);
-		there_are_more_queries = true;
+		thereAreMoreQueries = true;
 		queriesIsEmpty = false;
 		sendingQueries = false;
 		mContext = this;
@@ -68,7 +60,7 @@ public class ViewQueriesActivity extends Activity{
 	                int visibleItemCount, int totalItemCount) {
 	            // Check if the last view is visible
 	            if ((++firstVisibleItem + visibleItemCount > totalItemCount) 
-	            		&& there_are_more_queries) {
+	            		&& thereAreMoreQueries) {
 	            	if (!sendingQueries){
 	            		if ((Connectivity.isOnline(mContext)) && (!queriesIsEmpty)){
 	            			new GetQueries().execute(); 
@@ -106,11 +98,11 @@ public class ViewQueriesActivity extends Activity{
 		});
 
 	}
-	
+
 	
 	private class GetQueries extends AsyncTask<Void,Integer,Void> {
-		 
-		private String session_token;
+
+        private String sessionToken;
 		
 		@Override
 		protected void onPreExecute(){		
@@ -128,51 +120,29 @@ public class ViewQueriesActivity extends Activity{
 	    	}    
 	    	else{
 	    		if (meta_next.equals("null")){
-	    			there_are_more_queries = false;
+	    			thereAreMoreQueries = false;
 	    		}
     			urlString = MnopiApplication.SERVER_ADDRESS + meta_next;
 	    	}
-	    	if (there_are_more_queries){
-		    	HttpResponse response = null;
-		        SharedPreferences prefs = getBaseContext().getSharedPreferences(MnopiApplication.APPLICATION_PREFERENCES,
-		        		getBaseContext().MODE_PRIVATE);
-		        session_token = prefs.getString(MnopiApplication.SESSION_TOKEN, null);
+	    	if (thereAreMoreQueries){
+                sessionToken = AccountGeneral.blockingGetAuthToken(mContext);
 		        
 		        try{
-		             //HttpClient client = new DefaultHttpClient();
-		             HttpClient httpclient = Connectivity.getNewHttpClient();
-		             HttpGet getQueries = new HttpGet(urlString);
-		             getQueries.setHeader("Content-Type", "application/json");
-		             getQueries.setHeader("Session-Token", session_token);
-		             
-		             response = httpclient.execute(getQueries);
-		             String respStr = EntityUtils.toString(response.getEntity(), HTTP.UTF_8);
-		             
-		             Log.i("WE", respStr);
-		             JSONObject respJson = new JSONObject(respStr);
-		             JSONObject respMetaJson = respJson.getJSONObject("meta");
-					 meta_next = respMetaJson.getString("next");
-					 queriesIsEmpty = respMetaJson.getInt("total_count") == 0;
-					 
-					 JSONArray queriesObject = respJson.getJSONArray("objects");
-					 
-					 for (int i = 0; i < queriesObject.length(); i++) {
-						 JSONObject queryObject = queriesObject.getJSONObject(i);
-						 final String date = queryObject.getString("date");
-						 final String search_query = queryObject.getString("search_query");
-						 final String resource_uri = queryObject.getString("resource_uri");
-						 final String result = queryObject.getString("search_results");
-						 final String dateFormated = date.substring(0, 10);
-						 final String hour = date.substring(11, 19);
-						 runOnUiThread(new Runnable() {
-								@Override
-								public void run() {					 
-									 Query queryAux = new Query(resource_uri, search_query
-											 , dateFormated, result, hour);
-									 queries.add(queryAux);
-								}
-						 });		
-					 }
+                    HashMap<String, String> metaResponse = new HashMap<String, String>();
+                    final ArrayList<Query> searchQueries =
+                            ServerApi.getQueries(sessionToken, urlString, metaResponse);
+
+                    meta_next = metaResponse.get("next");
+                    queriesIsEmpty = Integer.parseInt(metaResponse.get("total_count")) == 0;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (Query query : searchQueries) {
+                                queries.add(query);
+                            }
+                        }
+                    });
+
 		        }
 		        catch (Exception ex){
 		             Log.e("Debug", "error: " + ex.getMessage(), ex);

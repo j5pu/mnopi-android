@@ -39,17 +39,11 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/btnSendImmediately"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/send_immediately" />
-
-        <Button
             android:id="@+id/btnPermissionConsole"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/permission_console" />
+            android:text="@string/permission_console"
+            android:layout_marginBottom="5dp"/>
 
         <Button
             android:id="@+id/btnViewData"

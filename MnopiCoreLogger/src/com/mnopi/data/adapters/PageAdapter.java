@@ -1,4 +1,4 @@
-package com.mnopi.adapters;
+package com.mnopi.data.adapters;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.mnopi.mnopi.R;
-import com.mnopi.models.PageVisited;
+import com.mnopi.data.models.PageVisited;
 
 public class PageAdapter extends ArrayAdapter<PageVisited>{
 	

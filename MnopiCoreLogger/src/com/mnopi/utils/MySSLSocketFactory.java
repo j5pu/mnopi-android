@@ -1,4 +1,4 @@
-package com.mnopi.mnopi;
+package com.mnopi.utils;
 
 import org.apache.http.conn.ssl.SSLSocketFactory;
 

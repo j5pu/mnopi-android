@@ -1,12 +1,17 @@
-package com.mnopi.models;
+package com.mnopi.data.models;
 
-public class Query {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Query implements Parcelable{
+
+
 	private String resource_uri;
 	private String query;
 	private String date;
 	private String result;
 	private String hour;
-	
+
 	public Query(){
 		super();
 	}
@@ -59,6 +64,19 @@ public class Query {
 	public void setResult(String result) {
 		this.result = result;
 	}
-	
-	
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(resource_uri);
+        parcel.writeString(query);
+        parcel.writeString(date);
+        parcel.writeString(result);
+        parcel.writeString(hour);
+    }
 }

@@ -1,10 +1,10 @@
-package com.mnopi.adapters;
+package com.mnopi.data.adapters;
 
 import java.util.ArrayList;
 
 
 import com.mnopi.mnopi.R;
-import com.mnopi.models.Query;
+import com.mnopi.data.models.Query;
 
 import android.app.Activity;
 import android.content.Context;

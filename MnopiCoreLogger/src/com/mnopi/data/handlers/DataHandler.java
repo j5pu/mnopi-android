@@ -1,8 +1,12 @@
-package com.mnopi.data;
+package com.mnopi.data.handlers;
 
+import android.accounts.Account;
 import android.content.Context;
+import android.content.SyncResult;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+
+import com.mnopi.data.DataLogOpenHelper;
 
 /**
  * Abstract for data handlers. They control how the data is received,
@@ -30,6 +34,6 @@ public abstract class DataHandler {
 	/**
 	 * Specifies how to send the data to the server
 	 */
-	abstract public void sendData();
+	abstract public void sendData(Account account, SyncResult syncResult) throws Exception;
 }
 

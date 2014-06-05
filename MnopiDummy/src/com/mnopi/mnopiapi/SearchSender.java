@@ -112,10 +112,10 @@ public class SearchSender {
 		@Override
 		protected Void doInBackground(QuerySearch... searches){
 
-			//TODO: Convertir a explicit intent
-			Intent searchIntent = new Intent("com.mnopi.services.DataCollectorService");
-			
-			searchIntent.putExtra("search_query", searches[0].searchQuery);
+            Intent searchIntent = new Intent();
+            searchIntent.setClassName("com.mnopi.mnopi", "com.mnopi.services.DataCollectorService");
+
+            searchIntent.putExtra("search_query", searches[0].searchQuery);
 			searchIntent.putExtra("search_results", searches[0].searchResults);
 			searchIntent.putExtra("date", searches[0].date);
 			searchIntent.putExtra("handler_key", WEB_SEARCH_HANDLER);

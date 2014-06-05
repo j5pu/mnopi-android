@@ -55,16 +55,16 @@
             android:text="@string/signup_"
             android:textColor="#5cafe2"
             android:textSize="25dip" />
-        
-        <TextView android:id="@+id/login_error" 
-            android:layout_width="match_parent" 
-            android:layout_height="wrap_content" 
-            android:gravity="center" 
+
+        <TextView android:id="@+id/login_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_marginTop="5dp"
-            android:textColor="#FF0000" 
+            android:textColor="#FF0000"
             android:textSize="15dip" />
 
-        
+
 
     </LinearLayout>
 

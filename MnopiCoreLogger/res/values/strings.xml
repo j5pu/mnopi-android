@@ -103,4 +103,10 @@
     <string name="no_category">No category</string>    
     <string name="pages_visited_must_be_on">Pages visited must be on to save HTML</string>
     <string name="logout">Logout</string>
+    <string name="mnopi_name">Mnopi</string>
+    <string name="server_error">Error in server</string>
+    <string name="already_mnopi_account">There is already a Mnopi account in the device</string>
+    <string name="server">SERVER</string>
+    <string name="device">DEVICE</string>
+    <string name="refresh">Refresh</string>
 </resources>

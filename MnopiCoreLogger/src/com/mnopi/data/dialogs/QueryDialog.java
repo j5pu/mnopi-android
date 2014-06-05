@@ -1,7 +1,7 @@
-package com.mnopi.dialogs;
+package com.mnopi.data.dialogs;
 
 import com.mnopi.mnopi.R;
-import com.mnopi.models.Query;
+import com.mnopi.data.models.Query;
 
 import android.app.Dialog;
 import android.content.Context;

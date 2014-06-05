@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -124,9 +125,9 @@ public class PageVisitedSender {
 		@Override
 		protected Void doInBackground(PageVisited... pagesVisited){
 			
-			//TODO: convertir a explicit intent o a content provider
-			Intent pageVisitedIntent = new Intent("com.mnopi.services.DataCollectorService");
-			
+            Intent pageVisitedIntent = new Intent();
+            pageVisitedIntent.setClassName("com.mnopi.mnopi", "com.mnopi.services.DataCollectorService");
+
 			pageVisitedIntent.putExtra("url", pagesVisited[0].url);
 			pageVisitedIntent.putExtra("date", pagesVisited[0].date);
 			pageVisitedIntent.putExtra("html_code", pagesVisited[0].htmlCode);

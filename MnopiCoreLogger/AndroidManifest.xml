@@ -1,10 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mnopi.mnopi"
     android:versionCode="1"
     android:versionName="1.0" >
-	<uses-permission android:name="android.permission.INTERNET" /> 
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
-	</uses-permission>
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
@@ -14,21 +12,20 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/CustomTheme" >
+        android:theme="@style/CustomTheme" >  
+        <provider android:name="com.mnopi.data.DataProvider"
+        android:authorities="com.mnopi.android.contentprovider"/>    
         <activity
-            android:name="com.mnopi.mnopi.MainActivity" 
+            android:name=".PromptLoginActivity"
             android:theme="@style/CustomThemeBlack">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mnopi.mnopi.RegisterActivity" 
-            android:theme="@style/CustomThemeBlack">
-            
-        </activity>
-        <activity android:name="com.mnopi.mnopi.WelcomeActivity" 
-            android:theme="@style/CustomThemeBlack">
+        <activity android:name=".HomeActivity"
+            android:theme="@style/CustomThemeBlack"
+	        android:screenOrientation="portrait">
         </activity>
         <activity android:name="com.mnopi.mnopi.PermissionActivity" 
             android:theme="@style/CustomThemeBlack">
@@ -36,17 +33,51 @@
         <activity android:name="com.mnopi.mnopi.ViewDataActivity" 
             android:theme="@style/CustomThemeBlack">
         </activity>
-        <activity android:name="com.mnopi.mnopi.ViewQueriesActivity" >
+        <activity android:name="com.mnopi.mnopi.ViewQueriesActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name="com.mnopi.mnopi.ViewPagesVisitedActivity" >
+        <activity android:name="com.mnopi.mnopi.ViewPagesVisitedActivity"
+            android:screenOrientation="portrait">
         </activity>
+        <activity android:name="com.mnopi.mnopi.ViewQueriesDeviceActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="com.mnopi.mnopi.ViewPagesVisitedDeviceActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name="com.mnopi.authentication.AuthenticatorActivity"></activity>
+        <activity android:name="com.mnopi.authentication.RegisterActivity"></activity>
         <service android:name="com.mnopi.services.DataCollectorService"
             android:exported="true">
+        </service>
+        <service android:name="com.mnopi.authentication.MnopiAuthenticatorService"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.mnopi.services.DataCollectorService" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+        <service android:name="com.mnopi.services.SyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
         </service>
     </application>
+
+
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
 
 </manifest>

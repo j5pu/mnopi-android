@@ -6,18 +6,61 @@
     android:layout_margin="10dp"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/btnViewQueries"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:text="@string/view_queries" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="269dp"
+        android:gravity="center_vertical">
 
-    <Button
-        android:id="@+id/btnPagesVisited"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/server"
+            android:id="@+id/txt_server"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:id="@+id/btnViewQueries"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/view_queries" />
+
+        <Button
+            android:id="@+id/btnPagesVisited"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/view_pages" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/view_pages" />
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/device"
+            android:id="@+id/txt_device"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
+            android:id="@+id/btnViewQueriesDevice"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/view_queries" />
+
+        <Button
+            android:id="@+id/btnPagesVisitedDevice"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/view_pages" />
+    </LinearLayout>
 
 </LinearLayout>

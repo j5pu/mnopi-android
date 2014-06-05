@@ -4,16 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mnopi.data.DataHandlerRegistry;
-import com.mnopi.data.PageVisitedDataHandler;
-import com.mnopi.data.WebSearchDataHandler;
+import com.mnopi.data.handlers.PageVisitedDataHandler;
+import com.mnopi.data.handlers.WebSearchDataHandler;
 
 public class PermissionActivity extends Activity{
 	private Switch butPagesVisited;
@@ -49,41 +47,21 @@ public class PermissionActivity extends Activity{
                     butHtmlVisited.setChecked(false);
                     butHtmlVisited.setVisibility(View.GONE);
                     txtHtml.setVisibility(View.GONE);
+
+                    setPermissionSharedPrefs(PageVisitedDataHandler.HANDLER_KEY, false);
+                    setPermissionSharedPrefs(PageVisitedDataHandler.HTML_VISITED_KEY, false);
                 }
                 else{
                 	butHtmlVisited.setVisibility(View.VISIBLE);
                 	txtHtml.setVisibility(View.VISIBLE);
-                }
 
-
-                SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
-                        Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = permissions.edit();
-
-                DataHandlerRegistry receiveHandlerRegistry = DataHandlerRegistry.getInstance(
-                        MnopiApplication.RECEIVE_FROM_SERVICE_REGISTRY);
-
-                if (!isChecked) {
-                    editor.putBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false);
-                    editor.putBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false);
-                    receiveHandlerRegistry.unbind(PageVisitedDataHandler.getKey());
-                } else {
-                    editor.putBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, true);
-
-                    /* New handler is added if needed */
-                    if (receiveHandlerRegistry.lookup(PageVisitedDataHandler.getKey()) == null) {
-                        PageVisitedDataHandler pageHandler = new PageVisitedDataHandler(
-                                getApplicationContext());
-                        receiveHandlerRegistry.bind(PageVisitedDataHandler.getKey(), pageHandler);
-
-                        // Html visited true by default when page visited is enabled
+                    /* If the pages visited button was set previously, html permission is on */
+                    if (!getPermissionSharedPrefs(PageVisitedDataHandler.HANDLER_KEY)) {
                         butHtmlVisited.setChecked(true);
                     }
+
+                    setPermissionSharedPrefs(PageVisitedDataHandler.HANDLER_KEY, true);
                 }
-                editor.commit();
-        	    Log.i("pagevisited",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
-        	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
-        	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
             }
             
         });
@@ -95,22 +73,7 @@ public class PermissionActivity extends Activity{
                 if (!butPagesVisited.isChecked()){
                 	butHtmlVisited.setChecked(false);
                 } else {
-                    SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
-                            Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = permissions.edit();
-
-                    DataHandlerRegistry receiveHandlerRegistry = DataHandlerRegistry.getInstance(
-                            MnopiApplication.RECEIVE_FROM_SERVICE_REGISTRY);
-                    PageVisitedDataHandler pageHandler = (PageVisitedDataHandler)
-                            receiveHandlerRegistry.lookup(PageVisitedDataHandler.getKey());
-
-                    editor.putBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, isChecked);
-                    pageHandler.setSaveHtmlVisited(isChecked);
-
-                    editor.commit();
-                    Log.i("htmlvisited",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
-            	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
-            	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
+                    setPermissionSharedPrefs(PageVisitedDataHandler.HTML_VISITED_KEY, isChecked);
                 }
             }
         });
@@ -119,34 +82,39 @@ public class PermissionActivity extends Activity{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
-                        Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = permissions.edit();
+                setPermissionSharedPrefs(WebSearchDataHandler.HANDLER_KEY, isChecked);
 
-                DataHandlerRegistry receiveHandlerRegistry = DataHandlerRegistry.getInstance(
-                        MnopiApplication.RECEIVE_FROM_SERVICE_REGISTRY);
-
-                if (!isChecked) {
-                    editor.putBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false);
-                    receiveHandlerRegistry.unbind(WebSearchDataHandler.getKey());
-                } else {
-                    editor.putBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, true);
-
-                    /* New handler is added if needed */
-                    if (receiveHandlerRegistry.lookup(WebSearchDataHandler.getKey()) == null) {
-                        WebSearchDataHandler searchHandler = new WebSearchDataHandler(
-                                getApplicationContext());
-                        receiveHandlerRegistry.bind(WebSearchDataHandler.getKey(), searchHandler);
-                    }
-                }
-                editor.commit();
-                Log.i("query",""+permissions.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, false)+
-        	    		permissions.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, false)+
-        	    		permissions.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, false));
             }
         });
 
 	}
+
+    /**
+     * Sets a permission for a type of data a value of active or inactive
+     * @param permission
+     * @param isActive
+     */
+    public void setPermissionSharedPrefs(String permission, boolean isActive) {
+
+        SharedPreferences permissions = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = permissions.edit();
+
+        editor.putBoolean(permission, isActive);
+        editor.commit();
+    }
+
+    /**
+     * Gets the value of a given permission
+     * @param permission
+     * @return
+     */
+    public boolean getPermissionSharedPrefs(String permission) {
+        SharedPreferences settings = this.getSharedPreferences(
+                MnopiApplication.PERMISSIONS_PREFERENCES, Context.MODE_PRIVATE);
+
+        return settings.getBoolean(permission, true);
+    }
 
 	@Override
 	public void onStart(){
@@ -154,10 +122,9 @@ public class PermissionActivity extends Activity{
 	    SharedPreferences prefs = getSharedPreferences(MnopiApplication.PERMISSIONS_PREFERENCES,
 				Context.MODE_PRIVATE);
 
-	    butPagesVisited.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_PAGE_IS_ALLOWED, true));
-	    butSearchQueries.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_SEARCH_IS_ALLOWED, true));
-	    butHtmlVisited.setChecked(prefs.getBoolean(MnopiApplication.RECEIVE_HTML_IS_ALLOWED, true));
-	    Log.i("permisosStart",butPagesVisited.isChecked()+" " + butHtmlVisited.isChecked() + " "+ butSearchQueries.isChecked());
+	    butPagesVisited.setChecked(prefs.getBoolean(PageVisitedDataHandler.HANDLER_KEY, true));
+	    butSearchQueries.setChecked(prefs.getBoolean(WebSearchDataHandler.HANDLER_KEY, true));
+	    butHtmlVisited.setChecked(prefs.getBoolean(PageVisitedDataHandler.HTML_VISITED_KEY, true));
 	}
 
 }
