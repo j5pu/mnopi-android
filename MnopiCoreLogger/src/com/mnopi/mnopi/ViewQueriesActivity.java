@@ -41,13 +41,7 @@ public class ViewQueriesActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewqueries);  
 
-        if (savedInstanceState != null){
-            queries = savedInstanceState.getParcelableArrayList("queries");
-            meta_next = savedInstanceState.getString("meta_next");
-        }else{
-            queries = new ArrayList<Query>();
-        }
-
+        queries = new ArrayList<Query>();
 		listQueries = (ListView) findViewById(R.id.listQueries);
 		qAdapter = new QueryAdapter(this, R.layout.query_item, queries );
 		listQueries.setAdapter(qAdapter);
@@ -105,14 +99,6 @@ public class ViewQueriesActivity extends Activity{
 
 	}
 
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("queries", queries);
-        outState.putString("meta_next", meta_next);
-    }
-	
 	
 	private class GetQueries extends AsyncTask<Void,Integer,Void> {
 
